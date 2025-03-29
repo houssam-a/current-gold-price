@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { convertCurrency, getCurrencies, Currency } from "@/lib/api";
 import { toast } from "sonner";
-import { RefreshCw, ArrowRight, Plus } from "lucide-react";
+import { RefreshCw, ArrowRight, Search } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { SearchSelector } from "@/components/ui/search-selector";
 
 export default function CurrencyConverter() {
+  const { t } = useLanguage();
   const [amount, setAmount] = useState<string>("1");
   const [fromCurrency, setFromCurrency] = useState<string>("USD");
   const [toCurrency, setToCurrency] = useState<string>("EUR");
@@ -18,6 +20,7 @@ export default function CurrencyConverter() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConverting, setIsConverting] = useState(false);
   const [favorites, setFavorites] = useState<string[]>(["EUR", "GBP", "JPY"]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadCurrencies = async () => {
@@ -80,6 +83,19 @@ export default function CurrencyConverter() {
   const fromCurrencyObj = currencies.find((c) => c.code === fromCurrency);
   const toCurrencyObj = currencies.find((c) => c.code === toCurrency);
 
+  // Filter currencies based on search term
+  const filteredCurrencies = searchTerm 
+    ? currencies.filter(c => 
+        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.code.toLowerCase().includes(searchTerm.toLowerCase()))
+    : currencies;
+
+  // Currency options for the search selector
+  const currencyOptions = currencies.map(currency => ({
+    value: currency.code,
+    label: `${currency.symbol} ${currency.code} - ${currency.name}`
+  }));
+
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
@@ -118,22 +134,14 @@ export default function CurrencyConverter() {
                     <label className="text-sm font-medium mb-1 block">
                       From
                     </label>
-                    <Select
+                    <SearchSelector
+                      options={currencyOptions}
                       value={fromCurrency}
                       onValueChange={setFromCurrency}
-                      disabled={isLoading}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {currencies.map((currency) => (
-                          <SelectItem key={currency.code} value={currency.code}>
-                            {currency.symbol} {currency.code} - {currency.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select currency"
+                      searchPlaceholder={`${t("search")}...`}
+                      className="w-full"
+                    />
                   </div>
 
                   <div className="flex justify-center">
@@ -150,22 +158,14 @@ export default function CurrencyConverter() {
 
                   <div className="md:col-span-2">
                     <label className="text-sm font-medium mb-1 block">To</label>
-                    <Select
+                    <SearchSelector
+                      options={currencyOptions}
                       value={toCurrency}
                       onValueChange={setToCurrency}
-                      disabled={isLoading}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {currencies.map((currency) => (
-                          <SelectItem key={currency.code} value={currency.code}>
-                            {currency.symbol} {currency.code} - {currency.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select currency"
+                      searchPlaceholder={`${t("search")}...`}
+                      className="w-full"
+                    />
                   </div>
                 </div>
 
@@ -193,8 +193,7 @@ export default function CurrencyConverter() {
                       {toCurrencyObj?.symbol} {result.toFixed(2)} {toCurrency}
                     </div>
                     <div className="text-xs text-muted-foreground mt-2">
-                      Last updated:{" "}
-                      {lastUpdated?.toLocaleTimeString() || "Never"}
+                      {t("lastUpdated")}: {lastUpdated?.toLocaleTimeString() || "Never"}
                     </div>
                   </div>
                 )}
@@ -244,27 +243,25 @@ export default function CurrencyConverter() {
                 })
               )}
               <div className="mt-2">
-                <Select
+                <SearchSelector
+                  options={
+                    currencies
+                      .filter((c) => !favorites.includes(c.code))
+                      .map((currency) => ({
+                        value: currency.code,
+                        label: `${currency.symbol} ${currency.code} - ${currency.name}`
+                      }))
+                  }
+                  value=""
                   onValueChange={(value) => {
                     if (!favorites.includes(value)) {
                       toggleFavorite(value);
                       toast.success(`Added ${value} to favorites`);
                     }
                   }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Add favorite" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencies
-                      .filter((c) => !favorites.includes(c.code))
-                      .map((currency) => (
-                        <SelectItem key={currency.code} value={currency.code}>
-                          {currency.symbol} {currency.code} - {currency.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                  placeholder="Add favorite"
+                  searchPlaceholder={`${t("search")}...`}
+                />
               </div>
             </div>
           </CardContent>
@@ -286,10 +283,12 @@ export default function CurrencyConverter() {
               { from: "USD", to: "JPY" },
               { from: "EUR", to: "USD" },
               { from: "GBP", to: "USD" },
-              { from: "BTC", to: "USD" },
-            ].map(async (pair, index) => {
+              { from: "MAD", to: "USD" },
+            ].map((pair, index) => {
               const fromObj = currencies.find((c) => c.code === pair.from);
               const toObj = currencies.find((c) => c.code === pair.to);
+              
+              if (!fromObj || !toObj) return null;
               
               return (
                 <div
@@ -298,11 +297,11 @@ export default function CurrencyConverter() {
                 >
                   <div className="flex items-center">
                     <span className="font-medium">
-                      {fromObj?.symbol} {pair.from}
+                      {fromObj.symbol} {pair.from}
                     </span>
                     <ArrowRight className="mx-2 h-4 w-4" />
                     <span className="font-medium">
-                      {toObj?.symbol} {pair.to}
+                      {toObj.symbol} {pair.to}
                     </span>
                   </div>
                   <Button

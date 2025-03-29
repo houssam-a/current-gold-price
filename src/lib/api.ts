@@ -5,6 +5,7 @@ import { currencySymbols } from "./currency-data";
 export type GoldPrice = {
   price: number;
   currency: string;
+  symbol: string;
   timestamp: number;
   change: number;
   changePercentage: number;
@@ -47,6 +48,17 @@ export const getGoldPrice = async (
     CAD: 1.36,
     CHF: 0.90,
     CNY: 7.24,
+    MAD: 10.08,
+    AED: 3.67,
+    SAR: 3.75,
+    EGP: 30.92,
+    TRY: 32.19,
+    RUB: 91.75,
+    BRL: 5.05,
+    MXN: 16.75,
+    ZAR: 18.30,
+    SGD: 1.35,
+    HKD: 7.82,
     BTC: 0.000033,
     ETH: 0.00045
   };
@@ -57,6 +69,7 @@ export const getGoldPrice = async (
   return {
     price: Number(price.toFixed(2)),
     currency,
+    symbol: getSymbolForCurrency(currency),
     timestamp: Date.now(),
     change: Number(change.toFixed(2)),
     changePercentage: Number((change / price * 100).toFixed(2))
@@ -82,6 +95,17 @@ export const getGoldPriceHistory = async (
     CAD: 1.36,
     CHF: 0.90,
     CNY: 7.24,
+    MAD: 10.08,
+    AED: 3.67,
+    SAR: 3.75,
+    EGP: 30.92,
+    TRY: 32.19,
+    RUB: 91.75,
+    BRL: 5.05,
+    MXN: 16.75,
+    ZAR: 18.30,
+    SGD: 1.35,
+    HKD: 7.82,
     BTC: 0.000033,
     ETH: 0.00045
   };
@@ -138,6 +162,17 @@ export const getExchangeRate = async (
     CAD: 1.36,
     CHF: 0.90,
     CNY: 7.24,
+    MAD: 10.08,
+    AED: 3.67,
+    SAR: 3.75,
+    EGP: 30.92,
+    TRY: 32.19,
+    RUB: 91.75,
+    BRL: 5.05,
+    MXN: 16.75,
+    ZAR: 18.30,
+    SGD: 1.35,
+    HKD: 7.82,
     BTC: 0.000033,
     ETH: 0.00045
   };
@@ -176,6 +211,17 @@ function getSymbolForCurrency(code: string): string {
     CAD: 'C$',
     CHF: 'CHF',
     CNY: '¥',
+    MAD: 'د.م.',
+    AED: 'د.إ',
+    SAR: '﷼',
+    EGP: 'E£',
+    TRY: '₺',
+    RUB: '₽',
+    BRL: 'R$',
+    MXN: '$',
+    ZAR: 'R',
+    SGD: 'S$',
+    HKD: 'HK$',
     BTC: '₿',
     ETH: 'Ξ'
   };

@@ -1,21 +1,25 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingDown, TrendingUp, RefreshCw, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getGoldPrice, GoldPrice } from "@/lib/api";
-import { countries, goldUnits, conversionFactors } from "@/lib/currency-data";
+import { countries, goldUnits, conversionFactors, goldImages } from "@/lib/currency-data";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { SearchSelector } from "@/components/ui/search-selector";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function Index() {
+  const { t } = useLanguage();
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [selectedUnit, setSelectedUnit] = useState("ounce");
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedGoldImage, setSelectedGoldImage] = useState(goldImages[0]);
   
   const country = countries.find((c) => c.code === selectedCountry);
   
@@ -36,6 +40,8 @@ export default function Index() {
   
   useEffect(() => {
     fetchGoldPrice();
+    // Select a random gold image when changing country
+    setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
   
   const handleRefresh = () => {
@@ -66,13 +72,29 @@ export default function Index() {
   };
   
   const chartData = generateChartData();
+
+  // Country options for the selector
+  const countryOptions = countries.map(country => ({
+    value: country.code,
+    label: country.name,
+    flag: country.flag
+  }));
+
+  // Unit options for the selector
+  const unitOptions = goldUnits.map(unit => ({
+    value: unit.value,
+    label: t(unit.value)
+  }));
   
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Gold Price Tracker</h1>
+        <div className="flex justify-center items-center gap-2 mb-2">
+          <h1 className="text-3xl font-bold tracking-tight">{t("goldPriceTracker")}</h1>
+          <LanguageSelector />
+        </div>
         <p className="text-muted-foreground mt-2">
-          Track real-time gold prices across different countries and units
+          {t("trackRealTime")}
         </p>
       </div>
       
@@ -81,7 +103,7 @@ export default function Index() {
           <Card className="gold-card h-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Current Gold Price</CardTitle>
+                <CardTitle>{t("currentGoldPrice")}</CardTitle>
                 <CardDescription>
                   {country?.name} ({country?.currency})
                 </CardDescription>
@@ -101,70 +123,68 @@ export default function Index() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium mb-1 block">
-                      Country
+                      {t("country")}
                     </label>
-                    <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.code}>
-                            <span className="mr-2">{country.flag}</span>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SearchSelector
+                      options={countryOptions}
+                      value={selectedCountry}
+                      onValueChange={setSelectedCountry}
+                      placeholder={t("selectCountry")}
+                      searchPlaceholder={`${t("search")}...`}
+                    />
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-1 block">
-                      Unit
+                      {t("unit")}
                     </label>
-                    <Select value={selectedUnit} onValueChange={setSelectedUnit}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {goldUnits.map((unit) => (
-                          <SelectItem key={unit.value} value={unit.value}>
-                            {unit.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SearchSelector
+                      options={unitOptions}
+                      value={selectedUnit}
+                      onValueChange={setSelectedUnit}
+                      placeholder={t("selectUnit")}
+                      searchPlaceholder={`${t("search")}...`}
+                    />
                   </div>
                 </div>
                 
                 {goldPrice ? (
-                  <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="flex items-start justify-between bg-white dark:bg-gray-800 p-4 rounded-lg">
                     <div>
                       <div className="text-2xl font-bold">
-                        {goldPrice?.symbol || goldPrice?.currency}{" "}
+                        {goldPrice.symbol}{" "}
                         {goldPrice &&
                           convertPrice(goldPrice.price, selectedUnit)}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        per {selectedUnit}
+                        {t("priceOf")} 1 {t(selectedUnit)}
                       </div>
                     </div>
-                    <div
-                      className={cn(
-                        "flex items-center text-sm",
-                        goldPrice.change > 0
-                          ? "text-green-500"
-                          : goldPrice.change < 0
-                          ? "text-red-500"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {goldPrice.change > 0 ? (
-                        <TrendingUp className="h-4 w-4 mr-1" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 mr-1" />
-                      )}
-                      {goldPrice.change > 0 ? "+" : ""}
-                      {goldPrice.change.toFixed(2)} ({goldPrice.changePercentage}%)
+                    <div className="flex flex-col items-end">
+                      <div
+                        className={cn(
+                          "flex items-center text-sm",
+                          goldPrice.change > 0
+                            ? "text-green-500"
+                            : goldPrice.change < 0
+                            ? "text-red-500"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {goldPrice.change > 0 ? (
+                          <TrendingUp className="h-4 w-4 mr-1" />
+                        ) : (
+                          <TrendingDown className="h-4 w-4 mr-1" />
+                        )}
+                        {goldPrice.change > 0 ? "+" : ""}
+                        {goldPrice.change.toFixed(2)} ({goldPrice.changePercentage}%)
+                      </div>
+                      <div className="mt-2">
+                        <img 
+                          src={`${selectedGoldImage.src}?auto=format&fit=crop&w=100&h=60`}
+                          alt={selectedGoldImage.alt}
+                          className="h-12 rounded"
+                        />
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -175,7 +195,7 @@ export default function Index() {
                 
                 <div className="text-xs text-muted-foreground flex items-center">
                   <Info className="h-3 w-3 mr-1" />
-                  Last updated: {goldPrice ? new Date(goldPrice.timestamp).toLocaleString() : "Loading..."}
+                  {t("lastUpdated")}: {goldPrice ? new Date(goldPrice.timestamp).toLocaleString() : "Loading..."}
                 </div>
               </div>
             </CardContent>
@@ -185,9 +205,9 @@ export default function Index() {
         <div className="w-full md:w-1/2">
           <Card className="h-full">
             <CardHeader>
-              <CardTitle>Price Trend (30 Days)</CardTitle>
+              <CardTitle>{t("priceTrend")} (30 {t("days")})</CardTitle>
               <CardDescription>
-                Historical gold price in {country?.currency}
+                {t("historicalGoldPrice")} {country?.currency}
               </CardDescription>
             </CardHeader>
             <CardContent className="h-[250px]">
@@ -203,11 +223,11 @@ export default function Index() {
                       tick={{ fontSize: 12 }}
                       domain={["auto", "auto"]}
                       tickFormatter={(value) =>
-                        `${goldPrice.symbol || goldPrice.currency}${value.toFixed(0)}`
+                        `${goldPrice.symbol}${value.toFixed(0)}`
                       }
                     />
                     <Tooltip
-                      formatter={(value) => [`${goldPrice.symbol || goldPrice.currency}${value}`, "Price"]}
+                      formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
                       labelFormatter={(label) => `Day ${label}`}
                     />
                     <ReferenceLine
@@ -236,17 +256,17 @@ export default function Index() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Gold Price by Unit</CardTitle>
+          <CardTitle>{t("goldPriceByUnit")}</CardTitle>
           <CardDescription>
-            Compare gold prices in different measurement units
+            {t("compareGoldPrices")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="gram">
             <TabsList className="grid grid-cols-3 mb-6">
-              <TabsTrigger value="gram">Gram</TabsTrigger>
-              <TabsTrigger value="ounce">Troy Ounce</TabsTrigger>
-              <TabsTrigger value="kilo">Kilogram</TabsTrigger>
+              <TabsTrigger value="gram">{t("gram")}</TabsTrigger>
+              <TabsTrigger value="ounce">{t("ounce")}</TabsTrigger>
+              <TabsTrigger value="kilo">{t("kilogram")}</TabsTrigger>
             </TabsList>
             {goldPrice ? (
               <>
@@ -263,7 +283,7 @@ export default function Index() {
                         </div>
                         <div className="font-bold">
                           {c.currency === country?.currency
-                            ? convertPrice(goldPrice.price, "gram")
+                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "gram")}`
                             : "-"}
                         </div>
                       </div>
@@ -283,7 +303,7 @@ export default function Index() {
                         </div>
                         <div className="font-bold">
                           {c.currency === country?.currency
-                            ? convertPrice(goldPrice.price, "ounce")
+                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "ounce")}`
                             : "-"}
                         </div>
                       </div>
@@ -303,7 +323,7 @@ export default function Index() {
                         </div>
                         <div className="font-bold">
                           {c.currency === country?.currency
-                            ? convertPrice(goldPrice.price, "kilo")
+                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "kilo")}`
                             : "-"}
                         </div>
                       </div>
