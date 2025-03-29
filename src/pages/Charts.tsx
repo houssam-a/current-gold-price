@@ -291,8 +291,9 @@ export default function Charts() {
                 </TabsContent>
               </>
             )}
-          </CardContent>
-        </Card>
-      </div>
-    );
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

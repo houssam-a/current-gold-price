@@ -314,8 +314,9 @@ export default function Index() {
             ) : (
               <div className="h-40 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
             )}
-          </CardContent>
-        </Card>
-      </div>
-    );
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
