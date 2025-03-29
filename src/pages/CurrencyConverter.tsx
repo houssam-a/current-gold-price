@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { RefreshCw, ArrowRight, Search } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { SearchSelector } from "@/components/ui/search-selector";
+import { goldImages } from "@/lib/currency-data";
 
 export default function CurrencyConverter() {
   const { t } = useLanguage();
@@ -20,8 +21,8 @@ export default function CurrencyConverter() {
   const [isLoading, setIsLoading] = useState(true);
   const [isConverting, setIsConverting] = useState(false);
   const [favorites, setFavorites] = useState<string[]>(["EUR", "GBP", "JPY"]);
-  const [searchTerm, setSearchTerm] = useState("");
-
+  const [selectedImage, setSelectedImage] = useState(goldImages[0]);
+  
   useEffect(() => {
     const loadCurrencies = async () => {
       try {
@@ -36,6 +37,8 @@ export default function CurrencyConverter() {
     };
 
     loadCurrencies();
+    // Select a random gold image
+    setSelectedImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, []);
 
   useEffect(() => {
@@ -59,6 +62,8 @@ export default function CurrencyConverter() {
       );
       setResult(convertedAmount);
       setLastUpdated(new Date());
+      // Change the gold image when converting
+      setSelectedImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
     } catch (error) {
       console.error("Error converting currency:", error);
       toast.error("Failed to convert currency");
@@ -83,13 +88,6 @@ export default function CurrencyConverter() {
   const fromCurrencyObj = currencies.find((c) => c.code === fromCurrency);
   const toCurrencyObj = currencies.find((c) => c.code === toCurrency);
 
-  // Filter currencies based on search term
-  const filteredCurrencies = searchTerm 
-    ? currencies.filter(c => 
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.code.toLowerCase().includes(searchTerm.toLowerCase()))
-    : currencies;
-
   // Currency options for the search selector
   const currencyOptions = currencies.map(currency => ({
     value: currency.code,
@@ -99,18 +97,18 @@ export default function CurrencyConverter() {
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Currency Converter</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("currencyConverter") || "Currency Converter"}</h1>
         <p className="text-muted-foreground mt-2">
-          Convert between different currencies in real-time
+          {t("convertRealTime") || "Convert between different currencies in real-time"}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-2 gold-card">
           <CardHeader>
-            <CardTitle>Convert Currency</CardTitle>
+            <CardTitle>{t("convertCurrency") || "Convert Currency"}</CardTitle>
             <CardDescription>
-              Enter amount and select currencies to convert
+              {t("enterAmountDesc") || "Enter amount and select currencies to convert"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -118,13 +116,13 @@ export default function CurrencyConverter() {
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Amount
+                    {t("amount") || "Amount"}
                   </label>
                   <Input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter amount"
+                    placeholder={t("enterAmount") || "Enter amount"}
                     className="text-lg"
                   />
                 </div>
@@ -132,13 +130,13 @@ export default function CurrencyConverter() {
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
                   <div className="md:col-span-2">
                     <label className="text-sm font-medium mb-1 block">
-                      From
+                      {t("from") || "From"}
                     </label>
                     <SearchSelector
                       options={currencyOptions}
                       value={fromCurrency}
                       onValueChange={setFromCurrency}
-                      placeholder="Select currency"
+                      placeholder={t("selectCurrency") || "Select currency"}
                       searchPlaceholder={`${t("search")}...`}
                       className="w-full"
                     />
@@ -152,17 +150,17 @@ export default function CurrencyConverter() {
                       className="rounded-full"
                     >
                       <ArrowRight className="h-4 w-4" />
-                      <span className="sr-only">Swap currencies</span>
+                      <span className="sr-only">{t("swapCurrencies") || "Swap currencies"}</span>
                     </Button>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="text-sm font-medium mb-1 block">To</label>
+                    <label className="text-sm font-medium mb-1 block">{t("to") || "To"}</label>
                     <SearchSelector
                       options={currencyOptions}
                       value={toCurrency}
                       onValueChange={setToCurrency}
-                      placeholder="Select currency"
+                      placeholder={t("selectCurrency") || "Select currency"}
                       searchPlaceholder={`${t("search")}...`}
                       className="w-full"
                     />
@@ -177,23 +175,35 @@ export default function CurrencyConverter() {
                   {isConverting ? (
                     <>
                       <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Converting...
+                      {t("converting") || "Converting..."}
                     </>
                   ) : (
-                    "Convert"
+                    t("convert") || "Convert"
                   )}
                 </Button>
 
                 {result !== null && (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg text-center">
-                    <div className="text-lg text-muted-foreground mb-1">
-                      {amount} {fromCurrencyObj?.symbol} {fromCurrency} =
-                    </div>
-                    <div className="text-3xl font-bold">
-                      {toCurrencyObj?.symbol} {result.toFixed(2)} {toCurrency}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-2">
-                      {t("lastUpdated")}: {lastUpdated?.toLocaleTimeString() || "Never"}
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div className="text-center md:text-left">
+                        <div className="text-lg text-muted-foreground mb-1">
+                          {amount} {fromCurrencyObj?.symbol} {fromCurrency} =
+                        </div>
+                        <div className="text-3xl font-bold">
+                          {toCurrencyObj?.symbol} {result.toFixed(2)} {toCurrency}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-2">
+                          {t("lastUpdated")}: {lastUpdated?.toLocaleTimeString() || "Never"}
+                        </div>
+                      </div>
+                      
+                      <div className="w-32 h-32 rounded-lg overflow-hidden shadow-lg">
+                        <img 
+                          src={`${selectedImage.src}?auto=format&fit=crop&w=128&h=128`}
+                          alt={selectedImage.alt}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -270,9 +280,9 @@ export default function CurrencyConverter() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Popular Conversion Rates</CardTitle>
+          <CardTitle>{t("popularConversionRates") || "Popular Conversion Rates"}</CardTitle>
           <CardDescription>
-            Quick reference for commonly used currency pairs
+            {t("quickReference") || "Quick reference for commonly used currency pairs"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -312,7 +322,7 @@ export default function CurrencyConverter() {
                       setToCurrency(pair.to);
                     }}
                   >
-                    Use
+                    {t("use") || "Use"}
                   </Button>
                 </div>
               );

@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingDown, TrendingUp, RefreshCw, Info } from "lucide-react";
+import { TrendingDown, TrendingUp, RefreshCw, Info, ArrowDownAZ, ArrowUpAZ } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, goldUnits, conversionFactors, goldImages } from "@/lib/currency-data";
@@ -12,6 +12,15 @@ import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { SearchSelector } from "@/components/ui/search-selector";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { 
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Index() {
   const { t } = useLanguage();
@@ -20,6 +29,8 @@ export default function Index() {
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGoldImage, setSelectedGoldImage] = useState(goldImages[0]);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
   
   const country = countries.find((c) => c.code === selectedCountry);
   
@@ -30,6 +41,9 @@ export default function Index() {
     try {
       const data = await getGoldPrice(country.currency);
       setGoldPrice(data);
+      
+      // After fetching the current price, sort countries
+      await sortCountriesByGoldPrice(selectedUnit);
     } catch (error) {
       console.error("Error fetching gold price:", error);
       toast.error("Failed to fetch gold price");
@@ -38,11 +52,46 @@ export default function Index() {
     }
   };
   
+  const sortCountriesByGoldPrice = async (unit: string) => {
+    // Create a temporary array with prices for all countries
+    const countriesWithPrices = await Promise.all(
+      countries.map(async (c) => {
+        try {
+          const price = await getGoldPrice(c.currency);
+          const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
+          const convertedPrice = Number((price.price / factor).toFixed(2));
+          return { ...c, price: convertedPrice };
+        } catch (error) {
+          return { ...c, price: 0 };
+        }
+      })
+    );
+    
+    // Sort the countries by price
+    const sorted = countriesWithPrices.sort((a, b) => {
+      return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
+    });
+    
+    setSortedCountries(sorted);
+  };
+  
+  const toggleSortDirection = () => {
+    const newDirection = sortDirection === "asc" ? "desc" : "asc";
+    setSortDirection(newDirection);
+    setSortedCountries([...sortedCountries].reverse());
+  };
+  
   useEffect(() => {
     fetchGoldPrice();
     // Select a random gold image when changing country
     setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
+  
+  useEffect(() => {
+    if (goldPrice) {
+      sortCountriesByGoldPrice(selectedUnit);
+    }
+  }, [selectedUnit, goldPrice, sortDirection]);
   
   const handleRefresh = () => {
     fetchGoldPrice();
@@ -255,11 +304,31 @@ export default function Index() {
       </div>
       
       <Card>
-        <CardHeader>
-          <CardTitle>{t("goldPriceByUnit")}</CardTitle>
-          <CardDescription>
-            {t("compareGoldPrices")}
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>{t("goldPriceByUnit")}</CardTitle>
+            <CardDescription>
+              {t("compareGoldPrices")}
+            </CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleSortDirection}
+            className="flex items-center gap-2"
+          >
+            {sortDirection === "asc" ? (
+              <>
+                <ArrowUpAZ className="h-4 w-4" />
+                {t("sortAscending")}
+              </>
+            ) : (
+              <>
+                <ArrowDownAZ className="h-4 w-4" />
+                {t("sortDescending")}
+              </>
+            )}
+          </Button>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="gram">
@@ -268,67 +337,97 @@ export default function Index() {
               <TabsTrigger value="ounce">{t("ounce")}</TabsTrigger>
               <TabsTrigger value="kilo">{t("kilogram")}</TabsTrigger>
             </TabsList>
+            
             {goldPrice ? (
               <>
                 <TabsContent value="gram" className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {countries.slice(0, 6).map((c) => (
-                      <div
-                        key={c.code}
-                        className="p-4 border rounded-lg flex items-center justify-between"
-                      >
-                        <div className="flex items-center">
-                          <span className="text-2xl mr-2">{c.flag}</span>
-                          <span className="font-medium">{c.name}</span>
-                        </div>
-                        <div className="font-bold">
-                          {c.currency === country?.currency
-                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "gram")}`
-                            : "-"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t("country")}</TableHead>
+                        <TableHead>{t("currency")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerGram")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedCountries.map((c) => (
+                        <TableRow key={c.code} className="cursor-pointer hover:bg-muted" onClick={() => setSelectedCountry(c.code)}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <span className="text-2xl mr-2">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{c.currency}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {c.currency === country?.currency
+                              ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, "gram")}`
+                              : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </TabsContent>
+                
                 <TabsContent value="ounce" className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {countries.slice(0, 6).map((c) => (
-                      <div
-                        key={c.code}
-                        className="p-4 border rounded-lg flex items-center justify-between"
-                      >
-                        <div className="flex items-center">
-                          <span className="text-2xl mr-2">{c.flag}</span>
-                          <span className="font-medium">{c.name}</span>
-                        </div>
-                        <div className="font-bold">
-                          {c.currency === country?.currency
-                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "ounce")}`
-                            : "-"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t("country")}</TableHead>
+                        <TableHead>{t("currency")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerOunce")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedCountries.map((c) => (
+                        <TableRow key={c.code} className="cursor-pointer hover:bg-muted" onClick={() => setSelectedCountry(c.code)}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <span className="text-2xl mr-2">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{c.currency}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {c.currency === country?.currency
+                              ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, "ounce")}`
+                              : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </TabsContent>
+                
                 <TabsContent value="kilo" className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {countries.slice(0, 6).map((c) => (
-                      <div
-                        key={c.code}
-                        className="p-4 border rounded-lg flex items-center justify-between"
-                      >
-                        <div className="flex items-center">
-                          <span className="text-2xl mr-2">{c.flag}</span>
-                          <span className="font-medium">{c.name}</span>
-                        </div>
-                        <div className="font-bold">
-                          {c.currency === country?.currency
-                            ? `${goldPrice.symbol}${convertPrice(goldPrice.price, "kilo")}`
-                            : "-"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t("country")}</TableHead>
+                        <TableHead>{t("currency")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerKilo")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedCountries.map((c) => (
+                        <TableRow key={c.code} className="cursor-pointer hover:bg-muted" onClick={() => setSelectedCountry(c.code)}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <span className="text-2xl mr-2">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{c.currency}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {c.currency === country?.currency
+                              ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, "kilo")}`
+                              : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </TabsContent>
               </>
             ) : (
