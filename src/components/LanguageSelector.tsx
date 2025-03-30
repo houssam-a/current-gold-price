@@ -9,11 +9,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
+import { toast } from "sonner";
 
 export function LanguageSelector() {
   const { language, setLanguage, t } = useLanguage();
   
   const currentLanguage = languages.find(lang => lang.code === language);
+  
+  const handleLanguageChange = (langCode: string) => {
+    setLanguage(langCode);
+    const selectedLang = languages.find(lang => lang.code === langCode);
+    if (selectedLang) {
+      toast.success(`Language changed to ${selectedLang.name}`);
+    }
+  };
   
   return (
     <DropdownMenu>
@@ -27,7 +36,7 @@ export function LanguageSelector() {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => handleLanguageChange(lang.code)}
             className="cursor-pointer"
           >
             <span className="mr-2 text-lg">{lang.flag}</span>

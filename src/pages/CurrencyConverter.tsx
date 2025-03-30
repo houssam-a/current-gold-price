@@ -9,6 +9,7 @@ import { RefreshCw, ArrowRight, Search } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { SearchSelector } from "@/components/ui/search-selector";
 import { goldImages } from "@/lib/currency-data";
+import { GoldImageGallery } from "@/components/GoldImageGallery";
 
 export default function CurrencyConverter() {
   const { t } = useLanguage();
@@ -97,133 +98,141 @@ export default function CurrencyConverter() {
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">{t("currencyConverter") || "Currency Converter"}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("currencyConverter")}</h1>
         <p className="text-muted-foreground mt-2">
-          {t("convertRealTime") || "Convert between different currencies in real-time"}
+          {t("convertRealTime")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 gold-card">
-          <CardHeader>
-            <CardTitle>{t("convertCurrency") || "Convert Currency"}</CardTitle>
-            <CardDescription>
-              {t("enterAmountDesc") || "Enter amount and select currencies to convert"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-6">
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    {t("amount") || "Amount"}
-                  </label>
-                  <Input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder={t("enterAmount") || "Enter amount"}
-                    className="text-lg"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
-                  <div className="md:col-span-2">
+        <div className="md:col-span-2">
+          <Card className="gold-card mb-6">
+            <CardHeader>
+              <CardTitle>{t("convertCurrency")}</CardTitle>
+              <CardDescription>
+                {t("enterAmountDesc")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
                     <label className="text-sm font-medium mb-1 block">
-                      {t("from") || "From"}
+                      {t("amount")}
                     </label>
-                    <SearchSelector
-                      options={currencyOptions}
-                      value={fromCurrency}
-                      onValueChange={setFromCurrency}
-                      placeholder={t("selectCurrency") || "Select currency"}
-                      searchPlaceholder={`${t("search")}...`}
-                      className="w-full"
+                    <Input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder={t("enterAmount")}
+                      className="text-lg"
                     />
                   </div>
 
-                  <div className="flex justify-center">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleSwap}
-                      className="rounded-full"
-                    >
-                      <ArrowRight className="h-4 w-4" />
-                      <span className="sr-only">{t("swapCurrencies") || "Swap currencies"}</span>
-                    </Button>
-                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-medium mb-1 block">
+                        {t("from")}
+                      </label>
+                      <SearchSelector
+                        options={currencyOptions}
+                        value={fromCurrency}
+                        onValueChange={setFromCurrency}
+                        placeholder={t("selectCurrency")}
+                        searchPlaceholder={`${t("search")}...`}
+                        className="w-full"
+                      />
+                    </div>
 
-                  <div className="md:col-span-2">
-                    <label className="text-sm font-medium mb-1 block">{t("to") || "To"}</label>
-                    <SearchSelector
-                      options={currencyOptions}
-                      value={toCurrency}
-                      onValueChange={setToCurrency}
-                      placeholder={t("selectCurrency") || "Select currency"}
-                      searchPlaceholder={`${t("search")}...`}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
+                    <div className="flex justify-center">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleSwap}
+                        className="rounded-full"
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                        <span className="sr-only">{t("swapCurrencies")}</span>
+                      </Button>
+                    </div>
 
-                <Button
-                  onClick={handleConvert}
-                  className="w-full gold-gradient"
-                  disabled={isConverting}
-                >
-                  {isConverting ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      {t("converting") || "Converting..."}
-                    </>
-                  ) : (
-                    t("convert") || "Convert"
-                  )}
-                </Button>
-
-                {result !== null && (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                      <div className="text-center md:text-left">
-                        <div className="text-lg text-muted-foreground mb-1">
-                          {amount} {fromCurrencyObj?.symbol} {fromCurrency} =
-                        </div>
-                        <div className="text-3xl font-bold">
-                          {toCurrencyObj?.symbol} {result.toFixed(2)} {toCurrency}
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-2">
-                          {t("lastUpdated")}: {lastUpdated?.toLocaleTimeString() || "Never"}
-                        </div>
-                      </div>
-                      
-                      <div className="w-32 h-32 rounded-lg overflow-hidden shadow-lg">
-                        <img 
-                          src={`${selectedImage.src}?auto=format&fit=crop&w=128&h=128`}
-                          alt={selectedImage.alt}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-medium mb-1 block">{t("to")}</label>
+                      <SearchSelector
+                        options={currencyOptions}
+                        value={toCurrency}
+                        onValueChange={setToCurrency}
+                        placeholder={t("selectCurrency")}
+                        searchPlaceholder={`${t("search")}...`}
+                        className="w-full"
+                      />
                     </div>
                   </div>
-                )}
+
+                  <Button
+                    onClick={handleConvert}
+                    className="w-full gold-gradient"
+                    disabled={isConverting}
+                  >
+                    {isConverting ? (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        {t("converting")}
+                      </>
+                    ) : (
+                      t("convert")
+                    )}
+                  </Button>
+
+                  {result !== null && (
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="text-center md:text-left">
+                          <div className="text-lg text-muted-foreground mb-1">
+                            {amount} {fromCurrencyObj?.symbol} {fromCurrency} =
+                          </div>
+                          <div className="text-3xl font-bold">
+                            {toCurrencyObj?.symbol} {result.toFixed(2)} {toCurrency}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-2">
+                            {t("lastUpdated")}: {lastUpdated?.toLocaleTimeString() || "Never"}
+                          </div>
+                        </div>
+                        
+                        <div className="w-32 h-32 rounded-lg overflow-hidden shadow-lg">
+                          <img 
+                            src={`${selectedImage.src}?auto=format&fit=crop&w=128&h=128`}
+                            alt={selectedImage.alt}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          
+          {/* Gold Image Gallery */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3">{t("goldImageGallery")}</h2>
+            <GoldImageGallery />
+          </div>
+        </div>
 
         <Card className="h-fit">
           <CardHeader>
-            <CardTitle>Favorite Currencies</CardTitle>
+            <CardTitle>{t("favoriteCurrencies")}</CardTitle>
             <CardDescription>
-              Quick access to your most used currencies
+              {t("quickAccess")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-2">
               {favorites.length === 0 ? (
                 <div className="text-center text-muted-foreground py-4">
-                  No favorites added yet
+                  {t("noFavorites")}
                 </div>
               ) : (
                 favorites.map((code) => {
@@ -269,7 +278,7 @@ export default function CurrencyConverter() {
                       toast.success(`Added ${value} to favorites`);
                     }
                   }}
-                  placeholder="Add favorite"
+                  placeholder={t("addFavorite")}
                   searchPlaceholder={`${t("search")}...`}
                 />
               </div>
@@ -280,9 +289,9 @@ export default function CurrencyConverter() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>{t("popularConversionRates") || "Popular Conversion Rates"}</CardTitle>
+          <CardTitle>{t("popularConversionRates")}</CardTitle>
           <CardDescription>
-            {t("quickReference") || "Quick reference for commonly used currency pairs"}
+            {t("quickReference")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -322,7 +331,7 @@ export default function CurrencyConverter() {
                       setToCurrency(pair.to);
                     }}
                   >
-                    {t("use") || "Use"}
+                    {t("use")}
                   </Button>
                 </div>
               );

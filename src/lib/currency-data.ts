@@ -139,7 +139,11 @@ export const translations = {
     favoriteCurrencies: "Favorite Currencies",
     quickAccess: "Quick access to your most used currencies",
     noFavorites: "No favorites added yet",
-    addFavorite: "Add favorite"
+    addFavorite: "Add favorite",
+    // Gold image gallery translations
+    goldImageGallery: "Gold Image Gallery",
+    previousImage: "Previous Image",
+    nextImage: "Next Image"
   },
   fr: {
     goldPriceTracker: "Suivi du Prix de l'Or",
@@ -174,7 +178,6 @@ export const translations = {
     pricePerKilo: "Prix par Kilogramme",
     sortAscending: "Tri Ascendant",
     sortDescending: "Tri Descendant",
-    currency: "Devise",
     // Currency converter translations
     currencyConverter: "Convertisseur de Devises",
     convertRealTime: "Convertissez entre différentes devises en temps réel",
@@ -194,7 +197,11 @@ export const translations = {
     favoriteCurrencies: "Devises Favorites",
     quickAccess: "Accès rapide à vos devises les plus utilisées",
     noFavorites: "Pas encore de favoris ajoutés",
-    addFavorite: "Ajouter aux favoris"
+    addFavorite: "Ajouter aux favoris",
+    // Gold image gallery translations
+    goldImageGallery: "Galerie d'Images d'Or",
+    previousImage: "Image Précédente",
+    nextImage: "Image Suivante"
   },
   es: {
     goldPriceTracker: "Seguimiento del Precio del Oro",
@@ -229,7 +236,6 @@ export const translations = {
     pricePerKilo: "Precio por Kilogramo",
     sortAscending: "Orden Ascendente",
     sortDescending: "Orden Descendente",
-    currency: "Moneda",
     // Currency converter translations
     currencyConverter: "Conversor de Divisas",
     convertRealTime: "Convierte entre diferentes divisas en tiempo real",
@@ -249,7 +255,11 @@ export const translations = {
     favoriteCurrencies: "Divisas Favoritas",
     quickAccess: "Acceso rápido a sus divisas más utilizadas",
     noFavorites: "Aún no se han agregado favoritos",
-    addFavorite: "Añadir a favoritos"
+    addFavorite: "Añadir a favoritos",
+    // Gold image gallery translations
+    goldImageGallery: "Galería de Imágenes de Oro",
+    previousImage: "Imagen Anterior",
+    nextImage: "Imagen Siguiente"
   },
   ar: {
     goldPriceTracker: "متتبع أسعار الذهب",
@@ -284,7 +294,6 @@ export const translations = {
     pricePerKilo: "السعر لكل كيلوجرام",
     sortAscending: "ترتيب تصاعدي",
     sortDescending: "ترتيب تنازلي",
-    currency: "العملة",
     // Currency converter translations
     currencyConverter: "محول العملات",
     convertRealTime: "تحويل بين العملات المختلفة في الوقت الحقيقي",
@@ -304,7 +313,11 @@ export const translations = {
     favoriteCurrencies: "العملات المفضلة",
     quickAccess: "وصول سريع للعملات الأكثر استخدامًا",
     noFavorites: "لم تتم إضافة مفضلات بعد",
-    addFavorite: "أضف إلى المفضلة"
+    addFavorite: "أضف إلى المفضلة",
+    // Gold image gallery translations
+    goldImageGallery: "معرض صور الذهب",
+    previousImage: "الصورة السابقة",
+    nextImage: "الصورة التالية"
   },
   zh: {
     goldPriceTracker: "黄金价格追踪器",
@@ -339,7 +352,6 @@ export const translations = {
     pricePerKilo: "每千克价格",
     sortAscending: "升序排序",
     sortDescending: "降序排序",
-    currency: "货币",
     // Currency converter translations
     currencyConverter: "货币转换器",
     convertRealTime: "实时转换不同货币",
@@ -359,6 +371,10 @@ export const translations = {
     favoriteCurrencies: "收藏货币",
     quickAccess: "快速访问您最常用的货币",
     noFavorites: "尚未添加收藏",
-    addFavorite: "添加收藏"
+    addFavorite: "添加收藏",
+    // Gold image gallery translations
+    goldImageGallery: "黄金图片展示",
+    previousImage: "上一张图片",
+    nextImage: "下一张图片"
   }
 };

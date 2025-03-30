@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { translations, languages } from '@/lib/currency-data';
 
 type LanguageContextType = {
@@ -16,8 +16,44 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export const useLanguage = () => useContext(LanguageContext);
 
+// Get the saved language from localStorage or default to 'en'
+const getSavedLanguage = (): string => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('preferredLanguage') || 'en';
+  }
+  return 'en';
+};
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<string>('en');
+  const [language, setLanguageState] = useState<string>(getSavedLanguage());
+
+  const setLanguage = (newLanguage: string) => {
+    setLanguageState(newLanguage);
+    // Save the language preference to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferredLanguage', newLanguage);
+    }
+    
+    // Update document direction for RTL languages (like Arabic)
+    if (newLanguage === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = newLanguage;
+    }
+  };
+
+  // Initialize language direction on component mount
+  useEffect(() => {
+    if (language === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = language;
+    }
+  }, []);
 
   const t = (key: string): string => {
     // @ts-ignore - We know the structure of our translations
@@ -25,8 +61,9 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       // @ts-ignore
       return translations[language][key];
     }
+    // Fallback to English or the key itself
     // @ts-ignore
-    return translations.en[key] || key;
+    return (translations.en && translations.en[key]) || key;
   };
 
   return (
