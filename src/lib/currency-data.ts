@@ -1,3 +1,8 @@
+export interface ImageObject {
+  id: string;
+  src: string;
+  alt: string;
+}
 
 export const currencySymbols: Record<string, string> = {
   USD: "US Dollar",
