@@ -25,10 +25,6 @@ const App = () => (
             <Route path="/converter" element={<CurrencyConverter />} />
             <Route path="/charts" element={<Charts />} />
             <Route path="/calculator" element={<Calculator />} />
-            <Route path="/mobile-app" element={<NotFound />} />
-            <Route path="/news" element={<NotFound />} />
-            <Route path="/mining-news" element={<NotFound />} />
-            <Route path="/contact" element={<NotFound />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Route>
