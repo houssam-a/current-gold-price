@@ -22,7 +22,7 @@ const App = () => (
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
-            <Route path="/converter" element={<CurrencyConverter />} />
+            <Route path="/currency-converter" element={<CurrencyConverter />} />
             <Route path="/charts" element={<Charts />} />
             <Route path="/calculator" element={<Calculator />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

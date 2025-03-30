@@ -1,7 +1,12 @@
 
 import { useLanguage } from "@/context/LanguageContext";
-import { ImageObject } from "@/lib/currency-data";
 import { Currency } from "@/lib/api";
+
+// Define the missing ImageObject interface
+interface ImageObject {
+  src: string;
+  alt: string;
+}
 
 interface ConversionResultProps {
   amount: string;
