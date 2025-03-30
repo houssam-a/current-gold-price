@@ -34,10 +34,12 @@ export default function CurrencyConverter() {
   }, []);
 
   return (
-    <div className="container py-8 max-w-screen-lg">
+    <div className="container mx-auto py-8 px-4 sm:px-6 max-w-screen-lg animate-fade-in">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">{t("currencyConverter")}</h1>
-        <p className="text-muted-foreground mt-2">
+        <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gold-500 to-gold-700 dark:from-gold-400 dark:to-gold-600">
+          {t("currencyConverter")}
+        </h1>
+        <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
           {t("convertRealTime")}
         </p>
       </div>
@@ -50,24 +52,32 @@ export default function CurrencyConverter() {
           />
           
           {/* Gold Image Gallery */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-3">{t("goldImageGallery")}</h2>
-            <GoldImageGallery />
+          <div className="mt-8 mb-6">
+            <h2 className="text-xl font-semibold mb-3 text-gold-600 dark:text-gold-400">
+              {t("goldImageGallery")}
+            </h2>
+            <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg border border-gold-200 dark:border-gold-800 shadow-md">
+              <GoldImageGallery />
+            </div>
           </div>
         </div>
 
-        <FavoritesCurrencies 
-          currencies={currencies}
-          favorites={favorites}
-          setFavorites={setFavorites}
-        />
+        <div className="space-y-6">
+          <FavoritesCurrencies 
+            currencies={currencies}
+            favorites={favorites}
+            setFavorites={setFavorites}
+          />
+        </div>
       </div>
 
-      <PopularConversions 
-        currencies={currencies}
-        setFromCurrency={setFromCurrency}
-        setToCurrency={setToCurrency}
-      />
+      <div className="mt-8">
+        <PopularConversions 
+          currencies={currencies}
+          setFromCurrency={setFromCurrency}
+          setToCurrency={setToCurrency}
+        />
+      </div>
     </div>
   );
 }

@@ -72,18 +72,18 @@ export function ConversionForm({ currencies, isLoading }: ConversionFormProps) {
   const toCurrencyObj = currencies.find((c) => c.code === toCurrency);
 
   return (
-    <Card className="gold-card mb-6">
-      <CardHeader>
-        <CardTitle>{t("convertCurrency")}</CardTitle>
-        <CardDescription>
+    <Card className="overflow-hidden border-gold-200 dark:border-gold-800 shadow-lg">
+      <CardHeader className="bg-gradient-to-r from-gold-50 to-gold-100 dark:from-gray-800 dark:to-gray-700 border-b border-gold-200 dark:border-gold-800">
+        <CardTitle className="text-gold-700 dark:text-gold-400">{t("convertCurrency")}</CardTitle>
+        <CardDescription className="text-gold-600/80 dark:text-gold-400/80">
           {t("enterAmountDesc")}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">
+              <label className="text-sm font-medium mb-1 block text-gold-700 dark:text-gold-400">
                 {t("amount")}
               </label>
               <Input
@@ -91,13 +91,13 @@ export function ConversionForm({ currencies, isLoading }: ConversionFormProps) {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder={t("enterAmount")}
-                className="text-lg"
+                className="text-lg border-gold-200 dark:border-gold-800 focus-visible:ring-gold-500"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center">
               <div className="md:col-span-2">
-                <label className="text-sm font-medium mb-1 block">
+                <label className="text-sm font-medium mb-1 block text-gold-700 dark:text-gold-400">
                   {t("from")}
                 </label>
                 <SearchSelector
@@ -115,15 +115,17 @@ export function ConversionForm({ currencies, isLoading }: ConversionFormProps) {
                   variant="outline"
                   size="icon"
                   onClick={handleSwap}
-                  className="rounded-full"
+                  className="rounded-full border-gold-300 hover:bg-gold-100 dark:border-gold-700 dark:hover:bg-gray-800"
                 >
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 text-gold-600 dark:text-gold-400" />
                   <span className="sr-only">{t("swapCurrencies")}</span>
                 </Button>
               </div>
 
               <div className="md:col-span-2">
-                <label className="text-sm font-medium mb-1 block">{t("to")}</label>
+                <label className="text-sm font-medium mb-1 block text-gold-700 dark:text-gold-400">
+                  {t("to")}
+                </label>
                 <SearchSelector
                   options={currencyOptions}
                   value={toCurrency}
@@ -137,7 +139,7 @@ export function ConversionForm({ currencies, isLoading }: ConversionFormProps) {
 
             <Button
               onClick={handleConvert}
-              className="w-full gold-gradient"
+              className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-black dark:text-gray-900 font-medium shadow-md"
               disabled={isConverting}
             >
               {isConverting ? (

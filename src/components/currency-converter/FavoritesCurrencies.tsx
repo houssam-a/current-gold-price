@@ -29,47 +29,50 @@ export function FavoritesCurrencies({
   };
   
   return (
-    <Card className="h-fit">
-      <CardHeader>
-        <CardTitle>{t("favoriteCurrencies")}</CardTitle>
-        <CardDescription>
+    <Card className="border-gold-200 dark:border-gold-800 shadow-lg h-fit">
+      <CardHeader className="bg-gradient-to-r from-gold-50 to-gold-100 dark:from-gray-800 dark:to-gray-700 border-b border-gold-200 dark:border-gold-800">
+        <CardTitle className="text-gold-700 dark:text-gold-400">{t("favoriteCurrencies")}</CardTitle>
+        <CardDescription className="text-gold-600/80 dark:text-gold-400/80">
           {t("quickAccess")}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4">
         <div className="flex flex-col gap-2">
           {favorites.length === 0 ? (
             <div className="text-center text-muted-foreground py-4">
               {t("noFavorites")}
             </div>
           ) : (
-            favorites.map((code) => {
-              const currency = currencies.find((c) => c.code === code);
-              return (
-                <div
-                  key={code}
-                  className="p-3 border rounded-md flex justify-between items-center"
-                >
-                  <div className="flex items-center">
-                    <span className="font-medium">
-                      {currency?.symbol} {code}
-                    </span>
-                    <span className="text-sm text-muted-foreground ml-2">
-                      {currency?.name}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleFavorite(code)}
+            <div className="space-y-2">
+              {favorites.map((code) => {
+                const currency = currencies.find((c) => c.code === code);
+                return (
+                  <div
+                    key={code}
+                    className="p-3 border border-gold-200 dark:border-gold-800 rounded-md flex justify-between items-center bg-white/50 dark:bg-gray-800/50 hover:bg-gold-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
-                    ★
-                  </Button>
-                </div>
-              );
-            })
+                    <div className="flex items-center">
+                      <span className="font-medium text-gold-700 dark:text-gold-400">
+                        {currency?.symbol} {code}
+                      </span>
+                      <span className="text-sm text-gold-600/70 dark:text-gold-400/70 ml-2">
+                        {currency?.name}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleFavorite(code)}
+                      className="text-gold-500 hover:text-gold-600 hover:bg-gold-100/50 dark:text-gold-400 dark:hover:text-gold-500 dark:hover:bg-gray-700/50"
+                    >
+                      ★
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
           )}
-          <div className="mt-2">
+          <div className="mt-4">
             <SearchSelector
               options={
                 currencies
@@ -88,6 +91,7 @@ export function FavoritesCurrencies({
               }}
               placeholder={t("addFavorite")}
               searchPlaceholder={`${t("search")}...`}
+              className="border-gold-200 dark:border-gold-800"
             />
           </div>
         </div>
