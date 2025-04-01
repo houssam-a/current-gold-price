@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { translations, languages } from '@/lib/currency-data';
 
@@ -34,7 +33,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('preferredLanguage', newLanguage);
     }
     
-    // Update document direction for RTL languages (like Arabic)
+    // Only update document direction for RTL languages
     if (newLanguage === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
@@ -44,8 +43,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Initialize language direction on component mount
   useEffect(() => {
+    // Reset document direction based on language
     if (language === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
@@ -53,7 +52,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.dir = 'ltr';
       document.documentElement.lang = language;
     }
-  }, []);
+  }, [language]);
 
   const t = (key: string): string => {
     // @ts-ignore - We know the structure of our translations

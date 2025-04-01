@@ -1,8 +1,7 @@
-
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingDown, TrendingUp, RefreshCw, Info, ArrowDownAZ, ArrowUpAZ } from "lucide-react";
-import { useEffect, useState } from "react";
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, goldUnits, conversionFactors, goldImages } from "@/lib/currency-data";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
@@ -25,7 +24,7 @@ import {
 export default function Index() {
   const { t } = useLanguage();
   const [selectedCountry, setSelectedCountry] = useState("US");
-  const [selectedUnit, setSelectedUnit] = useState("ounce");
+  const [selectedUnit, setSelectedUnit] = useState("gram");
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGoldImage, setSelectedGoldImage] = useState(goldImages[0]);
@@ -42,7 +41,6 @@ export default function Index() {
       const data = await getGoldPrice(country.currency);
       setGoldPrice(data);
       
-      // After fetching the current price, sort countries
       await sortCountriesByGoldPrice(selectedUnit);
     } catch (error) {
       console.error("Error fetching gold price:", error);
@@ -53,13 +51,12 @@ export default function Index() {
   };
   
   const sortCountriesByGoldPrice = async (unit: string) => {
-    // Create a temporary array with prices for all countries
     const countriesWithPrices = await Promise.all(
       countries.map(async (c) => {
         try {
           const price = await getGoldPrice(c.currency);
           const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
-          const convertedPrice = Number((price.price / factor).toFixed(2));
+          const convertedPrice = Number((price.price * factor).toFixed(2));
           return { ...c, price: convertedPrice };
         } catch (error) {
           return { ...c, price: 0 };
@@ -67,7 +64,6 @@ export default function Index() {
       })
     );
     
-    // Sort the countries by price
     const sorted = countriesWithPrices.sort((a, b) => {
       return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
     });
@@ -83,7 +79,6 @@ export default function Index() {
   
   useEffect(() => {
     fetchGoldPrice();
-    // Select a random gold image when changing country
     setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
   
@@ -100,10 +95,9 @@ export default function Index() {
   
   const convertPrice = (price: number, unit: string) => {
     const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
-    return (price / factor).toFixed(2);
+    return (price * factor).toFixed(2);
   };
   
-  // Sample data for price chart
   const generateChartData = () => {
     if (!goldPrice) return [];
     
@@ -111,7 +105,6 @@ export default function Index() {
     return Array(30)
       .fill(0)
       .map((_, i) => {
-        // Creating a sine wave with some random noise for realistic price movements
         const offset = Math.sin(i / 5) * (basePrice * 0.05) + (Math.random() - 0.5) * (basePrice * 0.02);
         return {
           day: i + 1,
@@ -122,14 +115,12 @@ export default function Index() {
   
   const chartData = generateChartData();
 
-  // Country options for the selector
   const countryOptions = countries.map(country => ({
     value: country.code,
     label: country.name,
     flag: country.flag
   }));
 
-  // Unit options for the selector
   const unitOptions = goldUnits.map(unit => ({
     value: unit.value,
     label: t(unit.value)
