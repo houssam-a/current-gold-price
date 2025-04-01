@@ -44,7 +44,7 @@ export function Navbar() {
           <Link to="/" className="mr-6 flex items-center space-x-2">
             <Diamond className="h-6 w-6 text-primary/80" />
             <span className="hidden font-bold sm:inline-block text-2xl bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
-              Gold Currency Navigator
+              Current Gold Price
             </span>
           </Link>
           <nav className="flex items-center gap-6 text-sm">
@@ -52,25 +52,25 @@ export function Navbar() {
               to="/"
               className={navigationMenuTriggerStyle()}
             >
-              Home
+              {t("home")}
             </Link>
             <Link
               to="/charts"
               className={navigationMenuTriggerStyle()}
             >
-              Charts
+              {t("charts")}
             </Link>
             <Link
               to="/calculator"
               className={navigationMenuTriggerStyle()}
             >
-              Calculator
+              {t("calculator")}
             </Link>
             <Link
               to="/currency-converter"
               className={navigationMenuTriggerStyle()}
             >
-              Currency
+              {t("currency")}
             </Link>
           </nav>
         </div>

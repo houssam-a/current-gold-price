@@ -53,6 +53,9 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.lang = newLanguage;
       document.body.classList.remove('rtl');
     }
+
+    // Force re-render of components that depend on language
+    window.dispatchEvent(new Event('languagechange'));
   };
 
   useEffect(() => {
