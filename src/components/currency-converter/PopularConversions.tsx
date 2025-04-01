@@ -28,6 +28,11 @@ export function PopularConversions({
     { from: "MAD", to: "USD" },
   ];
   
+  const handleUseClick = (pair: { from: string, to: string }) => {
+    setFromCurrency(pair.from);
+    setToCurrency(pair.to);
+  };
+  
   return (
     <Card className="border-gold-200 dark:border-gold-800 shadow-lg">
       <CardHeader className="bg-gradient-to-r from-gold-50 to-gold-100 dark:from-gray-800 dark:to-gray-700 border-b border-gold-200 dark:border-gold-800">
@@ -61,10 +66,7 @@ export function PopularConversions({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    setFromCurrency(pair.from);
-                    setToCurrency(pair.to);
-                  }}
+                  onClick={() => handleUseClick(pair)}
                   className="border-gold-300 dark:border-gold-700 hover:bg-gold-100 dark:hover:bg-gray-700 text-gold-700 dark:text-gold-400"
                 >
                   {t("use")}

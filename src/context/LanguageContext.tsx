@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { translations, languages } from '@/lib/currency-data';
 
@@ -15,10 +16,19 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export const useLanguage = () => useContext(LanguageContext);
 
-// Get the saved language from localStorage or default to 'en'
+// Get the saved language from localStorage or default to browser language or 'en'
 const getSavedLanguage = (): string => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('preferredLanguage') || 'en';
+    // First check if there's a saved preference
+    const saved = localStorage.getItem('preferredLanguage');
+    if (saved) return saved;
+    
+    // Then check browser language
+    const browserLang = navigator.language.split('-')[0];
+    // Check if we support this language
+    if (['en', 'fr', 'es', 'ar', 'zh'].includes(browserLang)) {
+      return browserLang;
+    }
   }
   return 'en';
 };
@@ -33,26 +43,30 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('preferredLanguage', newLanguage);
     }
     
-    // Only update document direction for RTL languages
+    // Update document direction for RTL languages
     if (newLanguage === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
+      document.body.classList.add('rtl');
     } else {
       document.documentElement.dir = 'ltr';
       document.documentElement.lang = newLanguage;
+      document.body.classList.remove('rtl');
     }
   };
 
   useEffect(() => {
-    // Reset document direction based on language
+    // Set initial direction based on language
     if (language === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
+      document.body.classList.add('rtl');
     } else {
       document.documentElement.dir = 'ltr';
       document.documentElement.lang = language;
+      document.body.classList.remove('rtl');
     }
-  }, [language]);
+  }, []);
 
   const t = (key: string): string => {
     // @ts-ignore - We know the structure of our translations

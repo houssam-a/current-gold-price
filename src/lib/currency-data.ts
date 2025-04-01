@@ -125,6 +125,9 @@ export const translations = {
     pricePerKilo: "Price per Kilogram",
     sortAscending: "Sort Ascending",
     sortDescending: "Sort Descending",
+    languageChanged: "Language changed to",
+    rtl: "Right to Left",
+    ltr: "Left to Right",
     // Currency converter translations
     currencyConverter: "Currency Converter",
     convertRealTime: "Convert between different currencies in real-time",
@@ -183,6 +186,9 @@ export const translations = {
     pricePerKilo: "Prix par Kilogramme",
     sortAscending: "Tri Ascendant",
     sortDescending: "Tri Descendant",
+    languageChanged: "Langue changée en",
+    rtl: "De droite à gauche",
+    ltr: "De gauche à droite",
     // Currency converter translations
     currencyConverter: "Convertisseur de Devises",
     convertRealTime: "Convertissez entre différentes devises en temps réel",
@@ -241,6 +247,9 @@ export const translations = {
     pricePerKilo: "Precio por Kilogramo",
     sortAscending: "Orden Ascendente",
     sortDescending: "Orden Descendente",
+    languageChanged: "Idioma cambiado a",
+    rtl: "De derecha a izquierda",
+    ltr: "De izquierda a derecha",
     // Currency converter translations
     currencyConverter: "Conversor de Divisas",
     convertRealTime: "Convierte entre diferentes divisas en tiempo real",
@@ -299,6 +308,9 @@ export const translations = {
     pricePerKilo: "السعر لكل كيلوجرام",
     sortAscending: "ترتيب تصاعدي",
     sortDescending: "ترتيب تنازلي",
+    languageChanged: "تم تغيير اللغة إلى",
+    rtl: "من اليمين إلى اليسار",
+    ltr: "من اليسار إلى اليمين",
     // Currency converter translations
     currencyConverter: "محول العملات",
     convertRealTime: "تحويل بين العملات المختلفة في الوقت الحقيقي",
@@ -357,6 +369,9 @@ export const translations = {
     pricePerKilo: "每千克价格",
     sortAscending: "升序排序",
     sortDescending: "降序排序",
+    languageChanged: "语言已更改为",
+    rtl: "从右到左",
+    ltr: "从左到右",
     // Currency converter translations
     currencyConverter: "货币转换器",
     convertRealTime: "实时转换不同货币",

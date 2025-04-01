@@ -20,24 +20,24 @@ export function LanguageSelector() {
     setLanguage(langCode);
     const selectedLang = languages.find(lang => lang.code === langCode);
     if (selectedLang) {
-      toast.success(`Language changed to ${selectedLang.name}`);
+      toast.success(`${t("languageChanged")} ${selectedLang.name}`);
     }
   };
   
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
+        <Button variant="outline" size="sm" className="h-8 flex items-center gap-1">
           <span className="text-lg">{currentLanguage?.flag}</span>
-          <span className="sr-only">{t("language")}</span>
+          <span className="hidden sm:inline">{currentLanguage?.name}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 z-50">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
-            className="cursor-pointer"
+            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <span className="mr-2 text-lg">{lang.flag}</span>
             {lang.name}
