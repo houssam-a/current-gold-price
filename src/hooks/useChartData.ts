@@ -33,6 +33,7 @@ export function useChartData(selectedCountry: string, selectedTimeframe: string)
         // This is a heuristic check - in a real app, the API would indicate this explicitly
         if (data.length > 0 && data.length < 5) {
           setIsUsingFallbackData(true);
+          toast.warning(`Using fallback data for ${country.name} gold prices`);
         }
         
         setChartData(data);

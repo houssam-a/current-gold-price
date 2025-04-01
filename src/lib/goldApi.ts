@@ -58,7 +58,7 @@ export const fetchGoldPrice = async (currency: string = "USD") => {
       const data = await response.json();
       
       return {
-        price: data.price,
+        price: data.price / 31.1035, // Convert from ounce to gram (API returns price per ounce)
         currency: currency,
         symbol: data.currency_symbol || getSymbolForCurrency(currency),
         timestamp: Date.now(),
@@ -95,8 +95,10 @@ export const fetchGoldPriceHistory = async (
 
 // Fallback functions in case the API is unavailable or limited
 function getFallbackGoldPrice(currency: string) {
-  // Base price in USD (updated to be closer to current market rates)
-  const basePrice = 2150.50;
+  // Base price in USD per gram (updated to be closer to current market rates)
+  // 2150.50 USD is typically per troy ounce, so we divide by 31.1035 to get gram price
+  const basePricePerGram = 69.14; // Approximately 69-70 USD per gram
+  
   const rates: Record<string, number> = {
     USD: 1,
     EUR: 0.93,
@@ -122,8 +124,8 @@ function getFallbackGoldPrice(currency: string) {
     ETH: 0.00045
   };
   
-  const price = basePrice * (rates[currency] || 1);
-  const change = ((Math.random() * 20) - 10);
+  const price = basePricePerGram * (rates[currency] || 1);
+  const change = ((Math.random() * 1) - 0.5); // Smaller price change for gram prices
   
   return {
     price: Number(price.toFixed(2)),
@@ -139,7 +141,8 @@ function getFallbackGoldPriceHistory(
   currency: string = "USD", 
   period: "1d" | "1w" | "1m" | "6m" | "1y" = "1m"
 ) {
-  const basePrice = 2150.50;
+  // Base price per gram in USD
+  const basePricePerGram = 69.14;
   const rates: Record<string, number> = {
     USD: 1,
     EUR: 0.93,
@@ -174,8 +177,9 @@ function getFallbackGoldPriceHistory(
     date.setDate(date.getDate() - i);
     
     // Create realistic price variations based on a sine wave + random noise
-    const variation = ((Math.sin(i / 10) * 100) + (Math.random() * 50 - 25));
-    const price = (basePrice + variation) * conversionRate;
+    // Using smaller variations for gram prices
+    const variation = ((Math.sin(i / 10) * 3) + (Math.random() * 1.5 - 0.75));
+    const price = (basePricePerGram + variation) * conversionRate;
     
     data.push({
       date: date.toISOString().split('T')[0],
