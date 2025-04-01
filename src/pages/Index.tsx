@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingDown, TrendingUp, RefreshCw, Info, ArrowDownAZ, ArrowUpAZ } from "lucide-react";
+import { TrendingDown, TrendingUp, RefreshCw, Info, ArrowDownAZ, ArrowUpAZ, AlertTriangle } from "lucide-react";
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, goldUnits, conversionFactors, goldImages } from "@/lib/currency-data";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Index() {
   const { t } = useLanguage();
@@ -40,6 +41,10 @@ export default function Index() {
     try {
       const data = await getGoldPrice(country.currency);
       setGoldPrice(data);
+      
+      if (data.price === 0 || !data.price) {
+        toast.warning("Using fallback data - API limit reached or unavailable");
+      }
       
       await sortCountriesByGoldPrice(selectedUnit);
     } catch (error) {
@@ -137,6 +142,14 @@ export default function Index() {
           {t("trackRealTime")}
         </p>
       </div>
+      
+      <Alert className="mb-6 bg-gold-50 border-gold-200 dark:bg-gray-800 dark:border-gray-700">
+        <AlertTriangle className="h-4 w-4 text-gold-600 dark:text-gold-400" />
+        <AlertTitle className="text-gold-600 dark:text-gold-400">Data Source Information</AlertTitle>
+        <AlertDescription>
+          Gold prices are provided by Gold API (goldapi.io). Some data may be fallback data if API requests are limited.
+        </AlertDescription>
+      </Alert>
       
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="w-full md:w-1/2">

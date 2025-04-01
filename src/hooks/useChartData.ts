@@ -14,6 +14,7 @@ export interface ChartStats {
 export function useChartData(selectedCountry: string, selectedTimeframe: string) {
   const [chartData, setChartData] = useState<GoldPriceHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUsingFallbackData, setIsUsingFallbackData] = useState(false);
   
   const country = countries.find((c) => c.code === selectedCountry);
 
@@ -27,10 +28,18 @@ export function useChartData(selectedCountry: string, selectedTimeframe: string)
           country.currency,
           selectedTimeframe as "1d" | "1w" | "1m" | "6m" | "1y"
         );
+        
+        // Check if we received actual API data or fallback data
+        // This is a heuristic check - in a real app, the API would indicate this explicitly
+        if (data.length > 0 && data.length < 5) {
+          setIsUsingFallbackData(true);
+        }
+        
         setChartData(data);
       } catch (error) {
         console.error("Error fetching gold price history:", error);
         toast.error("Failed to fetch chart data");
+        setIsUsingFallbackData(true);
       } finally {
         setIsLoading(false);
       }
@@ -79,6 +88,7 @@ export function useChartData(selectedCountry: string, selectedTimeframe: string)
     chartData,
     isLoading,
     country,
+    isUsingFallbackData,
     stats: calculateStats(),
     handleDownloadData
   };

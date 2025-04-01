@@ -4,10 +4,38 @@ import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
-import { Diamond } from "lucide-react";
+import { Diamond, Signal } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const { t } = useLanguage();
+  const [apiStatus, setApiStatus] = useState<"online" | "limited" | "offline">("limited");
+  
+  // Check API status on component mount
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        // Make a test request to Gold API (we use a mock endpoint since we don't want to waste API quota)
+        const response = await fetch("https://www.goldapi.io/status", { 
+          method: "HEAD",
+          headers: { "x-access-token": "goldapi-demo-key" }
+        });
+        
+        if (response.ok) {
+          setApiStatus("online");
+        } else if (response.status === 429) { // Too many requests
+          setApiStatus("limited");
+        } else {
+          setApiStatus("offline");
+        }
+      } catch (error) {
+        setApiStatus("offline");
+      }
+    };
+    
+    checkApiStatus();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -48,6 +76,23 @@ export function Navbar() {
         </div>
         <div className="flex-1" />
         <div className="flex items-center justify-end space-x-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className={`flex items-center mr-2 p-1 rounded-md ${
+                apiStatus === "online" ? "text-green-500" : 
+                apiStatus === "limited" ? "text-amber-500" : "text-red-500"
+              }`}>
+                <Signal className="h-4 w-4" />
+                <span className="text-xs ml-1">API</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Gold API Status: {apiStatus}</p>
+              {apiStatus !== "online" && (
+                <p className="text-xs text-muted-foreground">Using fallback data when needed</p>
+              )}
+            </TooltipContent>
+          </Tooltip>
           <LanguageSelector />
           <ThemeToggle />
         </div>
