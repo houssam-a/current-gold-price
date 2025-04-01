@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingDown, TrendingUp, RefreshCw, Info, ArrowDownAZ, ArrowUpAZ } from "lucide-react";
@@ -20,7 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ProductList } from "@/components/products/ProductList";
 
 export default function Index() {
   const { t } = useLanguage();
@@ -42,6 +42,7 @@ export default function Index() {
       const data = await getGoldPrice(country.currency);
       setGoldPrice(data);
       
+      // After fetching the current price, sort countries
       await sortCountriesByGoldPrice(selectedUnit);
     } catch (error) {
       console.error("Error fetching gold price:", error);
@@ -52,6 +53,7 @@ export default function Index() {
   };
   
   const sortCountriesByGoldPrice = async (unit: string) => {
+    // Create a temporary array with prices for all countries
     const countriesWithPrices = await Promise.all(
       countries.map(async (c) => {
         try {
@@ -65,6 +67,7 @@ export default function Index() {
       })
     );
     
+    // Sort the countries by price
     const sorted = countriesWithPrices.sort((a, b) => {
       return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
     });
@@ -80,6 +83,7 @@ export default function Index() {
   
   useEffect(() => {
     fetchGoldPrice();
+    // Select a random gold image when changing country
     setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
   
@@ -99,6 +103,7 @@ export default function Index() {
     return (price / factor).toFixed(2);
   };
   
+  // Sample data for price chart
   const generateChartData = () => {
     if (!goldPrice) return [];
     
@@ -106,6 +111,7 @@ export default function Index() {
     return Array(30)
       .fill(0)
       .map((_, i) => {
+        // Creating a sine wave with some random noise for realistic price movements
         const offset = Math.sin(i / 5) * (basePrice * 0.05) + (Math.random() - 0.5) * (basePrice * 0.02);
         return {
           day: i + 1,
@@ -116,12 +122,14 @@ export default function Index() {
   
   const chartData = generateChartData();
 
+  // Country options for the selector
   const countryOptions = countries.map(country => ({
     value: country.code,
     label: country.name,
     flag: country.flag
   }));
 
+  // Unit options for the selector
   const unitOptions = goldUnits.map(unit => ({
     value: unit.value,
     label: t(unit.value)
@@ -295,7 +303,7 @@ export default function Index() {
         </div>
       </div>
       
-      <Card className="mb-8">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>{t("goldPriceByUnit")}</CardTitle>
@@ -426,18 +434,6 @@ export default function Index() {
               <div className="h-40 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
             )}
           </Tabs>
-        </CardContent>
-      </Card>
-      
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>{t("buyGoldProducts") || "Gold Products"}</CardTitle>
-          <CardDescription>
-            {t("browseGoldProducts") || "Browse and purchase gold products from various retailers"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ProductList />
         </CardContent>
       </Card>
     </div>
