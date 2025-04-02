@@ -40,15 +40,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
       <div className="container flex flex-col items-center justify-between px-4 sm:px-6 h-auto">
         <div className="flex flex-col w-full items-center justify-center">
-          <div className="flex items-center justify-center mb-1">
-            <PriceChangeIndicator 
-              change={goldPriceChange.change}
-              changePercentage={goldPriceChange.changePercentage}
-              size="md"
-              showDaily={true}
-              className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-full px-3 py-1"
-            />
-          </div>
+          {/* Price change indicator removed */}
           
           <div className="flex items-center justify-center mb-2">
             <Link to="/" className="flex items-center space-x-2">

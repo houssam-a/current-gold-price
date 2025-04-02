@@ -10,6 +10,7 @@ interface PriceChangeIndicatorProps {
   showIcon?: boolean;
   showDaily?: boolean;
   className?: string;
+  hidden?: boolean; // Added hidden prop
 }
 
 export function PriceChangeIndicator({ 
@@ -18,8 +19,12 @@ export function PriceChangeIndicator({
   size = "md", 
   showIcon = true,
   showDaily = false,
-  className
+  className,
+  hidden = false // Default to showing
 }: PriceChangeIndicatorProps) {
+  // If hidden, don't render anything
+  if (hidden) return null;
+  
   const { t } = useLanguage();
   
   const isPositive = change > 0;

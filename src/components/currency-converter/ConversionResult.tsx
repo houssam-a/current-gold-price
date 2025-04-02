@@ -34,6 +34,9 @@ export function ConversionResult({
   const { t } = useLanguage();
   const isMobile = useIsMobile();
   
+  // Replace the dynamic image with our gold bar image
+  const goldBarImage = "/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png";
+  
   // For mobile, use smaller images to improve performance
   const imageSize = isMobile ? "?auto=format&fit=crop&w=96&h=96" : "?auto=format&fit=crop&w=128&h=128";
   
@@ -54,8 +57,8 @@ export function ConversionResult({
         
         <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden shadow-lg border-2 border-gold-300 dark:border-gold-700">
           <img 
-            src={`${selectedImage.src}${imageSize}`}
-            alt={selectedImage.alt}
+            src={goldBarImage}
+            alt="Gold Bar"
             className="w-full h-full object-cover transition-transform hover:scale-110 duration-300"
             loading="lazy"
           />

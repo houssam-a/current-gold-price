@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { SearchSelector } from "@/components/ui/search-selector";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { GoldPuritySelector } from "@/components/GoldPuritySelector";
 import { 
   Table,
   TableBody,
@@ -26,6 +27,7 @@ export default function Index() {
   const { t } = useLanguage();
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [selectedUnit, setSelectedUnit] = useState("gram");
+  const [selectedPurity, setSelectedPurity] = useState("24k"); // Default to 24k gold
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGoldImage, setSelectedGoldImage] = useState(goldImages[0]);
@@ -33,6 +35,18 @@ export default function Index() {
   const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
   
   const country = countries.find((c) => c.code === selectedCountry);
+  
+  // Get purity multiplier - 24k is 1, 22k is 0.917, etc.
+  const getPurityMultiplier = () => {
+    switch (selectedPurity) {
+      case "24k": return 1;
+      case "22k": return 0.917;
+      case "18k": return 0.75;
+      case "14k": return 0.583;
+      case "10k": return 0.417;
+      default: return 1;
+    }
+  };
   
   const fetchGoldPrice = async () => {
     if (!country) return;
@@ -100,7 +114,8 @@ export default function Index() {
   
   const convertPrice = (price: number, unit: string) => {
     const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
-    return (price * factor).toFixed(2);
+    const purityFactor = getPurityMultiplier();
+    return (price * factor * purityFactor).toFixed(2);
   };
   
   const generateChartData = () => {
@@ -141,6 +156,14 @@ export default function Index() {
         <p className="text-muted-foreground mt-2">
           {t("trackRealTime")}
         </p>
+      </div>
+      
+      {/* New Gold Purity Selector */}
+      <div className="mb-6">
+        <GoldPuritySelector 
+          value={selectedPurity}
+          onValueChange={setSelectedPurity}
+        />
       </div>
       
       <div className="flex flex-col md:flex-row gap-6 mb-8">
@@ -197,36 +220,17 @@ export default function Index() {
                     <div>
                       <div className="text-2xl font-bold">
                         {goldPrice.symbol}{" "}
-                        {goldPrice &&
-                          convertPrice(goldPrice.price, selectedUnit)}
+                        {goldPrice && convertPrice(goldPrice.price, selectedUnit)}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {t("priceOf")} 1 {t(selectedUnit)}
+                        {t("priceOf")} 1 {t(selectedUnit)} ({selectedPurity})
                       </div>
                     </div>
                     <div className="flex flex-col items-end">
-                      <div
-                        className={cn(
-                          "flex items-center text-sm",
-                          goldPrice.change > 0
-                            ? "text-green-500"
-                            : goldPrice.change < 0
-                            ? "text-red-500"
-                            : "text-muted-foreground"
-                        )}
-                      >
-                        {goldPrice.change > 0 ? (
-                          <TrendingUp className="h-4 w-4 mr-1" />
-                        ) : (
-                          <TrendingDown className="h-4 w-4 mr-1" />
-                        )}
-                        {goldPrice.change > 0 ? "+" : ""}
-                        {goldPrice.change.toFixed(2)} ({goldPrice.changePercentage}%)
-                      </div>
                       <div className="mt-2">
                         <img 
-                          src={`${selectedGoldImage.src}?auto=format&fit=crop&w=100&h=60`}
-                          alt={selectedGoldImage.alt}
+                          src="/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"
+                          alt="Gold Bar"
                           className="h-12 rounded"
                         />
                       </div>
@@ -342,7 +346,7 @@ export default function Index() {
                       <TableRow>
                         <TableHead>{t("country")}</TableHead>
                         <TableHead>{t("currency")}</TableHead>
-                        <TableHead className="text-right">{t("pricePerGram")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerGram")} ({selectedPurity})</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -372,7 +376,7 @@ export default function Index() {
                       <TableRow>
                         <TableHead>{t("country")}</TableHead>
                         <TableHead>{t("currency")}</TableHead>
-                        <TableHead className="text-right">{t("pricePerOunce")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerOunce")} ({selectedPurity})</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -402,7 +406,7 @@ export default function Index() {
                       <TableRow>
                         <TableHead>{t("country")}</TableHead>
                         <TableHead>{t("currency")}</TableHead>
-                        <TableHead className="text-right">{t("pricePerKilo")}</TableHead>
+                        <TableHead className="text-right">{t("pricePerKilo")} ({selectedPurity})</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>

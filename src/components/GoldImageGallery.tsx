@@ -1,11 +1,26 @@
 
 import { useState, useEffect } from "react";
-import { goldImages } from "@/lib/currency-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// Updated gold bar images
+const goldBarImages = [
+  {
+    src: "/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png",
+    alt: "Gold Bar Stack"
+  },
+  {
+    src: "/lovable-uploads/408ed4f9-6669-45df-979f-458a73b393ee.png",
+    alt: "Gold Bullion"
+  },
+  {
+    src: "/lovable-uploads/133715b9-b3ee-4c65-9981-e9df84e11795.png",
+    alt: "Gold Investment"
+  }
+];
 
 export function GoldImageGallery() {
   const { t } = useLanguage();
@@ -16,14 +31,14 @@ export function GoldImageGallery() {
   // Function to move to the next image
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => 
-      prevIndex === goldImages.length - 1 ? 0 : prevIndex + 1
+      prevIndex === goldBarImages.length - 1 ? 0 : prevIndex + 1
     );
   };
   
   // Function to move to the previous image
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? goldImages.length - 1 : prevIndex - 1
+      prevIndex === 0 ? goldBarImages.length - 1 : prevIndex - 1
     );
   };
   
@@ -47,7 +62,7 @@ export function GoldImageGallery() {
     };
   }, [isAutoPlaying]);
   
-  const currentImage = goldImages[currentImageIndex];
+  const currentImage = goldBarImages[currentImageIndex];
   
   // Use smaller images on mobile to improve performance
   const imageSize = isMobile ? "?auto=format&fit=crop&w=400&h=225" : "?auto=format&fit=crop&w=800&h=450";
@@ -57,7 +72,7 @@ export function GoldImageGallery() {
       <CardContent className="p-0 relative">
         <div className="aspect-[16/9] relative">
           <img 
-            src={`${currentImage.src}${imageSize}`}
+            src={currentImage.src}
             alt={currentImage.alt}
             className="w-full h-full object-cover transition-opacity duration-500"
             loading="lazy"
@@ -100,7 +115,7 @@ export function GoldImageGallery() {
         </div>
         
         <div className="absolute bottom-4 inset-x-0 flex justify-center gap-1">
-          {goldImages.map((_, i) => (
+          {goldBarImages.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentImageIndex(i)}
