@@ -1,3 +1,4 @@
+
 // Currency data for the application
 // Contains currency codes, symbols, names, and flags
 
@@ -26,6 +27,30 @@ export const currencySymbols: Record<string, string> = {
   BTC: "Bitcoin",
   ETH: "Ethereum"
 };
+
+// Timeframe options for charts
+export const timeframes = [
+  {
+    label: "24 Hours",
+    value: "1d"
+  },
+  {
+    label: "7 Days",
+    value: "1w"
+  },
+  {
+    label: "1 Month",
+    value: "1m"
+  },
+  {
+    label: "6 Months",
+    value: "6m"
+  },
+  {
+    label: "1 Year",
+    value: "1y"
+  }
+];
 
 // Country data
 export const countries = [
