@@ -1,37 +1,32 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
+import { Routes, Route } from "react-router-dom";
+import { Calculator } from "./pages/Calculator";
+import { Charts } from "./pages/Charts";
+import { CurrencyConverter } from "./pages/CurrencyConverter";
+import { NotFound } from "./pages/NotFound";
 import { Layout } from "./components/Layout";
-import Index from "./pages/Index";
-import CurrencyConverter from "./pages/CurrencyConverter";
-import Charts from "./pages/Charts";
-import Calculator from "./pages/Calculator";
-import NotFound from "./pages/NotFound";
+
+// Update import path from Index to HomePage
+import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/currency-converter" element={<CurrencyConverter />} />
-            <Route path="/charts" element={<Charts />} />
-            <Route path="/calculator" element={<Calculator />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="calculator" element={<Calculator />} />
+          <Route path="charts" element={<Charts />} />
+          <Route path="currency-converter" element={<CurrencyConverter />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+      <Toaster position="top-center" expand={false} richColors />
+    </QueryClientProvider>
+  );
+}
 
 export default App;
