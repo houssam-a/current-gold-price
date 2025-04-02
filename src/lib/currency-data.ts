@@ -260,6 +260,7 @@ export const translations = {
     historicalGoldPrice: "Historical gold price in",
     lastUpdated: "Last updated",
     priceOf: "Price of",
+    goldPurity: "Gold Purity",
     
     // Units
     gram: "gram",
@@ -310,7 +311,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "Gold Currency Converter",
     convertRealTime: "Convert gold prices between different currencies in real-time",
-    goldImageGallery: "Gold Image Gallery"
+    goldImageGallery: "Gold Image Gallery",
+    
+    // Favorites
+    favoriteCurrencies: "Favorite Currencies",
+    quickAccess: "Quick access to your frequently used currencies",
+    noFavorites: "No favorites yet. Add some below!",
+    addFavorite: "Add a favorite currency",
+    
+    // Conversion Form
+    convertCurrency: "Convert Gold Currency",
+    enterAmountDesc: "Enter an amount to convert between currencies",
+    amount: "Amount",
+    enterAmount: "Enter amount",
+    from: "From",
+    to: "To",
+    selectCurrency: "Select currency",
+    swapCurrencies: "Swap currencies",
+    converting: "Converting...",
+    convert: "Convert"
   },
   ar: {
     // General
@@ -323,6 +342,7 @@ export const translations = {
     historicalGoldPrice: "سعر الذهب التاريخي بـ",
     lastUpdated: "آخر تحديث",
     priceOf: "سعر",
+    goldPurity: "نقاء الذهب",
     
     // Units
     gram: "جرام",
@@ -373,7 +393,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "محول عملات الذهب",
     convertRealTime: "تحويل أسعار الذهب بين العملات المختلفة في الوقت الحقيقي",
-    goldImageGallery: "معرض صور الذهب"
+    goldImageGallery: "معرض صور الذهب",
+    
+    // Favorites
+    favoriteCurrencies: "العملات المفضلة",
+    quickAccess: "وصول سريع للعملات التي تستخدمها كثيرًا",
+    noFavorites: "لا توجد مفضلات حتى الآن. أضف بعضها أدناه!",
+    addFavorite: "إضافة عملة مفضلة",
+    
+    // Conversion Form
+    convertCurrency: "تحويل عملات الذهب",
+    enterAmountDesc: "أدخل مبلغًا للتحويل بين العملات",
+    amount: "المبلغ",
+    enterAmount: "أدخل المبلغ",
+    from: "من",
+    to: "إلى",
+    selectCurrency: "اختر العملة",
+    swapCurrencies: "تبديل العملات",
+    converting: "جاري التحويل...",
+    convert: "تحويل"
   },
   es: {
     // General
@@ -386,6 +424,7 @@ export const translations = {
     historicalGoldPrice: "Precio histórico del oro en",
     lastUpdated: "Última actualización",
     priceOf: "Precio de",
+    goldPurity: "Pureza del oro",
     
     // Units
     gram: "gramo",
@@ -436,7 +475,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "Conversor de Monedas de Oro",
     convertRealTime: "Convierte precios de oro entre diferentes monedas en tiempo real",
-    goldImageGallery: "Galería de Imágenes de Oro"
+    goldImageGallery: "Galería de Imágenes de Oro",
+    
+    // Favorites
+    favoriteCurrencies: "Monedas Favoritas",
+    quickAccess: "Acceso rápido a tus monedas de uso frecuente",
+    noFavorites: "Aún no hay favoritos. ¡Añade algunos abajo!",
+    addFavorite: "Añadir moneda favorita",
+    
+    // Conversion Form
+    convertCurrency: "Convertir Moneda de Oro",
+    enterAmountDesc: "Ingresa una cantidad para convertir entre monedas",
+    amount: "Cantidad",
+    enterAmount: "Ingresa cantidad",
+    from: "De",
+    to: "A",
+    selectCurrency: "Seleccionar moneda",
+    swapCurrencies: "Intercambiar monedas",
+    converting: "Convirtiendo...",
+    convert: "Convertir"
   },
   fr: {
     // General
@@ -449,6 +506,7 @@ export const translations = {
     historicalGoldPrice: "Prix historique de l'or en",
     lastUpdated: "Dernière mise à jour",
     priceOf: "Prix de",
+    goldPurity: "Pureté de l'or",
     
     // Units
     gram: "gramme",
@@ -499,7 +557,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "Convertisseur de Devises Or",
     convertRealTime: "Convertir les prix de l'or entre différentes devises en temps réel",
-    goldImageGallery: "Galerie d'Images d'Or"
+    goldImageGallery: "Galerie d'Images d'Or",
+    
+    // Favorites
+    favoriteCurrencies: "Devises Favorites",
+    quickAccess: "Accès rapide à vos devises fréquemment utilisées",
+    noFavorites: "Pas encore de favoris. Ajoutez-en ci-dessous!",
+    addFavorite: "Ajouter une devise favorite",
+    
+    // Conversion Form
+    convertCurrency: "Convertir Devise Or",
+    enterAmountDesc: "Entrez un montant pour convertir entre les devises",
+    amount: "Montant",
+    enterAmount: "Entrer le montant",
+    from: "De",
+    to: "À",
+    selectCurrency: "Sélectionner devise",
+    swapCurrencies: "Échanger les devises",
+    converting: "Conversion en cours...",
+    convert: "Convertir"
   },
   de: {
     // General
@@ -512,6 +588,7 @@ export const translations = {
     historicalGoldPrice: "Historischer Goldpreis in",
     lastUpdated: "Letzte Aktualisierung",
     priceOf: "Preis von",
+    goldPurity: "Goldgehalt",
     
     // Units
     gram: "Gramm",
@@ -562,7 +639,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "Gold-Währungsrechner",
     convertRealTime: "Konvertieren Sie Goldpreise zwischen verschiedenen Währungen in Echtzeit",
-    goldImageGallery: "Gold-Bildergalerie"
+    goldImageGallery: "Gold-Bildergalerie",
+    
+    // Favorites
+    favoriteCurrencies: "Lieblingswährungen",
+    quickAccess: "Schneller Zugriff auf Ihre häufig verwendeten Währungen",
+    noFavorites: "Noch keine Favoriten. Fügen Sie unten welche hinzu!",
+    addFavorite: "Füge eine Lieblingswährung hinzu",
+    
+    // Conversion Form
+    convertCurrency: "Gold-Währung konvertieren",
+    enterAmountDesc: "Geben Sie einen Betrag ein, um zwischen Währungen zu konvertieren",
+    amount: "Betrag",
+    enterAmount: "Betrag eingeben",
+    from: "Von",
+    to: "Nach",
+    selectCurrency: "Währung auswählen",
+    swapCurrencies: "Währungen tauschen",
+    converting: "Konvertiere...",
+    convert: "Konvertieren"
   },
   zh: {
     // General
@@ -575,6 +670,7 @@ export const translations = {
     historicalGoldPrice: "历史金价（单位：",
     lastUpdated: "最近更新",
     priceOf: "价格",
+    goldPurity: "黄金纯度",
     
     // Units
     gram: "克",
@@ -625,7 +721,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "黄金货币转换器",
     convertRealTime: "实时转换不同货币之间的黄金价格",
-    goldImageGallery: "黄金图片库"
+    goldImageGallery: "黄金图片库",
+    
+    // Favorites
+    favoriteCurrencies: "收藏货币",
+    quickAccess: "快速访问您常用的货币",
+    noFavorites: "暂无收藏货币。请在下方添加！",
+    addFavorite: "添加收藏货币",
+    
+    // Conversion Form
+    convertCurrency: "转换黄金货币",
+    enterAmountDesc: "输入金额以在不同货币之间转换",
+    amount: "金额",
+    enterAmount: "输入金额",
+    from: "从",
+    to: "到",
+    selectCurrency: "选择货币",
+    swapCurrencies: "互换货币",
+    converting: "转换中...",
+    convert: "转换"
   },
   hi: {
     // General
@@ -638,6 +752,7 @@ export const translations = {
     historicalGoldPrice: "में ऐतिहासिक सोने की कीमत",
     lastUpdated: "अंतिम अद्यतन",
     priceOf: "की कीमत",
+    goldPurity: "सोने की शुद्धता",
     
     // Units
     gram: "ग्राम",
@@ -688,7 +803,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "सोना मुद्रा कनवर्टर",
     convertRealTime: "वास्तविक समय में विभिन्न मुद्राओं के बीच सोने की कीमतों को परिवर्तित करें",
-    goldImageGallery: "सोना छवि गैलरी"
+    goldImageGallery: "सोना छवि गैलरी",
+    
+    // Favorites
+    favoriteCurrencies: "पसंदीदा मुद्राएँ",
+    quickAccess: "अपनी अक्सर उपयोग की जाने वाली मुद्राओं तक त्वरित पहुंच",
+    noFavorites: "अभी तक कोई पसंदीदा नहीं है। नीचे कुछ जोड़ें!",
+    addFavorite: "पसंदीदा मुद्रा जोड़ें",
+    
+    // Conversion Form
+    convertCurrency: "सोना मुद्रा परिवर्तन",
+    enterAmountDesc: "मुद्राओं के बीच परिवर्तित करने के लिए राशि दर्ज करें",
+    amount: "राशि",
+    enterAmount: "राशि दर्ज करें",
+    from: "से",
+    to: "तक",
+    selectCurrency: "मुद्रा चुनें",
+    swapCurrencies: "मुद्राएँ स्वैप करें",
+    converting: "परिवर्तित हो रहा है...",
+    convert: "परिवर्तित करें"
   },
   ja: {
     // General
@@ -701,6 +834,7 @@ export const translations = {
     historicalGoldPrice: "の過去の金価格",
     lastUpdated: "最終更新日",
     priceOf: "の価格",
+    goldPurity: "金の純度",
     
     // Units
     gram: "グラム",
@@ -751,7 +885,25 @@ export const translations = {
     // Currency Converter
     currencyConverter: "ゴールド通貨コンバーター",
     convertRealTime: "異なる通貨間でのゴールド価格をリアルタイムで変換",
-    goldImageGallery: "ゴールド画像ギャラリー"
+    goldImageGallery: "ゴールド画像ギャラリー",
+    
+    // Favorites
+    favoriteCurrencies: "お気に入り通貨",
+    quickAccess: "よく使う通貨へのクイックアクセス",
+    noFavorites: "まだお気に入りはありません。以下で追加してください！",
+    addFavorite: "お気に入り通貨を追加",
+    
+    // Conversion Form
+    convertCurrency: "ゴールド通貨換算",
+    enterAmountDesc: "通貨間で換算する金額を入力してください",
+    amount: "金額",
+    enterAmount: "金額を入力",
+    from: "から",
+    to: "へ",
+    selectCurrency: "通貨を選択",
+    swapCurrencies: "通貨を入れ替え",
+    converting: "変換中...",
+    convert: "変換する"
   },
   ru: {
     // General
@@ -764,6 +916,7 @@ export const translations = {
     historicalGoldPrice: "Историческая цена на золото в",
     lastUpdated: "Последнее обновление",
     priceOf: "Цена",
+    goldPurity: "Чистота золота",
     
     // Units
     gram: "грамм",
@@ -814,6 +967,24 @@ export const translations = {
     // Currency Converter
     currencyConverter: "Конвертер Золотых Валют",
     convertRealTime: "Конвертировать цены на золото между различными валютами в реальном времени",
-    goldImageGallery: "Галерея Изображений Золота"
+    goldImageGallery: "Галерея Изображений Золота",
+    
+    // Favorites
+    favoriteCurrencies: "Избранные Валюты",
+    quickAccess: "Быстрый доступ к часто используемым валютам",
+    noFavorites: "Пока нет избранных валют. Добавьте их ниже!",
+    addFavorite: "Добавить валюту в избранное",
+    
+    // Conversion Form
+    convertCurrency: "Конвертировать Золотую Валюту",
+    enterAmountDesc: "Введите сумму для конвертации между валютами",
+    amount: "Сумма",
+    enterAmount: "Введите сумму",
+    from: "Из",
+    to: "В",
+    selectCurrency: "Выберите валюту",
+    swapCurrencies: "Поменять валюты местами",
+    converting: "Конвертация...",
+    convert: "Конвертировать"
   }
 };
