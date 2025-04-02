@@ -164,9 +164,7 @@ export default function GoldCalculator() {
                       type="text"
                       value={
                         goldPrice
-                          ? `${goldPrice.price} ${goldPrice.currency}/${
-                              goldUnits.find((u) => u.value === "ounce")?.label
-                            }`
+                          ? `${goldPrice.price} ${goldPrice.currency}/ounce`
                           : "Loading..."
                       }
                       readOnly

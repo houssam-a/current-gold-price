@@ -191,14 +191,17 @@ export const countries = [
 // Gold unit conversions
 export const goldUnits = [
   {
+    label: "Gram",
     name: "Gram",
     value: "gram"
   },
   {
+    label: "Ounce",
     name: "Ounce",
     value: "ounce"
   },
   {
+    label: "Kilogram",
     name: "Kilogram",
     value: "kilo"
   }
@@ -302,7 +305,12 @@ export const translations = {
     
     // Daily change
     dailyChange: "Daily Change",
-    todayVsYesterday: "Today vs. Yesterday"
+    todayVsYesterday: "Today vs. Yesterday",
+    
+    // Currency Converter
+    currencyConverter: "Gold Currency Converter",
+    convertRealTime: "Convert gold prices between different currencies in real-time",
+    goldImageGallery: "Gold Image Gallery"
   },
   ar: {
     // General
@@ -360,9 +368,15 @@ export const translations = {
     
     // Daily change
     dailyChange: "التغير اليومي",
-    todayVsYesterday: "اليوم مقابل الأمس"
+    todayVsYesterday: "اليوم مقابل الأمس",
+    
+    // Currency Converter
+    currencyConverter: "محول عملات الذهب",
+    convertRealTime: "تحويل أسعار الذهب بين العملات المختلفة في الوقت الحقيقي",
+    goldImageGallery: "معرض صور الذهب"
   },
   es: {
+    // General
     goldPriceTracker: "Precio del oro actual",
     trackRealTime: "Siga los precios del oro en tiempo real en diferentes monedas",
     currentGoldPrice: "Precio actual del oro",
@@ -372,40 +386,60 @@ export const translations = {
     historicalGoldPrice: "Precio histórico del oro en",
     lastUpdated: "Última actualización",
     priceOf: "Precio de",
+    
+    // Units
     gram: "gramo",
     ounce: "onza",
     kilogram: "kilogramo",
     days: "días",
+    
+    // Countries and Currencies
     country: "País",
     currency: "Moneda",
     pricePerGram: "Precio por gramo",
     pricePerOunce: "Precio por onza",
     pricePerKilo: "Precio por kilogramo",
+    
+    // UI Actions
     refresh: "Actualizar",
     search: "Buscar",
     selectCountry: "Seleccionar país",
     selectUnit: "Seleccionar unidad",
     sortAscending: "Ordenar ascendente",
     sortDescending: "Ordenar descendente",
+    
+    // Navigation
     home: "Inicio",
     charts: "Gráficos",
     calculator: "Calculadora",
     currency: "Moneda",
+    
+    // Chart labels
     average: "Promedio",
     minimum: "Mínimo",
     maximum: "Máximo",
     change: "Cambio",
     priceStatistics: "Estadísticas de precios",
     keyMetrics: "Métricas clave en",
+    
+    // Time periods
     day: "Día",
     week: "Semana",
     month: "Mes",
     months: "Meses",
     year: "Año",
+    
+    // Daily change
     dailyChange: "Cambio diario",
-    todayVsYesterday: "Hoy vs. Ayer"
+    todayVsYesterday: "Hoy vs. Ayer",
+    
+    // Currency Converter
+    currencyConverter: "Conversor de Monedas de Oro",
+    convertRealTime: "Convierte precios de oro entre diferentes monedas en tiempo real",
+    goldImageGallery: "Galería de Imágenes de Oro"
   },
   fr: {
+    // General
     goldPriceTracker: "Prix actuel de l'or",
     trackRealTime: "Suivez les prix de l'or en temps réel dans différentes devises",
     currentGoldPrice: "Prix actuel de l'or",
@@ -415,40 +449,60 @@ export const translations = {
     historicalGoldPrice: "Prix historique de l'or en",
     lastUpdated: "Dernière mise à jour",
     priceOf: "Prix de",
+    
+    // Units
     gram: "gramme",
     ounce: "once",
     kilogram: "kilogramme",
     days: "jours",
+    
+    // Countries and Currencies
     country: "Pays",
     currency: "Devise",
     pricePerGram: "Prix par gramme",
     pricePerOunce: "Prix par once",
     pricePerKilo: "Prix par kilogramme",
+    
+    // UI Actions
     refresh: "Actualiser",
     search: "Rechercher",
     selectCountry: "Sélectionner un pays",
     selectUnit: "Sélectionner une unité",
     sortAscending: "Tri ascendant",
     sortDescending: "Tri descendant",
+    
+    // Navigation
     home: "Accueil",
     charts: "Graphiques",
     calculator: "Calculatrice",
     currency: "Devise",
+    
+    // Chart labels
     average: "Moyenne",
     minimum: "Minimum",
     maximum: "Maximum",
     change: "Changement",
     priceStatistics: "Statistiques des prix",
     keyMetrics: "Indicateurs clés en",
+    
+    // Time periods
     day: "Jour",
     week: "Semaine",
     month: "Mois",
     months: "Mois",
     year: "An",
+    
+    // Daily change
     dailyChange: "Changement quotidien",
-    todayVsYesterday: "Aujourd'hui vs. Hier"
+    todayVsYesterday: "Aujourd'hui vs. Hier",
+    
+    // Currency Converter
+    currencyConverter: "Convertisseur de Devises Or",
+    convertRealTime: "Convertir les prix de l'or entre différentes devises en temps réel",
+    goldImageGallery: "Galerie d'Images d'Or"
   },
   de: {
+    // General
     goldPriceTracker: "Aktueller Goldpreis",
     trackRealTime: "Verfolgen Sie die Goldpreise in Echtzeit in verschiedenen Währungen",
     currentGoldPrice: "Aktueller Goldpreis",
@@ -458,40 +512,60 @@ export const translations = {
     historicalGoldPrice: "Historischer Goldpreis in",
     lastUpdated: "Letzte Aktualisierung",
     priceOf: "Preis von",
+    
+    // Units
     gram: "Gramm",
     ounce: "Unze",
     kilogram: "Kilogramm",
     days: "Tage",
+    
+    // Countries and Currencies
     country: "Land",
     currency: "Währung",
     pricePerGram: "Preis pro Gramm",
     pricePerOunce: "Preis pro Unze",
     pricePerKilo: "Preis pro Kilogramm",
+    
+    // UI Actions
     refresh: "Aktualisieren",
     search: "Suchen",
     selectCountry: "Land auswählen",
     selectUnit: "Einheit auswählen",
     sortAscending: "Aufsteigend sortieren",
     sortDescending: "Absteigend sortieren",
+    
+    // Navigation
     home: "Startseite",
     charts: "Diagramme",
     calculator: "Rechner",
     currency: "Währung",
+    
+    // Chart labels
     average: "Durchschnitt",
     minimum: "Minimum",
     maximum: "Maximum",
     change: "Änderung",
     priceStatistics: "Preisstatistiken",
     keyMetrics: "Kennzahlen in",
+    
+    // Time periods
     day: "Tag",
     week: "Woche",
     month: "Monat",
     months: "Monate",
     year: "Jahr",
+    
+    // Daily change
     dailyChange: "Tägliche Veränderung",
-    todayVsYesterday: "Heute vs. Gestern"
+    todayVsYesterday: "Heute vs. Gestern",
+    
+    // Currency Converter
+    currencyConverter: "Gold-Währungsrechner",
+    convertRealTime: "Konvertieren Sie Goldpreise zwischen verschiedenen Währungen in Echtzeit",
+    goldImageGallery: "Gold-Bildergalerie"
   },
   zh: {
+    // General
     goldPriceTracker: "当前金价",
     trackRealTime: "追踪不同货币的实时金价",
     currentGoldPrice: "当前金价",
@@ -501,40 +575,60 @@ export const translations = {
     historicalGoldPrice: "历史金价（单位：",
     lastUpdated: "最近更新",
     priceOf: "价格",
+    
+    // Units
     gram: "克",
     ounce: "盎司",
     kilogram: "千克",
     days: "天",
+    
+    // Countries and Currencies
     country: "国家",
     currency: "货币",
     pricePerGram: "每克价格",
     pricePerOunce: "每盎司价格",
     pricePerKilo: "每千克价格",
+    
+    // UI Actions
     refresh: "刷新",
     search: "搜索",
     selectCountry: "选择国家",
     selectUnit: "选择单位",
     sortAscending: "升序",
     sortDescending: "降序",
+    
+    // Navigation
     home: "首页",
     charts: "图表",
     calculator: "计算器",
     currency: "货币",
+    
+    // Chart labels
     average: "平均",
     minimum: "最小值",
     maximum: "最大值",
     change: "变化",
     priceStatistics: "价格统计",
     keyMetrics: "关键指标（单位：",
+    
+    // Time periods
     day: "天",
     week: "周",
     month: "月",
     months: "月",
     year: "年",
+    
+    // Daily change
     dailyChange: "每日变化",
-    todayVsYesterday: "今天 vs. 昨天"
+    todayVsYesterday: "今天 vs. 昨天",
+    
+    // Currency Converter
+    currencyConverter: "黄金货币转换器",
+    convertRealTime: "实时转换不同货币之间的黄金价格",
+    goldImageGallery: "黄金图片库"
   },
   hi: {
+    // General
     goldPriceTracker: "वर्तमान सोने की कीमत",
     trackRealTime: "विभिन्न मुद्राओं में वास्तविक समय में सोने की कीमतों को ट्रैक करें",
     currentGoldPrice: "वर्तमान सोने की कीमत",
@@ -544,40 +638,60 @@ export const translations = {
     historicalGoldPrice: "में ऐतिहासिक सोने की कीमत",
     lastUpdated: "अंतिम अद्यतन",
     priceOf: "की कीमत",
+    
+    // Units
     gram: "ग्राम",
     ounce: "औंस",
     kilogram: "किलोग्राम",
     days: "दिन",
+    
+    // Countries and Currencies
     country: "देश",
     currency: "मुद्रा",
     pricePerGram: "प्रति ग्राम कीमत",
     pricePerOunce: "प्रति औंस कीमत",
     pricePerKilo: "प्रति किलोग्राम कीमत",
+    
+    // UI Actions
     refresh: "ताज़ा करें",
     search: "खोजें",
     selectCountry: "देश चुनें",
     selectUnit: "इकाई चुनें",
     sortAscending: "आरोही क्रम में छाँटें",
     sortDescending: "अवरोही क्रम में छाँटें",
+    
+    // Navigation
     home: "होम",
     charts: "चार्ट",
     calculator: "कैलकुलेटर",
     currency: "मुद्रा",
+    
+    // Chart labels
     average: "औसत",
     minimum: "न्यूनतम",
     maximum: "अधिकतम",
     change: "परिवर्तन",
     priceStatistics: "मूल्य सांख्यिकी",
     keyMetrics: "में मुख्य मेट्रिक्स",
+    
+    // Time periods
     day: "दिन",
     week: "सप्ताह",
     month: "महीना",
     months: "महीने",
     year: "वर्ष",
+    
+    // Daily change
     dailyChange: "दैनिक परिवर्तन",
-    todayVsYesterday: "आज बनाम कल"
+    todayVsYesterday: "आज बनाम कल",
+    
+    // Currency Converter
+    currencyConverter: "सोना मुद्रा कनवर्टर",
+    convertRealTime: "वास्तविक समय में विभिन्न मुद्राओं के बीच सोने की कीमतों को परिवर्तित करें",
+    goldImageGallery: "सोना छवि गैलरी"
   },
   ja: {
+    // General
     goldPriceTracker: "現在の金価格",
     trackRealTime: "さまざまな通貨でのリアルタイムの金価格を追跡",
     currentGoldPrice: "現在の金価格",
@@ -587,40 +701,60 @@ export const translations = {
     historicalGoldPrice: "の過去の金価格",
     lastUpdated: "最終更新日",
     priceOf: "の価格",
+    
+    // Units
     gram: "グラム",
     ounce: "オンス",
     kilogram: "キログラム",
     days: "日",
+    
+    // Countries and Currencies
     country: "国",
     currency: "通貨",
     pricePerGram: "1グラムあたりの価格",
     pricePerOunce: "1オンスあたりの価格",
     pricePerKilo: "1キログラムあたりの価格",
+    
+    // UI Actions
     refresh: "更新",
     search: "検索",
     selectCountry: "国を選択",
     selectUnit: "単位を選択",
     sortAscending: "昇順にソート",
     sortDescending: "降順にソート",
+    
+    // Navigation
     home: "ホーム",
     charts: "チャート",
     calculator: "計算機",
     currency: "通貨",
+    
+    // Chart labels
     average: "平均",
     minimum: "最小",
     maximum: "最大",
     change: "変化",
     priceStatistics: "価格統計",
     keyMetrics: "の主要指標",
+    
+    // Time periods
     day: "日",
     week: "週",
     month: "月",
     months: "ヶ月",
     year: "年",
+    
+    // Daily change
     dailyChange: "毎日の変化",
-    todayVsYesterday: "今日 vs 昨日"
+    todayVsYesterday: "今日 vs 昨日",
+    
+    // Currency Converter
+    currencyConverter: "ゴールド通貨コンバーター",
+    convertRealTime: "異なる通貨間でのゴールド価格をリアルタイムで変換",
+    goldImageGallery: "ゴールド画像ギャラリー"
   },
   ru: {
+    // General
     goldPriceTracker: "Текущая цена на золото",
     trackRealTime: "Отслеживайте цены на золото в реальном времени в разных валютах",
     currentGoldPrice: "Текущая цена на золото",
@@ -630,37 +764,56 @@ export const translations = {
     historicalGoldPrice: "Историческая цена на золото в",
     lastUpdated: "Последнее обновление",
     priceOf: "Цена",
+    
+    // Units
     gram: "грамм",
     ounce: "унция",
     kilogram: "килограмм",
     days: "дни",
+    
+    // Countries and Currencies
     country: "Страна",
     currency: "Валюта",
     pricePerGram: "Цена за грамм",
     pricePerOunce: "Цена за унцию",
     pricePerKilo: "Цена за килограмм",
+    
+    // UI Actions
     refresh: "Обновить",
     search: "Поиск",
     selectCountry: "Выберите страну",
     selectUnit: "Выберите единицу",
     sortAscending: "Сортировать по возрастанию",
     sortDescending: "Сортировать по убыванию",
+    
+    // Navigation
     home: "Главная",
     charts: "Графики",
     calculator: "Калькулятор",
     currency: "Валюта",
+    
+    // Chart labels
     average: "Среднее",
     minimum: "Минимум",
     maximum: "Максимум",
     change: "Изменение",
     priceStatistics: "Статистика цен",
     keyMetrics: "Ключевые показатели в",
+    
+    // Time periods
     day: "День",
     week: "Неделя",
     month: "Месяц",
     months: "Месяцы",
     year: "Год",
+    
+    // Daily change
     dailyChange: "Ежедневное изменение",
-    todayVsYesterday: "Сегодня vs. Вчера"
+    todayVsYesterday: "Сегодня vs. Вчера",
+    
+    // Currency Converter
+    currencyConverter: "Конвертер Золотых Валют",
+    convertRealTime: "Конвертировать цены на золото между различными валютами в реальном времени",
+    goldImageGallery: "Галерея Изображений Золота"
   }
 };
