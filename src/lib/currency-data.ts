@@ -81,14 +81,14 @@ export const languages = [
 ];
 
 export const goldImages = [
-  { id: "gold-bars", src: "https://images.unsplash.com/photo-1610375461246-83df859d849d", alt: "Gold Bars" },
-  { id: "gold-coins", src: "https://images.unsplash.com/photo-1612696874005-d659af6d2f7c", alt: "Gold Coins" },
-  { id: "gold-jewelry", src: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f", alt: "Gold Jewelry" },
-  { id: "gold-ingot", src: "https://images.unsplash.com/photo-1574362848149-11496d93a7c7", alt: "Gold Ingot" },
-  { id: "gold-bullion", src: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9", alt: "Gold Bullion" },
-  { id: "gold-bars-stack", src: "https://images.unsplash.com/photo-1589279715734-6631a314dfa2", alt: "Stack of Gold Bars" },
-  { id: "gold-investments", src: "https://images.unsplash.com/photo-1582281171754-405cb2a75fb1", alt: "Gold Investment" },
-  { id: "gold-nuggets", src: "https://images.unsplash.com/photo-1610375461527-3e40ef5a3bd7", alt: "Gold Nuggets" }
+  { id: "gold-bars", src: "https://images.unsplash.com/photo-1610375461246-83df859d849d", alt: "سبائك ذهبية" },
+  { id: "gold-coins", src: "https://images.unsplash.com/photo-1612696874005-d659af6d2f7c", alt: "عملات ذهبية" },
+  { id: "gold-bullion", src: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9", alt: "سبائك ذهب" },
+  { id: "gold-bars-stack", src: "https://images.unsplash.com/photo-1589279715734-6631a314dfa2", alt: "مجموعة سبائك ذهبية" },
+  { id: "gold-investments", src: "https://images.unsplash.com/photo-1582281171754-405cb2a75fb1", alt: "استثمارات ذهبية" },
+  { id: "gold-nuggets", src: "https://images.unsplash.com/photo-1610375461527-3e40ef5a3bd7", alt: "قطع ذهب خام" },
+  { id: "gold-coins-2", src: "https://images.unsplash.com/photo-1611248053539-c5063669df7e", alt: "مجموعة عملات ذهبية" },
+  { id: "gold-bars-2", src: "https://images.unsplash.com/photo-1574362848149-11496d93a7c7", alt: "سبائك ذهب لامعة" }
 ];
 
 export const translations = {
@@ -151,7 +151,10 @@ export const translations = {
     // Gold image gallery translations
     goldImageGallery: "Gold Image Gallery",
     previousImage: "Previous Image",
-    nextImage: "Next Image"
+    nextImage: "Next Image",
+    pauseSlideshow: "Pause Slideshow",
+    playSlideshow: "Play Slideshow",
+    priceChangeToday: "Today's Price Change"
   },
   fr: {
     goldPriceTracker: "Suivi du Prix de l'Or",
@@ -212,7 +215,10 @@ export const translations = {
     // Gold image gallery translations
     goldImageGallery: "Galerie d'Images d'Or",
     previousImage: "Image Précédente",
-    nextImage: "Image Suivante"
+    nextImage: "Image Suivante",
+    pauseSlideshow: "Mettre en Pause",
+    playSlideshow: "Lancer",
+    priceChangeToday: "Changement de Prix Aujourd'hui"
   },
   es: {
     goldPriceTracker: "Seguimiento del Precio del Oro",
@@ -273,7 +279,10 @@ export const translations = {
     // Gold image gallery translations
     goldImageGallery: "Galería de Imágenes de Oro",
     previousImage: "Imagen Anterior",
-    nextImage: "Imagen Siguiente"
+    nextImage: "Imagen Siguiente",
+    pauseSlideshow: "Pausar Presentación",
+    playSlideshow: "Reproducir Presentación",
+    priceChangeToday: "Cambio de Precio Hoy"
   },
   ar: {
     goldPriceTracker: "متتبع أسعار الذهب",
@@ -334,7 +343,14 @@ export const translations = {
     // Gold image gallery translations
     goldImageGallery: "معرض صور الذهب",
     previousImage: "الصورة السابقة",
-    nextImage: "الصورة التالية"
+    nextImage: "الصورة التالية",
+    pauseSlideshow: "إيقاف العرض",
+    playSlideshow: "تشغيل العرض",
+    priceChangeToday: "تغير السعر اليوم",
+    home: "الرئيسية",
+    charts: "الرسوم البيانية",
+    calculator: "الحاسبة",
+    currency: "العملات"
   },
   zh: {
     goldPriceTracker: "黄金价格追踪器",
@@ -395,6 +411,9 @@ export const translations = {
     // Gold image gallery translations
     goldImageGallery: "黄金图片展示",
     previousImage: "上一张图片",
-    nextImage: "下一张图片"
+    nextImage: "下一张图片",
+    pauseSlideshow: "暂停幻灯片",
+    playSlideshow: "播放幻灯片",
+    priceChangeToday: "今日价格变化"
   }
 };

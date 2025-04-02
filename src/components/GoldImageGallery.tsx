@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import { goldImages } from "@/lib/currency-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function GoldImageGallery() {
   const { t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const isMobile = useIsMobile();
   
   // Function to move to the next image
   const nextImage = () => {
@@ -24,28 +27,43 @@ export function GoldImageGallery() {
     );
   };
   
-  // Auto-change image every 5 seconds
+  // Toggle auto-play
+  const toggleAutoPlay = () => {
+    setIsAutoPlaying(!isAutoPlaying);
+  };
+  
+  // Auto-change image every 5 seconds if auto-play is enabled
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextImage();
-    }, 5000);
+    let interval: number | undefined;
     
-    return () => clearInterval(interval);
-  }, []);
+    if (isAutoPlaying) {
+      interval = window.setInterval(() => {
+        nextImage();
+      }, 5000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isAutoPlaying]);
   
   const currentImage = goldImages[currentImageIndex];
   
+  // Use smaller images on mobile to improve performance
+  const imageSize = isMobile ? "?auto=format&fit=crop&w=400&h=225" : "?auto=format&fit=crop&w=800&h=450";
+  
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden shadow-lg border-gold-200 dark:border-gold-800">
       <CardContent className="p-0 relative">
         <div className="aspect-[16/9] relative">
           <img 
-            src={`${currentImage.src}?auto=format&fit=crop&w=800&h=450`}
+            src={`${currentImage.src}${imageSize}`}
             alt={currentImage.alt}
             className="w-full h-full object-cover transition-opacity duration-500"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 flex items-end">
-            <p className="text-white p-4 font-medium">{currentImage.alt}</p>
+            <p className="text-white p-4 font-medium text-center w-full">{currentImage.alt}</p>
           </div>
         </div>
         
@@ -59,6 +77,17 @@ export function GoldImageGallery() {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
+          
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={toggleAutoPlay}
+            className="bg-white/80 hover:bg-white rounded-full mx-1"
+            aria-label={isAutoPlaying ? t("pauseSlideshow") : t("playSlideshow")}
+          >
+            {isAutoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
+          
           <Button 
             variant="outline" 
             size="icon" 
