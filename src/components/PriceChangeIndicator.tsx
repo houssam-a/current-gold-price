@@ -26,6 +26,10 @@ export function PriceChangeIndicator({
   const textSizeClass = size === "sm" ? "text-xs" : size === "md" ? "text-sm" : "text-base";
   const iconSizeClass = size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4" : "h-5 w-5";
   
+  // Ensure change is always displayed with proper sign and formatting
+  const formattedChange = isPositive ? `+${change.toFixed(2)}` : change.toFixed(2);
+  const formattedPercentage = isPositive ? `+${changePercentage.toFixed(2)}%` : `${changePercentage.toFixed(2)}%`;
+  
   return (
     <div
       className={cn(
@@ -40,7 +44,7 @@ export function PriceChangeIndicator({
         <TrendingDown className={cn(iconSizeClass, "mr-1")} />
       )}
       <span>
-        {isPositive ? "+" : ""}{change.toFixed(2)} ({changePercentage.toFixed(2)}%)
+        {formattedChange} ({formattedPercentage})
       </span>
     </div>
   );

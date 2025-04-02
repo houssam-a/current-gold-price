@@ -1,3 +1,4 @@
+
 export interface ImageObject {
   id: string;
   src: string;
@@ -80,15 +81,16 @@ export const languages = [
   { code: "zh", name: "中文", flag: "🇨🇳" }
 ];
 
+// تحديث الصور لتكون فقط لسبائك وعملات ذهبية
 export const goldImages = [
-  { id: "gold-bars", src: "https://images.unsplash.com/photo-1610375461246-83df859d849d", alt: "سبائك ذهبية" },
-  { id: "gold-coins", src: "https://images.unsplash.com/photo-1612696874005-d659af6d2f7c", alt: "عملات ذهبية" },
+  { id: "gold-bars-1", src: "/lovable-uploads/fd3e9720-0ce6-4d39-bd25-2179a6ecc4ea.png", alt: "سبائك ذهبية" },
+  { id: "gold-coins-1", src: "/lovable-uploads/dba310bb-687f-4abf-9492-5498981fab0c.png", alt: "عملات ذهبية" },
+  { id: "gold-bars-2", src: "https://images.unsplash.com/photo-1610375461246-83df859d849d", alt: "سبائك ذهبية" },
+  { id: "gold-coins-2", src: "https://images.unsplash.com/photo-1612696874005-d659af6d2f7c", alt: "عملات ذهبية" },
   { id: "gold-bullion", src: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9", alt: "سبائك ذهب" },
   { id: "gold-bars-stack", src: "https://images.unsplash.com/photo-1589279715734-6631a314dfa2", alt: "مجموعة سبائك ذهبية" },
-  { id: "gold-investments", src: "https://images.unsplash.com/photo-1582281171754-405cb2a75fb1", alt: "استثمارات ذهبية" },
-  { id: "gold-nuggets", src: "https://images.unsplash.com/photo-1610375461527-3e40ef5a3bd7", alt: "قطع ذهب خام" },
-  { id: "gold-coins-2", src: "https://images.unsplash.com/photo-1611248053539-c5063669df7e", alt: "مجموعة عملات ذهبية" },
-  { id: "gold-bars-2", src: "https://images.unsplash.com/photo-1574362848149-11496d93a7c7", alt: "سبائك ذهب لامعة" }
+  { id: "gold-coins-3", src: "https://images.unsplash.com/photo-1611248053539-c5063669df7e", alt: "مجموعة عملات ذهبية" },
+  { id: "gold-bars-3", src: "https://images.unsplash.com/photo-1574362848149-11496d93a7c7", alt: "سبائك ذهب لامعة" }
 ];
 
 export const translations = {
@@ -154,7 +156,10 @@ export const translations = {
     nextImage: "Next Image",
     pauseSlideshow: "Pause Slideshow",
     playSlideshow: "Play Slideshow",
-    priceChangeToday: "Today's Price Change"
+    priceChangeToday: "Today's Price Change",
+    home: "Home",
+    charts: "Charts",
+    calculator: "Calculator"
   },
   fr: {
     goldPriceTracker: "Suivi du Prix de l'Or",
@@ -218,7 +223,10 @@ export const translations = {
     nextImage: "Image Suivante",
     pauseSlideshow: "Mettre en Pause",
     playSlideshow: "Lancer",
-    priceChangeToday: "Changement de Prix Aujourd'hui"
+    priceChangeToday: "Changement de Prix Aujourd'hui",
+    home: "Accueil",
+    charts: "Graphiques",
+    calculator: "Calculateur"
   },
   es: {
     goldPriceTracker: "Seguimiento del Precio del Oro",
@@ -282,7 +290,10 @@ export const translations = {
     nextImage: "Imagen Siguiente",
     pauseSlideshow: "Pausar Presentación",
     playSlideshow: "Reproducir Presentación",
-    priceChangeToday: "Cambio de Precio Hoy"
+    priceChangeToday: "Cambio de Precio Hoy",
+    home: "Inicio",
+    charts: "Gráficos",
+    calculator: "Calculadora"
   },
   ar: {
     goldPriceTracker: "متتبع أسعار الذهب",
@@ -414,6 +425,10 @@ export const translations = {
     nextImage: "下一张图片",
     pauseSlideshow: "暂停幻灯片",
     playSlideshow: "播放幻灯片",
-    priceChangeToday: "今日价格变化"
+    priceChangeToday: "今日价格变化",
+    home: "首页",
+    charts: "图表",
+    calculator: "计算器",
+    currency: "货币"
   }
 };
