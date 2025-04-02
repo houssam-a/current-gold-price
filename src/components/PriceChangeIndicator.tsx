@@ -8,6 +8,7 @@ interface PriceChangeIndicatorProps {
   changePercentage: number;
   size?: "sm" | "md" | "lg";
   showIcon?: boolean;
+  showDaily?: boolean;
   className?: string;
 }
 
@@ -16,6 +17,7 @@ export function PriceChangeIndicator({
   changePercentage, 
   size = "md", 
   showIcon = true,
+  showDaily = false,
   className
 }: PriceChangeIndicatorProps) {
   const { t } = useLanguage();
@@ -46,6 +48,11 @@ export function PriceChangeIndicator({
       <span>
         {formattedChange} ({formattedPercentage})
       </span>
+      {showDaily && (
+        <span className="ml-1 text-muted-foreground text-xs">
+          {t("dailyChange")}
+        </span>
+      )}
     </div>
   );
 }

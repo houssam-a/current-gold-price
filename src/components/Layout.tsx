@@ -13,10 +13,10 @@ export function Layout() {
           <main className="flex-1">
             <Outlet />
           </main>
-          <footer className="border-t py-6 md:py-0">
-            <div className="container flex flex-col items-center justify-between gap-4 md:h-14 md:flex-row">
-              <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} Current Gold Price. All rights reserved.
+          <footer className="border-t py-3">
+            <div className="container flex flex-col items-center justify-between gap-2 md:h-10 md:flex-row">
+              <p className="text-xs text-muted-foreground">
+                © {new Date().getFullYear()} Current Gold Price
               </p>
             </div>
           </footer>
