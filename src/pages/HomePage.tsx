@@ -25,7 +25,7 @@ export default function HomePage() {
     fetchGoldPrice,
     toggleSortDirection,
     convertPrice
-  } = useGoldPrice("MA", "gram"); // Default to Morocco, gram unit
+  } = useGoldPrice("MA"); // Default to Morocco
   
   return (
     <div className="container py-8 max-w-screen-lg">

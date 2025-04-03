@@ -23,7 +23,6 @@ export function Navbar() {
         change: data.change,
         changePercentage: data.changePercentage
       });
-      console.log("Updated gold price change:", data.change, data.changePercentage);
     } catch (error) {
       console.error("Error fetching gold price change:", error);
     }
@@ -72,40 +71,46 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
       <div className="container flex flex-col items-center justify-between px-4 sm:px-6 h-auto">
         <div className="flex w-full items-center justify-between mb-2">
-          <Link to="/" className="flex items-center space-x-2">
-            <Diamond className="h-5 w-5 text-primary/80" />
-            <span className="font-bold text-xl bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
-              Current Gold Price
-            </span>
-          </Link>
+          <div className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
+              <Diamond className="h-5 w-5 text-primary/80" />
+              <span className="font-bold text-xl bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
+                Current Gold Price
+              </span>
+            </Link>
+            
+            {/* Added theme toggle and language selector next to the title */}
+            <div className="hidden md:flex items-center ml-4 space-x-1">
+              <ThemeToggle />
+              <LanguageSelector />
+            </div>
+          </div>
           
-          <div className="flex items-center space-x-1">
-            {isMobile ? (
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="icon" aria-label="Menu">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[240px] sm:w-[300px]">
-                  <div className="flex flex-col gap-4 py-4">
-                    <NavLinks vertical={true} />
-                    <div className="flex gap-2 justify-end">
-                      <LanguageSelector />
-                      <ThemeToggle />
-                    </div>
+          {isMobile ? (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" aria-label="Menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[240px] sm:w-[300px]">
+                <div className="flex flex-col gap-4 py-4">
+                  <NavLinks vertical={true} />
+                  <div className="flex gap-2 justify-center">
+                    <LanguageSelector />
+                    <ThemeToggle />
                   </div>
-                </SheetContent>
-              </Sheet>
-            ) : (
-              <>
-                <NavLinks vertical={false} />
-                <div className="flex items-center space-x-1">
-                  <LanguageSelector />
-                  <ThemeToggle />
                 </div>
-              </>
-            )}
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <NavLinks vertical={false} />
+          )}
+          
+          {/* Show on mobile */}
+          <div className="md:hidden flex items-center space-x-1">
+            <ThemeToggle />
+            <LanguageSelector />
           </div>
         </div>
       </div>

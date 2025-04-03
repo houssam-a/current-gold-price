@@ -4,9 +4,9 @@ import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, conversionFactors } from "@/lib/currency-data";
 import { toast } from "sonner";
 
-export function useGoldPrice(initialCountry: string = "MA", initialUnit: string = "gram") {
+export function useGoldPrice(initialCountry: string = "MA") {
   const [selectedCountry, setSelectedCountry] = useState(initialCountry);
-  const [selectedUnit, setSelectedUnit] = useState(initialUnit);
+  const [selectedUnit, setSelectedUnit] = useState("gram");
   const [selectedPurity, setSelectedPurity] = useState("24k"); // Default to 24k gold
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +29,7 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     }
   };
   
-  const fetchGoldPrice = async () => {
+  const fetchGoldPrice = useCallback(async () => {
     if (!country) return;
     
     setIsLoading(true);
@@ -41,18 +41,16 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
       if (data.price === 0 || !data.price) {
         toast.warning("Using fallback data - API limit reached or unavailable");
       }
-      
-      await sortCountriesByGoldPrice(selectedUnit);
     } catch (error) {
       console.error("Error fetching gold price:", error);
       toast.error("Failed to fetch gold price");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [country]);
   
   // Function to determine if we need to refresh prices based on day change
-  const shouldRefreshPrices = () => {
+  const shouldRefreshPrices = useCallback(() => {
     if (!lastUpdated) return true;
     
     const now = new Date();
@@ -61,17 +59,14 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     
     // Refresh if the day has changed
     return lastDate !== currentDate;
-  };
+  }, [lastUpdated]);
   
-  const sortCountriesByGoldPrice = async (unit: string) => {
+  const sortCountriesByGoldPrice = useCallback(async () => {
     const countriesWithPrices = await Promise.all(
       countries.map(async (c) => {
         try {
           const price = await getGoldPrice(c.currency);
-          const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
-          // Use the country-specific price and apply unit conversion
-          const convertedPrice = Number((price.price * factor).toFixed(2));
-          return { ...c, price: convertedPrice };
+          return { ...c, price: price.price };
         } catch (error) {
           return { ...c, price: 0 };
         }
@@ -83,19 +78,16 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     });
     
     setSortedCountries(sorted);
-  };
+  }, [sortDirection]);
   
   const toggleSortDirection = () => {
     const newDirection = sortDirection === "asc" ? "desc" : "asc";
     setSortDirection(newDirection);
-    setSortedCountries([...sortedCountries].reverse());
   };
   
   // Effect to fetch prices when country changes or on day change
   useEffect(() => {
     fetchGoldPrice();
-    const goldImages = ["/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"];
-    setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
     
     // Set up a timer to check if we need to refresh prices (every hour)
     const interval = setInterval(() => {
@@ -105,13 +97,20 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     }, 60 * 60 * 1000); // Check every hour
     
     return () => clearInterval(interval);
+  }, [fetchGoldPrice, shouldRefreshPrices, selectedCountry]);
+  
+  // Effect to update gold image
+  useEffect(() => {
+    const goldImages = ["/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"];
+    setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
   
+  // Effect to sort countries by price
   useEffect(() => {
     if (goldPrice) {
-      sortCountriesByGoldPrice(selectedUnit);
+      sortCountriesByGoldPrice();
     }
-  }, [selectedUnit, goldPrice, sortDirection]);
+  }, [goldPrice, sortCountriesByGoldPrice, sortDirection]);
   
   const convertPrice = (price: number, unit: string) => {
     const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;

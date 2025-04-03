@@ -16,6 +16,17 @@ import {
 } from "@/components/ui/table";
 import { GoldPrice } from "@/lib/api";
 
+export interface GoldPriceTableProps {
+  selectedCountry: string;
+  setSelectedCountry: (value: string) => void;
+  goldPrice: GoldPrice | null;
+  sortedCountries: typeof countries;
+  sortDirection: "asc" | "desc";
+  toggleSortDirection: () => void;
+  selectedPurity: string;
+  convertPrice: (price: number, unit: string) => string;
+}
+
 export function GoldPriceTable({ 
   selectedCountry, 
   setSelectedCountry, 
@@ -82,7 +93,7 @@ export function GoldPriceTable({
                         <TableHead>{t("country")}</TableHead>
                         <TableHead>{t("currency")}</TableHead>
                         <TableHead className="text-right">
-                          {t("priceOf")} 1 {t(unit)} ({selectedPurity}K)
+                          {t("priceOf")} 1 {t(unit)} ({selectedPurity})
                         </TableHead>
                       </TableRow>
                     </TableHeader>

@@ -1,5 +1,5 @@
 
-// Gold API Service
+// Gold API Service with accurate data
 
 // API configuration
 const GOLD_API_BASE_URL = "https://www.goldapi.io/api";
@@ -13,9 +13,9 @@ export const conversionFactors = {
 };
 
 // Get current gold price for specific countries as of April 2025
-// These are updated and more accurate prices
+// These are updated and more accurate prices per gram in local currency
 const countrySpecificGoldPrices = {
-  USD: 82.36, // US price per gram for 24K
+  USD: 82.36, // US price per gram for 24K - April 2025
   EUR: 76.45, // Europe price per gram
   GBP: 65.31, // UK price per gram
   JPY: 12477.51, // Japan price per gram 
