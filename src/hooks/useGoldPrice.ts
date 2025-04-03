@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, conversionFactors } from "@/lib/currency-data";
@@ -12,6 +13,7 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
   const [selectedGoldImage, setSelectedGoldImage] = useState("/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   
   const country = countries.find((c) => c.code === selectedCountry);
   
@@ -34,6 +36,7 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     try {
       const data = await getGoldPrice(country.currency);
       setGoldPrice(data);
+      setLastUpdated(new Date());
       
       if (data.price === 0 || !data.price) {
         toast.warning("Using fallback data - API limit reached or unavailable");
@@ -48,12 +51,25 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     }
   };
   
+  // Function to determine if we need to refresh prices based on day change
+  const shouldRefreshPrices = () => {
+    if (!lastUpdated) return true;
+    
+    const now = new Date();
+    const lastDate = lastUpdated.getDate();
+    const currentDate = now.getDate();
+    
+    // Refresh if the day has changed
+    return lastDate !== currentDate;
+  };
+  
   const sortCountriesByGoldPrice = async (unit: string) => {
     const countriesWithPrices = await Promise.all(
       countries.map(async (c) => {
         try {
           const price = await getGoldPrice(c.currency);
           const factor = conversionFactors[unit as keyof typeof conversionFactors] || 1;
+          // Use the country-specific price and apply unit conversion
           const convertedPrice = Number((price.price * factor).toFixed(2));
           return { ...c, price: convertedPrice };
         } catch (error) {
@@ -75,10 +91,20 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     setSortedCountries([...sortedCountries].reverse());
   };
   
+  // Effect to fetch prices when country changes or on day change
   useEffect(() => {
     fetchGoldPrice();
     const goldImages = ["/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"];
     setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
+    
+    // Set up a timer to check if we need to refresh prices (every hour)
+    const interval = setInterval(() => {
+      if (shouldRefreshPrices()) {
+        fetchGoldPrice();
+      }
+    }, 60 * 60 * 1000); // Check every hour
+    
+    return () => clearInterval(interval);
   }, [selectedCountry]);
   
   useEffect(() => {
@@ -108,6 +134,7 @@ export function useGoldPrice(initialCountry: string = "MA", initialUnit: string 
     fetchGoldPrice,
     toggleSortDirection,
     convertPrice,
-    getPurityMultiplier
+    getPurityMultiplier,
+    lastUpdated
   };
 }
