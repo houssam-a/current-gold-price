@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { conversionFactors, countries, goldUnits } from "@/lib/currency-data";
 import { toast } from "sonner";
-import { RefreshCw, Calculator } from "lucide-react";
+import { RefreshCw, Calculator as CalculatorIcon } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
-export default function GoldCalculator() {
+export default function Calculator() {
+  const { t } = useLanguage();
   const [selectedCountry, setSelectedCountry] = useState("US");
   const [selectedUnit, setSelectedUnit] = useState("gram");
   const [weight, setWeight] = useState<string>("1");
@@ -57,6 +58,12 @@ export default function GoldCalculator() {
     setCalculatedValue(Number(value.toFixed(2)));
   };
 
+  // Update weight label when unit changes
+  useEffect(() => {
+    // Reset the weight value when changing units to prevent confusion
+    setWeight("1");
+  }, [selectedUnit]);
+
   // Purity options in karats
   const purityOptions = [
     { value: "24", label: "24K - 99.9% Pure" },
@@ -88,11 +95,11 @@ export default function GoldCalculator() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Country
+                    {t("country")}
                   </label>
                   <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select country" />
+                      <SelectValue placeholder={t("selectCountry")} />
                     </SelectTrigger>
                     <SelectContent>
                       {countries.map((country) => (
@@ -106,16 +113,16 @@ export default function GoldCalculator() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Gold Unit
+                    {t("unit")}
                   </label>
                   <Select value={selectedUnit} onValueChange={setSelectedUnit}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select unit" />
+                      <SelectValue placeholder={t("selectUnit")} />
                     </SelectTrigger>
                     <SelectContent>
                       {goldUnits.map((unit) => (
                         <SelectItem key={unit.value} value={unit.value}>
-                          {unit.label}
+                          {t(unit.value)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -126,22 +133,22 @@ export default function GoldCalculator() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Weight ({selectedUnit})
+                    {t("weight")} ({t(selectedUnit)})
                   </label>
                   <Input
                     type="number"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    placeholder={`Enter weight in ${selectedUnit}`}
+                    placeholder={`${t("enter")} ${t("weight")} ${t("in")} ${t(selectedUnit)}`}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Purity
+                    {t("purity")}
                   </label>
                   <Select value={purity} onValueChange={setPurity}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select purity" />
+                      <SelectValue placeholder={t("selectPurity")} />
                     </SelectTrigger>
                     <SelectContent>
                       {purityOptions.map((option) => (
@@ -157,7 +164,7 @@ export default function GoldCalculator() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Current Gold Price
+                    {t("currentGoldPrice")}
                   </label>
                   <div className="flex">
                     <Input
@@ -182,10 +189,10 @@ export default function GoldCalculator() {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Last updated:{" "}
+                    {t("lastUpdated")}:{" "}
                     {goldPrice
                       ? new Date(goldPrice.timestamp).toLocaleString()
-                      : "Loading..."}
+                      : t("loading")}
                   </p>
                 </div>
                 <div className="flex items-end">
@@ -194,8 +201,8 @@ export default function GoldCalculator() {
                     className="w-full gold-gradient"
                     disabled={isLoading}
                   >
-                    <Calculator className="mr-2 h-4 w-4" />
-                    Calculate Value
+                    <CalculatorIcon className="mr-2 h-4 w-4" />
+                    {t("calculateValue")}
                   </Button>
                 </div>
               </div>
@@ -203,13 +210,13 @@ export default function GoldCalculator() {
               {calculatedValue !== null && (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg text-center">
                   <div className="text-lg text-muted-foreground mb-1">
-                    Calculated Gold Value
+                    {t("calculatedGoldValue")}
                   </div>
                   <div className="text-3xl font-bold">
                     {goldPrice?.currency} {calculatedValue.toLocaleString()}
                   </div>
                   <div className="text-xs text-muted-foreground mt-2">
-                    Based on {weight} {selectedUnit} of {purity}K gold
+                    {t("basedOn")} {weight} {t(selectedUnit)} {t("of")} {purity}K {t("gold")}
                   </div>
                 </div>
               )}
@@ -219,9 +226,9 @@ export default function GoldCalculator() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Gold Purity Reference</CardTitle>
+            <CardTitle>{t("goldPurityReference")}</CardTitle>
             <CardDescription>
-              Understanding gold purity and its value
+              {t("understandingGoldPurity")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -296,9 +303,9 @@ export default function GoldCalculator() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Gold Investment Tips</CardTitle>
+          <CardTitle>{t("goldInvestmentTips")}</CardTitle>
           <CardDescription>
-            Basic guidance for gold investors
+            {t("basicGuidanceForGoldInvestors")}
           </CardDescription>
         </CardHeader>
         <CardContent>

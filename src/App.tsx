@@ -1,13 +1,12 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { Routes, Route } from "react-router-dom";
-import { Calculator } from "./pages/Calculator";
-import { Charts } from "./pages/Charts";
-import { CurrencyConverter } from "./pages/CurrencyConverter";
-import { NotFound } from "./pages/NotFound";
+import Calculator from "./pages/Calculator";
+import Charts from "./pages/Charts";
+import CurrencyConverter from "./pages/CurrencyConverter";
+import NotFound from "./pages/NotFound";
 import { Layout } from "./components/Layout";
-
-// Update import path from Index to HomePage
 import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
