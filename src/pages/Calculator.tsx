@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -73,6 +74,12 @@ export default function Calculator() {
     { value: "10", label: "10K - 41.7% Pure" }
   ];
 
+  // Get unit display name for the selected unit
+  const getUnitDisplayName = () => {
+    const unit = goldUnits.find(u => u.value === selectedUnit);
+    return t(unit?.value || 'gram');
+  };
+
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
@@ -82,7 +89,7 @@ export default function Calculator() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         <Card className="gold-card">
           <CardHeader>
             <CardTitle>Gold Calculator</CardTitle>
@@ -133,13 +140,13 @@ export default function Calculator() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    {t("weight")} ({t(selectedUnit)})
+                    {t("weight")} ({getUnitDisplayName()})
                   </label>
                   <Input
                     type="number"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    placeholder={`${t("enter")} ${t("weight")} ${t("in")} ${t(selectedUnit)}`}
+                    placeholder={`${t("enter")} ${t("weight")} ${t("in")} ${getUnitDisplayName()}`}
                   />
                 </div>
                 <div>
@@ -171,7 +178,7 @@ export default function Calculator() {
                       type="text"
                       value={
                         goldPrice
-                          ? `${goldPrice.price} ${goldPrice.currency}/ounce`
+                          ? `${goldPrice.price} ${goldPrice.currency}/${getUnitDisplayName()}`
                           : "Loading..."
                       }
                       readOnly
@@ -216,7 +223,7 @@ export default function Calculator() {
                     {goldPrice?.currency} {calculatedValue.toLocaleString()}
                   </div>
                   <div className="text-xs text-muted-foreground mt-2">
-                    {t("basedOn")} {weight} {t(selectedUnit)} {t("of")} {purity}K {t("gold")}
+                    {t("basedOn")} {weight} {getUnitDisplayName()} {t("of")} {purity}K {t("gold")}
                   </div>
                 </div>
               )}

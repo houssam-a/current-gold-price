@@ -39,8 +39,8 @@ export function Navbar() {
     return () => clearInterval(interval);
   }, [fetchGoldPriceChange]);
 
-  const NavLinks = () => (
-    <nav className="flex items-center justify-center gap-1 text-sm">
+  const NavLinks = ({ vertical = false }) => (
+    <nav className={`flex ${vertical ? 'flex-col' : 'items-center justify-center'} gap-2 text-sm`}>
       <Link
         to="/"
         className={navigationMenuTriggerStyle() + " py-1.5 px-2.5"}
@@ -89,7 +89,7 @@ export function Navbar() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[240px] sm:w-[300px]">
                   <div className="flex flex-col gap-4 py-4">
-                    <NavLinks />
+                    <NavLinks vertical={true} />
                     <div className="flex gap-2 justify-end">
                       <LanguageSelector />
                       <ThemeToggle />
@@ -99,7 +99,7 @@ export function Navbar() {
               </Sheet>
             ) : (
               <>
-                <NavLinks />
+                <NavLinks vertical={false} />
                 <div className="flex items-center space-x-1">
                   <LanguageSelector />
                   <ThemeToggle />
