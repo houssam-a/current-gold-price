@@ -16,17 +16,6 @@ import {
 } from "@/components/ui/table";
 import { GoldPrice } from "@/lib/api";
 
-interface GoldPriceTableProps {
-  selectedCountry: string;
-  setSelectedCountry: (value: string) => void;
-  goldPrice: GoldPrice | null;
-  sortedCountries: typeof countries;
-  sortDirection: "asc" | "desc";
-  toggleSortDirection: () => void;
-  selectedPurity: string;
-  convertPrice: (price: number, unit: string) => string;
-}
-
 export function GoldPriceTable({ 
   selectedCountry, 
   setSelectedCountry, 
@@ -40,13 +29,20 @@ export function GoldPriceTable({
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
 
+  // Highlight Morocco in the table
+  const getRowClassName = (countryCode: string) => {
+    return countryCode === "MA" 
+      ? "bg-gold-50 dark:bg-gold-900 font-semibold" 
+      : "";
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>{t("goldPriceByUnit")}</CardTitle>
           <CardDescription>
-            {t("compareGoldPrices")}
+            {t("compareGoldPrices")} - {t("highlightedCountry")}: Morocco
           </CardDescription>
         </div>
         <Button
@@ -78,44 +74,43 @@ export function GoldPriceTable({
           
           {goldPrice ? (
             <>
-              <TabsContent value="gram" className="space-y-4">
-                <PriceTable 
-                  sortedCountries={sortedCountries}
-                  goldPrice={goldPrice}
-                  country={country}
-                  unit="gram"
-                  selectedPurity={selectedPurity}
-                  setSelectedCountry={setSelectedCountry}
-                  convertPrice={convertPrice}
-                  t={t}
-                />
-              </TabsContent>
-              
-              <TabsContent value="ounce" className="space-y-4">
-                <PriceTable 
-                  sortedCountries={sortedCountries}
-                  goldPrice={goldPrice}
-                  country={country}
-                  unit="ounce"
-                  selectedPurity={selectedPurity}
-                  setSelectedCountry={setSelectedCountry}
-                  convertPrice={convertPrice}
-                  t={t}
-                />
-              </TabsContent>
-              
-              <TabsContent value="kilo" className="space-y-4">
-                <PriceTable 
-                  sortedCountries={sortedCountries}
-                  goldPrice={goldPrice}
-                  country={country}
-                  unit="kilo"
-                  selectedPurity={selectedPurity}
-                  setSelectedCountry={setSelectedCountry}
-                  convertPrice={convertPrice}
-                  t={t}
-                />
-              </TabsContent>
+              {["gram", "ounce", "kilo"].map((unit) => (
+                <TabsContent key={unit} value={unit} className="space-y-4">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t("country")}</TableHead>
+                        <TableHead>{t("currency")}</TableHead>
+                        <TableHead className="text-right">
+                          {t("priceOf")} 1 {t(unit)} ({selectedPurity}K)
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedCountries.map((c) => (
+                        <TableRow 
+                          key={c.code} 
+                          className={`cursor-pointer hover:bg-muted ${getRowClassName(c.code)}`} 
+                          onClick={() => setSelectedCountry(c.code)}
+                        >
+                          <TableCell>
+                            <div className="flex items-center">
+                              <span className="text-2xl mr-2">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{c.currency}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {c.currency === country?.currency
+                              ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, unit)}`
+                              : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TabsContent>
+              ))}
             </>
           ) : (
             <div className="h-40 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
@@ -123,64 +118,5 @@ export function GoldPriceTable({
         </Tabs>
       </CardContent>
     </Card>
-  );
-}
-
-// Helper component for the price tables
-interface PriceTableProps {
-  sortedCountries: typeof countries;
-  goldPrice: GoldPrice;
-  country: any;
-  unit: string;
-  selectedPurity: string;
-  setSelectedCountry: (code: string) => void;
-  convertPrice: (price: number, unit: string) => string;
-  t: (key: string) => string;
-}
-
-function PriceTable({ 
-  sortedCountries, 
-  goldPrice, 
-  country, 
-  unit, 
-  selectedPurity,
-  setSelectedCountry,
-  convertPrice,
-  t
-}: PriceTableProps) {
-  const unitDisplay = unit === "gram" 
-    ? t("pricePerGram") 
-    : unit === "ounce" 
-      ? t("pricePerOunce") 
-      : t("pricePerKilo");
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{t("country")}</TableHead>
-          <TableHead>{t("currency")}</TableHead>
-          <TableHead className="text-right">{unitDisplay} ({selectedPurity})</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {sortedCountries.map((c) => (
-          <TableRow key={c.code} className="cursor-pointer hover:bg-muted" onClick={() => setSelectedCountry(c.code)}>
-            <TableCell>
-              <div className="flex items-center">
-                <span className="text-2xl mr-2">{c.flag}</span>
-                <span>{c.name}</span>
-              </div>
-            </TableCell>
-            <TableCell>{c.currency}</TableCell>
-            <TableCell className="text-right font-medium">
-              {c.currency === country?.currency
-                ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, unit)}`
-                : "-"}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
   );
 }

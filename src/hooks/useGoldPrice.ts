@@ -1,10 +1,9 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { getGoldPrice, GoldPrice } from "@/lib/api";
 import { countries, conversionFactors } from "@/lib/currency-data";
 import { toast } from "sonner";
 
-export function useGoldPrice(initialCountry: string, initialUnit: string) {
+export function useGoldPrice(initialCountry: string = "MA", initialUnit: string = "gram") {
   const [selectedCountry, setSelectedCountry] = useState(initialCountry);
   const [selectedUnit, setSelectedUnit] = useState(initialUnit);
   const [selectedPurity, setSelectedPurity] = useState("24k"); // Default to 24k gold

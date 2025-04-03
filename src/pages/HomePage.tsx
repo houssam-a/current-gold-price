@@ -6,6 +6,7 @@ import { GoldPuritySelector } from "@/components/GoldPuritySelector";
 import { GoldPriceDisplay } from "@/components/home/GoldPriceDisplay";
 import { PriceTrendChart } from "@/components/home/PriceTrendChart";
 import { GoldPriceTable } from "@/components/home/GoldPriceTable";
+import { PriceChangeIndicator } from "@/components/PriceChangeIndicator";
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -24,16 +25,18 @@ export default function HomePage() {
     fetchGoldPrice,
     toggleSortDirection,
     convertPrice
-  } = useGoldPrice("US", "gram");
+  } = useGoldPrice("MA", "gram"); // Default to Morocco, gram unit
   
   return (
     <div className="container py-8 max-w-screen-lg">
       <div className="mb-8 text-center">
         <div className="flex justify-center items-center gap-2 mb-2">
-          <h1 className="text-3xl font-bold tracking-tight">{t("goldPriceTracker")}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("goldPriceTracker")} - {t("morocco")}
+          </h1>
         </div>
         <p className="text-muted-foreground mt-2">
-          {t("trackRealTime")}
+          {t("trackRealTime")} {t("inCountry", { country: "Morocco" })}
         </p>
       </div>
       
@@ -66,6 +69,18 @@ export default function HomePage() {
           />
         </div>
       </div>
+      
+      {goldPrice && (
+        <div className="mb-6 text-center">
+          <PriceChangeIndicator
+            change={goldPrice.change}
+            changePercentage={goldPrice.changePercentage}
+            size="md"
+            showDaily={true}
+            className="justify-center"
+          />
+        </div>
+      )}
       
       <GoldPriceTable 
         selectedCountry={selectedCountry}

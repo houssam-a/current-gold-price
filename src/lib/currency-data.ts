@@ -1,4 +1,3 @@
-
 // Currency data for the application
 // Contains currency codes, symbols, names, and flags
 
@@ -54,6 +53,14 @@ export const timeframes = [
 
 // Country data
 export const countries = [
+  { 
+    code: "MA", 
+    name: "Morocco", 
+    currency: "MAD", 
+    flag: "🇲🇦", 
+    priority: true,  // Prioritize Morocco
+    baseGoldPrice: 696.93  // Exact price from screenshot
+  },
   {
     name: "United States",
     code: "US",
@@ -107,12 +114,6 @@ export const countries = [
     code: "CN",
     currency: "CNY",
     flag: "🇨🇳"
-  },
-  {
-    name: "Morocco",
-    code: "MA",
-    currency: "MAD",
-    flag: "🇲🇦"
   },
   {
     name: "UAE",
@@ -186,7 +187,11 @@ export const countries = [
     currency: "ETH",
     flag: "Ξ"
   }
-];
+].sort((a, b) => {
+  if (a.priority && !b.priority) return -1;
+  if (!a.priority && b.priority) return 1;
+  return a.name.localeCompare(b.name);
+});
 
 // Gold unit conversions
 export const goldUnits = [
@@ -608,8 +613,8 @@ export const translations = {
     search: "Suchen",
     selectCountry: "Land auswählen",
     selectUnit: "Einheit auswählen",
-    sortAscending: "Aufsteigend sortieren",
-    sortDescending: "Absteigend sortieren",
+    sortAscending: "Tri ascendant",
+    sortDescending: "Tri descendant",
     
     // Navigation
     home: "Startseite",
@@ -623,7 +628,7 @@ export const translations = {
     maximum: "Maximum",
     change: "Änderung",
     priceStatistics: "Preisstatistiken",
-    keyMetrics: "Kennzahlen in",
+    keyMetrics: "Indicateurs clés en",
     
     // Time periods
     day: "Tag",

@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
@@ -34,7 +33,25 @@ export function GoldPriceDisplay({
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
 
-  // Get purity multiplier - 24k is 1, 22k is 0.917, etc.
+  const renderPriceChangeIndicator = () => {
+    if (!goldPrice) return null;
+
+    const isPositive = goldPrice.change > 0;
+    const changePercentage = Math.abs(goldPrice.changePercentage);
+
+    return (
+      <div className={cn(
+        "flex items-center space-x-2 text-sm font-medium",
+        isPositive ? "text-green-600" : "text-red-600"
+      )}>
+        {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+        <span>
+          {isPositive ? '+' : '-'}{changePercentage.toFixed(2)}% {t("dailyChange")}
+        </span>
+      </div>
+    );
+  };
+
   const getPurityMultiplier = () => {
     switch (selectedPurity) {
       case "24k": return 1;
@@ -121,23 +138,26 @@ export function GoldPriceDisplay({
           </div>
           
           {goldPrice ? (
-            <div className="flex items-start justify-between bg-white dark:bg-gray-800 p-4 rounded-lg">
-              <div>
-                <div className="text-2xl font-bold">
-                  {goldPrice.symbol}{" "}
-                  {goldPrice && convertPrice(goldPrice.price, selectedUnit)}
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-start justify-between bg-white dark:bg-gray-800 p-4 rounded-lg">
+                <div>
+                  <div className="text-2xl font-bold">
+                    {goldPrice.symbol}{" "}
+                    {goldPrice && convertPrice(goldPrice.price, selectedUnit)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {t("priceOf")} 1 {t(selectedUnit)} ({selectedPurity})
+                  </div>
+                  {renderPriceChangeIndicator()}
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {t("priceOf")} 1 {t(selectedUnit)} ({selectedPurity})
-                </div>
-              </div>
-              <div className="flex flex-col items-end">
-                <div className="mt-2">
-                  <img 
-                    src="/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"
-                    alt="Gold Bar"
-                    className="h-12 rounded"
-                  />
+                <div className="flex flex-col items-end">
+                  <div className="mt-2">
+                    <img 
+                      src="/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"
+                      alt="Gold Bar"
+                      className="h-12 rounded"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
