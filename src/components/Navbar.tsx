@@ -5,11 +5,29 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
 import { Diamond, Menu, X, Home, BarChart2, Calculator, Euro } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { getGoldPrice } from "@/lib/api";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// Memoized NavLink component to prevent unnecessary re-renders
+const NavLink = memo(({ to, icon, label, onClick }) => {
+  const Icon = icon;
+  return (
+    <SheetClose asChild>
+      <Link
+        to={to}
+        className="flex items-center gap-3 py-3 px-4 text-lg font-medium rounded-lg hover:bg-gold-50 dark:hover:bg-gray-800 transition-colors rtl:flex-row-reverse"
+        onClick={onClick}
+      >
+        <Icon className="h-5 w-5 text-gold-600 dark:text-gold-400" />
+        <span>{label}</span>
+      </Link>
+    </SheetClose>
+  );
+});
+NavLink.displayName = 'NavLink';
 
 export function Navbar() {
   const { t } = useLanguage();
@@ -29,37 +47,20 @@ export function Navbar() {
     }
   }, []);
   
-  // Check API status and fetch gold price change on component mount - with reduced frequency
+  // Check API status and fetch gold price change on component mount
   useEffect(() => {
     fetchGoldPriceChange();
     
-    // Update gold price every 30 seconds instead of 15 to reduce load
+    // Update gold price every 30 seconds
     const interval = setInterval(fetchGoldPriceChange, 30 * 1000);
     
     return () => clearInterval(interval);
   }, [fetchGoldPriceChange]);
 
   // Close mobile menu when navigating
-  const handleNavigation = () => {
+  const handleNavigation = useCallback(() => {
     setIsOpen(false);
-  };
-
-  // Extracted NavLink component for better organization
-  const NavLink = ({ to, icon, label }) => {
-    const Icon = icon;
-    return (
-      <SheetClose asChild>
-        <Link
-          to={to}
-          className="flex items-center gap-3 py-3 px-4 text-lg font-medium rounded-lg hover:bg-gold-50 dark:hover:bg-gray-800 transition-colors rtl:flex-row-reverse"
-          onClick={handleNavigation}
-        >
-          <Icon className="h-5 w-5 text-gold-600 dark:text-gold-400" />
-          <span>{label}</span>
-        </Link>
-      </SheetClose>
-    );
-  };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
@@ -102,10 +103,10 @@ export function Navbar() {
                   
                   {/* Navigation Links */}
                   <div className="py-4 px-2 space-y-1 flex-1">
-                    <NavLink to="/" icon={Home} label={t("home")} />
-                    <NavLink to="/charts" icon={BarChart2} label={t("charts")} />
-                    <NavLink to="/calculator" icon={Calculator} label={t("calculator")} />
-                    <NavLink to="/currency-converter" icon={Euro} label={t("currency")} />
+                    <NavLink to="/" icon={Home} label={t("home")} onClick={handleNavigation} />
+                    <NavLink to="/charts" icon={BarChart2} label={t("charts")} onClick={handleNavigation} />
+                    <NavLink to="/calculator" icon={Calculator} label={t("calculator")} onClick={handleNavigation} />
+                    <NavLink to="/currency-converter" icon={Euro} label={t("currency")} onClick={handleNavigation} />
                   </div>
                   
                   {/* Footer with theme and language */}

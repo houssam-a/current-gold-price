@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLanguage } from "@/context/LanguageContext";
 import { useGoldPrice } from "@/hooks/useGoldPrice";
 import { GoldPuritySelector } from "@/components/GoldPuritySelector";
@@ -29,6 +29,19 @@ export default function HomePage() {
     convertPrice
   } = useGoldPrice("MA"); // Default to Morocco
   
+  // Memoize expensive functions and components
+  const handleCountryChange = useCallback((country: string) => {
+    setSelectedCountry(country);
+  }, [setSelectedCountry]);
+  
+  const handleUnitChange = useCallback((unit: string) => {
+    setSelectedUnit(unit);
+  }, [setSelectedUnit]);
+  
+  const handlePurityChange = useCallback((purity: string) => {
+    setSelectedPurity(purity);
+  }, [setSelectedPurity]);
+  
   // Add delayed loading to improve perceived performance
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,6 +50,40 @@ export default function HomePage() {
     
     return () => clearTimeout(timer);
   }, []);
+  
+  // Memoize components to prevent unnecessary re-renders
+  const memoizedGoldPriceDisplay = useMemo(() => (
+    <GoldPriceDisplay
+      selectedCountry={selectedCountry}
+      setSelectedCountry={handleCountryChange}
+      selectedUnit={selectedUnit}
+      setSelectedUnit={handleUnitChange}
+      selectedPurity={selectedPurity}
+      goldPrice={goldPrice}
+      isLoading={priceLoading}
+      fetchGoldPrice={fetchGoldPrice}
+    />
+  ), [selectedCountry, selectedUnit, selectedPurity, goldPrice, priceLoading, handleCountryChange, handleUnitChange, fetchGoldPrice]);
+  
+  const memoizedPriceTrendChart = useMemo(() => (
+    <PriceTrendChart 
+      selectedCountry={selectedCountry}
+      goldPrice={goldPrice}
+    />
+  ), [selectedCountry, goldPrice]);
+  
+  const memoizedGoldPriceTable = useMemo(() => (
+    <GoldPriceTable 
+      selectedCountry={selectedCountry}
+      setSelectedCountry={handleCountryChange}
+      goldPrice={goldPrice}
+      sortedCountries={sortedCountries}
+      sortDirection={sortDirection}
+      toggleSortDirection={toggleSortDirection}
+      selectedPurity={selectedPurity}
+      convertPrice={convertPrice}
+    />
+  ), [selectedCountry, goldPrice, sortedCountries, sortDirection, selectedPurity, handleCountryChange, toggleSortDirection, convertPrice]);
   
   if (isLoading) {
     return (
@@ -66,29 +113,17 @@ export default function HomePage() {
       <div className="mb-6">
         <GoldPuritySelector 
           value={selectedPurity}
-          onValueChange={setSelectedPurity}
+          onValueChange={handlePurityChange}
         />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="w-full">
-          <GoldPriceDisplay
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
-            selectedUnit={selectedUnit}
-            setSelectedUnit={setSelectedUnit}
-            selectedPurity={selectedPurity}
-            goldPrice={goldPrice}
-            isLoading={priceLoading}
-            fetchGoldPrice={fetchGoldPrice}
-          />
+          {memoizedGoldPriceDisplay}
         </div>
         
         <div className="w-full">
-          <PriceTrendChart 
-            selectedCountry={selectedCountry}
-            goldPrice={goldPrice}
-          />
+          {memoizedPriceTrendChart}
         </div>
       </div>
       
@@ -104,16 +139,7 @@ export default function HomePage() {
         </div>
       )}
       
-      <GoldPriceTable 
-        selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
-        goldPrice={goldPrice}
-        sortedCountries={sortedCountries}
-        sortDirection={sortDirection}
-        toggleSortDirection={toggleSortDirection}
-        selectedPurity={selectedPurity}
-        convertPrice={convertPrice}
-      />
+      {memoizedGoldPriceTable}
     </div>
   );
 }

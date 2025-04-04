@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { useLanguage } from "@/context/LanguageContext";
@@ -15,22 +15,29 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
   
-  const generateChartData = () => {
+  // Generate chart data using useMemo to prevent regeneration on every render
+  const chartData = useMemo(() => {
     if (!goldPrice) return [];
     
+    // Use a fixed seed for random generation to ensure stability
     const basePrice = goldPrice.price;
+    const seed = selectedCountry.charCodeAt(0) + basePrice;
+    
     return Array(30)
       .fill(0)
       .map((_, i) => {
-        const offset = Math.sin(i / 5) * (basePrice * 0.05) + (Math.random() - 0.5) * (basePrice * 0.02);
+        // Use predictable "random" variations based on index and seed
+        // to prevent chart from changing on every render
+        const sinOffset = Math.sin(i / 5) * (basePrice * 0.05);
+        const randomOffset = Math.sin(seed + i) * (basePrice * 0.01);
+        const offset = sinOffset + randomOffset;
+        
         return {
           day: i + 1,
           price: Number((basePrice + offset).toFixed(2)),
         };
       });
-  };
-  
-  const chartData = generateChartData();
+  }, [goldPrice, selectedCountry]);
 
   return (
     <Card className="h-full">
@@ -43,7 +50,11 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
       <CardContent className="h-[250px]">
         {goldPrice ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <LineChart 
+              data={chartData}
+              // Disable animations to prevent movement
+              isAnimationActive={false}
+            >
               <XAxis
                 dataKey="day"
                 tick={{ fontSize: 12 }}
@@ -51,7 +62,11 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               />
               <YAxis
                 tick={{ fontSize: 12 }}
-                domain={["auto", "auto"]}
+                domain={[
+                  // Set fixed domain to prevent chart from jumping
+                  dataMin => Math.floor(dataMin * 0.98),
+                  dataMax => Math.ceil(dataMax * 1.02)
+                ]}
                 tickFormatter={(value) =>
                   `${goldPrice.symbol}${value.toFixed(0)}`
                 }
@@ -59,6 +74,8 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               <Tooltip
                 formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
                 labelFormatter={(label) => `Day ${label}`}
+                // Disable animation for tooltip
+                isAnimationActive={false}
               />
               <ReferenceLine
                 y={goldPrice.price}
@@ -71,6 +88,8 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
                 stroke="#FFCD00"
                 strokeWidth={2}
                 dot={false}
+                // Disable animations to prevent movement
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>

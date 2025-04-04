@@ -2,6 +2,7 @@
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoldPriceHistory } from "@/lib/api";
+import { useMemo } from "react";
 
 interface GoldChartsProps {
   chartData: GoldPriceHistory[];
@@ -16,6 +17,20 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
   };
 
   const tooltipLabelFormatter = (label: string) => new Date(label).toLocaleDateString();
+
+  // Calculate chart domains only once to prevent changes
+  const chartDomains = useMemo(() => {
+    if (!chartData.length) return { min: 0, max: 100 };
+    
+    const prices = chartData.map(item => item.price);
+    const min = Math.min(...prices) * 0.98;
+    const max = Math.max(...prices) * 1.02;
+    
+    return {
+      min: Math.floor(min),
+      max: Math.ceil(max)
+    };
+  }, [chartData]);
 
   if (isLoading) {
     return (
@@ -44,11 +59,12 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
             />
             <YAxis
               tick={{ fontSize: 12 }}
-              domain={["auto", "auto"]}
+              domain={[chartDomains.min, chartDomains.max]}
             />
             <Tooltip 
               formatter={(value) => [`${value}`, "Price"]}
               labelFormatter={tooltipLabelFormatter}
+              isAnimationActive={false}
             />
             <Legend />
             <Line
@@ -58,6 +74,7 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
               stroke="#FFCD00"
               strokeWidth={2}
               activeDot={{ r: 8 }}
+              isAnimationActive={false}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -74,11 +91,12 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
             />
             <YAxis
               tick={{ fontSize: 12 }}
-              domain={["auto", "auto"]}
+              domain={[chartDomains.min, chartDomains.max]}
             />
             <Tooltip 
               formatter={(value) => [`${value}`, "Price"]}
               labelFormatter={tooltipLabelFormatter}
+              isAnimationActive={false}
             />
             <Legend />
             <Area
@@ -88,6 +106,7 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
               stroke="#FFCD00"
               fill="#FFCD00"
               fillOpacity={0.3}
+              isAnimationActive={false}
             />
           </AreaChart>
         </ResponsiveContainer>
@@ -104,17 +123,19 @@ export function GoldCharts({ chartData, isLoading, currencyCode }: GoldChartsPro
             />
             <YAxis
               tick={{ fontSize: 12 }}
-              domain={["auto", "auto"]}
+              domain={[chartDomains.min, chartDomains.max]}
             />
             <Tooltip 
               formatter={(value) => [`${value}`, "Price"]}
               labelFormatter={tooltipLabelFormatter}
+              isAnimationActive={false}
             />
             <Legend />
             <Bar
               name={`Gold Price (${currencyCode})`}
               dataKey="price"
               fill="#FFCD00"
+              isAnimationActive={false}
             />
           </BarChart>
         </ResponsiveContainer>
