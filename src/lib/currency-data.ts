@@ -372,7 +372,7 @@ export const languages = [
   { code: "ru", name: "Русский", flag: "🇷🇺" }
 ];
 
-// Default translations
+// Translations - fixing duplicate key issues
 export const translations = {
   en: {
     // General
@@ -415,7 +415,7 @@ export const translations = {
     home: "Home",
     charts: "Charts",
     calculator: "Calculator",
-    currency: "Currency",
+    currencyLabel: "Currency",
     
     // Chart labels
     average: "Average",
@@ -454,10 +454,10 @@ export const translations = {
     enterAmount: "Enter amount",
     from: "From",
     to: "To",
-    selectCurrency: "Select currency",
+    selectCurrencyOption: "Select currency",
     swapCurrencies: "Swap currencies",
     converting: "Converting...",
-    convert: "Convert",
+    convertBtn: "Convert",
 
     // Language
     languageChanged: "Language changed to"
@@ -503,7 +503,7 @@ export const translations = {
     home: "الرئيسية",
     charts: "الرسوم البيانية",
     calculator: "الحاسبة",
-    currency: "العملات",
+    currencyLabel: "العملات",
     
     // Chart labels
     average: "المتوسط",
@@ -542,10 +542,10 @@ export const translations = {
     enterAmount: "أدخل المبلغ",
     from: "من",
     to: "إلى",
-    selectCurrency: "اختر العملة",
+    selectCurrencyOption: "اختر العملة",
     swapCurrencies: "تبديل العملات",
     converting: "جاري التحويل...",
-    convert: "تحويل",
+    convertBtn: "تحويل",
 
     // Language
     languageChanged: "تم تغيير اللغة إلى"
@@ -591,7 +591,7 @@ export const translations = {
     home: "Inicio",
     charts: "Gráficos",
     calculator: "Calculadora",
-    currency: "Moneda",
+    currencyLabel: "Moneda",
     
     // Chart labels
     average: "Promedio",
@@ -630,10 +630,10 @@ export const translations = {
     enterAmount: "Ingresa cantidad",
     from: "De",
     to: "A",
-    selectCurrency: "Seleccionar moneda",
+    selectCurrencyOption: "Seleccionar moneda",
     swapCurrencies: "Intercambiar monedas",
     converting: "Convirtiendo...",
-    convert: "Convertir",
+    convertBtn: "Convertir",
 
     // Language
     languageChanged: "Idioma cambiado a"
@@ -679,7 +679,7 @@ export const translations = {
     home: "Accueil",
     charts: "Graphiques",
     calculator: "Calculatrice",
-    currency: "Devise",
+    currencyLabel: "Devise",
     
     // Chart labels
     average: "Moyenne",
@@ -718,10 +718,10 @@ export const translations = {
     enterAmount: "Entrer le montant",
     from: "De",
     to: "À",
-    selectCurrency: "Sélectionner devise",
+    selectCurrencyOption: "Sélectionner devise",
     swapCurrencies: "Échanger les devises",
     converting: "Conversion en cours...",
-    convert: "Convertir",
+    convertBtn: "Convertir",
 
     // Language
     languageChanged: "Langue changée en"
@@ -767,7 +767,7 @@ export const translations = {
     home: "Startseite",
     charts: "Diagramme",
     calculator: "Rechner",
-    currency: "Währung",
+    currencyLabel: "Währung",
     
     // Chart labels
     average: "Durchschnitt",
@@ -806,10 +806,10 @@ export const translations = {
     enterAmount: "Betrag eingeben",
     from: "Von",
     to: "Nach",
-    selectCurrency: "Währung auswählen",
+    selectCurrencyOption: "Währung auswählen",
     swapCurrencies: "Währungen tauschen",
     converting: "Konvertiere...",
-    convert: "Konvertieren",
+    convertBtn: "Konvertieren",
 
     // Language
     languageChanged: "Sprache geändert zu"
@@ -855,7 +855,7 @@ export const translations = {
     home: "首页",
     charts: "图表",
     calculator: "计算器",
-    currency: "货币",
+    currencyLabel: "货币",
     
     // Chart labels
     average: "平均",
@@ -878,7 +878,7 @@ export const translations = {
     
     // Currency Converter
     currencyConverter: "黄金货币转换器",
-    convertRealTime: "实时转换不同���币之间的黄金价格",
+    convertRealTime: "实时转换不同货币之间的黄金价格",
     goldImageGallery: "黄金图片库",
     
     // Favorites
@@ -894,10 +894,10 @@ export const translations = {
     enterAmount: "输入金额",
     from: "从",
     to: "到",
-    selectCurrency: "选择货币",
+    selectCurrencyOption: "选择货币",
     swapCurrencies: "互换货币",
     converting: "转换中...",
-    convert: "转换",
+    convertBtn: "转换",
 
     // Language
     languageChanged: "语言已更改为"
@@ -943,7 +943,7 @@ export const translations = {
     home: "होम",
     charts: "चार्ट",
     calculator: "कैलकुलेटर",
-    currency: "मुद्रा",
+    currencyLabel: "मुद्रा",
     
     // Chart labels
     average: "औसत",
@@ -982,10 +982,10 @@ export const translations = {
     enterAmount: "राशि दर्ज करें",
     from: "से",
     to: "तक",
-    selectCurrency: "मुद्रा चुनें",
+    selectCurrencyOption: "मुद्रा चुनें",
     swapCurrencies: "मुद्राएँ स्वैप करें",
     converting: "परिवर्तित हो रहा है...",
-    convert: "परिवर्तित करें",
+    convertBtn: "परिवर्तित करें",
 
     // Language
     languageChanged: "भाषा बदली गई है"
@@ -1031,7 +1031,7 @@ export const translations = {
     home: "ホーム",
     charts: "チャート",
     calculator: "計算機",
-    currency: "通貨",
+    currencyLabel: "通貨",
     
     // Chart labels
     average: "平均",
@@ -1055,7 +1055,7 @@ export const translations = {
     // Currency Converter
     currencyConverter: "金通貨コンバーター",
     convertRealTime: "リアルタイムで異なる通貨間の金価格を変換する",
-    goldImageGallery: "金のイメージギャラリー",
+    goldImageGallery: "金��イメージギャラリー",
     
     // Favorites
     favoriteCurrencies: "お気に入りの通貨",
@@ -1070,13 +1070,13 @@ export const translations = {
     enterAmount: "金額を入力",
     from: "から",
     to: "へ",
-    selectCurrency: "通貨を選択",
+    selectCurrencyOption: "通貨を選択",
     swapCurrencies: "通貨を交換",
     converting: "変換中...",
-    convert: "変換",
+    convertBtn: "変換",
 
     // Language
-    languageChanged: "言語が��に変更されました："
+    languageChanged: "言語が変更されました："
   },
   ru: {
     // General
@@ -1119,7 +1119,7 @@ export const translations = {
     home: "Главная",
     charts: "Графики",
     calculator: "Калькулятор",
-    currency: "Валюта",
+    currencyLabel: "Валюта",
     
     // Chart labels
     average: "Среднее",
@@ -1158,10 +1158,10 @@ export const translations = {
     enterAmount: "Введите сумму",
     from: "Из",
     to: "В",
-    selectCurrency: "Выберите валюту",
+    selectCurrencyOption: "Выберите валюту",
     swapCurrencies: "Поменять валюты местами",
     converting: "Конвертация...",
-    convert: "Конвертировать",
+    convertBtn: "Конвертировать",
 
     // Language
     languageChanged: "Язык изменен на"
