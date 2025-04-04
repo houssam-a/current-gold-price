@@ -6,18 +6,18 @@ import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Updated gold bar images
+// تحديث صور سبائك الذهب باستخدام الصور الجديدة
 const goldBarImages = [
   {
-    src: "/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png",
+    src: "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png",
     alt: "Gold Bar Stack"
   },
   {
-    src: "/lovable-uploads/408ed4f9-6669-45df-979f-458a73b393ee.png",
+    src: "/lovable-uploads/6fb8c3ed-1670-4df9-8394-4f7ac33d7206.png",
     alt: "Gold Bullion"
   },
   {
-    src: "/lovable-uploads/133715b9-b3ee-4c65-9981-e9df84e11795.png",
+    src: "/lovable-uploads/7a7e2918-3118-4784-988d-4094552314c2.png",
     alt: "Gold Investment"
   }
 ];
@@ -25,7 +25,7 @@ const goldBarImages = [
 export function GoldImageGallery() {
   const { t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false); // تعطيل التشغيل التلقائي لتحسين الأداء
   const isMobile = useIsMobile();
   
   // Function to move to the next image
@@ -63,9 +63,6 @@ export function GoldImageGallery() {
   }, [isAutoPlaying]);
   
   const currentImage = goldBarImages[currentImageIndex];
-  
-  // Use smaller images on mobile to improve performance
-  const imageSize = isMobile ? "?auto=format&fit=crop&w=400&h=225" : "?auto=format&fit=crop&w=800&h=450";
   
   return (
     <Card className="overflow-hidden shadow-lg border-gold-200 dark:border-gold-800">

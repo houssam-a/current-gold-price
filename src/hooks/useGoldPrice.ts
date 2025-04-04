@@ -10,7 +10,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
   const [selectedPurity, setSelectedPurity] = useState("24k"); // Default to 24k gold
   const [goldPrice, setGoldPrice] = useState<GoldPrice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedGoldImage, setSelectedGoldImage] = useState("/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png");
+  const [selectedGoldImage, setSelectedGoldImage] = useState("/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -104,7 +104,12 @@ export function useGoldPrice(initialCountry: string = "MA") {
   
   // Effect to update gold image
   useEffect(() => {
-    const goldImages = ["/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"];
+    // استخدام الصور الجديدة التي تم تحميلها
+    const goldImages = [
+      "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png",
+      "/lovable-uploads/6fb8c3ed-1670-4df9-8394-4f7ac33d7206.png",
+      "/lovable-uploads/7a7e2918-3118-4784-988d-4094552314c2.png"
+    ];
     setSelectedGoldImage(goldImages[Math.floor(Math.random() * goldImages.length)]);
   }, [selectedCountry]);
   

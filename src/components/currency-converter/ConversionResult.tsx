@@ -34,11 +34,8 @@ export function ConversionResult({
   const { t } = useLanguage();
   const isMobile = useIsMobile();
   
-  // Replace the dynamic image with our gold bar image
-  const goldBarImage = "/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png";
-  
-  // For mobile, use smaller images to improve performance
-  const imageSize = isMobile ? "?auto=format&fit=crop&w=96&h=96" : "?auto=format&fit=crop&w=128&h=128";
+  // استخدام صورة سبيكة الذهب الجديدة
+  const goldBarImage = "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png";
   
   return (
     <div className="mt-4 bg-gradient-to-r from-white to-gold-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-6 rounded-lg border border-gold-200 dark:border-gold-800 shadow-md transition-all">

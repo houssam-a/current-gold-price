@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -153,7 +154,7 @@ export function GoldPriceDisplay({
                 <div className="flex flex-col items-end">
                   <div className="mt-2">
                     <img 
-                      src="/lovable-uploads/82dd0c5b-0351-45cc-833c-2e7e67aa21de.png"
+                      src="/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png"
                       alt="Gold Bar"
                       className="h-12 rounded"
                     />

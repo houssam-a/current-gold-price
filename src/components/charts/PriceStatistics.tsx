@@ -1,6 +1,5 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { goldImages } from "@/lib/currency-data";
 import { useLanguage } from "@/context/LanguageContext";
 import { conversionFactors } from "@/lib/goldApi";
 
@@ -19,7 +18,9 @@ interface PriceStatisticsProps {
 
 export function PriceStatistics({ stats, currency, unit = "gram" }: PriceStatisticsProps) {
   const { t } = useLanguage();
-  const randomGoldImage = goldImages[Math.floor(Math.random() * goldImages.length)];
+  
+  // استخدام الصورة الجديدة للذهب
+  const goldImageSrc = "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png";
   
   // Convert stats based on unit if needed
   const unitMultiplier = conversionFactors[unit as keyof typeof conversionFactors] || 1;
@@ -42,8 +43,8 @@ export function PriceStatistics({ stats, currency, unit = "gram" }: PriceStatist
           </div>
           <div className="w-16 h-16 rounded-full overflow-hidden">
             <img 
-              src={`${randomGoldImage.src}?auto=format&fit=crop&w=64&h=64`} 
-              alt={randomGoldImage.alt}
+              src={goldImageSrc} 
+              alt="Gold Bar"
               className="w-full h-full object-cover"
             />
           </div>
