@@ -40,9 +40,9 @@ export function GoldPriceTable({
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
 
-  // Highlight Morocco in the table
+  // Highlight the selected country in the table
   const getRowClassName = (countryCode: string) => {
-    return countryCode === "MA" 
+    return countryCode === selectedCountry 
       ? "bg-gold-50 dark:bg-gold-900 font-semibold" 
       : "";
   };
@@ -53,7 +53,7 @@ export function GoldPriceTable({
         <div>
           <CardTitle>{t("goldPriceByUnit")}</CardTitle>
           <CardDescription>
-            {t("compareGoldPrices")} - {t("highlightedCountry")}: Morocco
+            {t("compareGoldPrices")} - {t("highlightedCountry")}: {country?.name}
           </CardDescription>
         </div>
         <Button

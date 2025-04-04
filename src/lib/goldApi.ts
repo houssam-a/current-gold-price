@@ -35,6 +35,24 @@ const countrySpecificGoldPrices = {
   ZAR: 1491.74, // South Africa price per gram
   SGD: 111.53, // Singapore price per gram
   HKD: 644.14, // Hong Kong price per gram
+  KRW: 109841.20, // South Korea price per gram
+  IDR: 1293423.75, // Indonesia price per gram
+  MYR: 385.67, // Malaysia price per gram
+  THB: 2975.13, // Thailand price per gram
+  PHP: 4692.52, // Philippines price per gram
+  VND: 2067837.42, // Vietnam price per gram
+  NGN: 125491.63, // Nigeria price per gram
+  DZD: 11052.94, // Algeria price per gram
+  TND: 257.02, // Tunisia price per gram
+  QAR: 299.78, // Qatar price per gram
+  KWD: 25.28, // Kuwait price per gram
+  OMR: 31.68, // Oman price per gram
+  BHD: 31.09, // Bahrain price per gram
+  LBP: 7378635.22, // Lebanon price per gram
+  IQD: 108046.50, // Iraq price per gram
+  JOD: 58.38, // Jordan price per gram
+  ILS: 302.79, // Israel price per gram
+  LYD: 401.25, // Libya price per gram
 };
 
 // Simulate daily price changes based on the current date
@@ -47,34 +65,10 @@ function getDailyPriceVariation(currency) {
   return variation;
 }
 
-// Specialized Moroccan Gold Price with updated real pricing
-function getMoroccanGoldPrice() {
-  const basePrice = 823.26; // Updated real price from April 2025
-  const currentDate = new Date();
-  
-  // Create daily price variations that are deterministic based on the date
-  const dailyVariation = getDailyPriceVariation("MAD");
-  const change = Number((basePrice * dailyVariation).toFixed(2));
-  
-  return {
-    price: Number((basePrice * (1 + dailyVariation)).toFixed(2)),
-    currency: "MAD",
-    symbol: "د.م.", // Moroccan Dirham symbol
-    timestamp: currentDate.getTime(),
-    change: change,
-    changePercentage: Number(((change / basePrice) * 100).toFixed(2))
-  };
-}
-
 // Get current gold price using the updated real prices
 export const fetchGoldPrice = async (currency = "MAD") => {
   try {
-    // For Morocco, return specialized data
-    if (currency === "MAD") {
-      return getMoroccanGoldPrice();
-    }
-    
-    // For other countries, use the updated real prices with daily variations
+    // Use the updated real prices with daily variations
     const basePrice = countrySpecificGoldPrices[currency] || countrySpecificGoldPrices.USD;
     const dailyVariation = getDailyPriceVariation(currency);
     const currentPrice = basePrice * (1 + dailyVariation);
@@ -178,6 +172,24 @@ function getSymbolForCurrency(code) {
     ZAR: 'R',
     SGD: 'S$',
     HKD: 'HK$',
+    KRW: '₩',
+    IDR: 'Rp',
+    MYR: 'RM',
+    THB: '฿',
+    PHP: '₱',
+    VND: '₫',
+    NGN: '₦',
+    DZD: 'د.ج',
+    TND: 'د.ت',
+    QAR: 'ر.ق',
+    KWD: 'د.ك',
+    OMR: 'ر.ع.',
+    BHD: 'د.ب',
+    LBP: 'ل.ل',
+    IQD: 'ع.د',
+    JOD: 'د.ا',
+    ILS: '₪',
+    LYD: 'ل.د',
     BTC: '₿',
     ETH: 'Ξ'
   };

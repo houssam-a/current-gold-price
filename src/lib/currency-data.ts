@@ -51,141 +51,261 @@ export const timeframes = [
   }
 ];
 
-// Country data
+// Country data - expanded to include more countries
 export const countries = [
   { 
     code: "MA", 
     name: "Morocco", 
     currency: "MAD", 
     flag: "🇲🇦", 
-    priority: true,  // Prioritize Morocco
-    baseGoldPrice: 696.93  // Exact price from screenshot
+    priority: true
   },
   {
-    name: "United States",
     code: "US",
+    name: "United States",
     currency: "USD",
     flag: "🇺🇸"
   },
   {
-    name: "Euro Zone",
     code: "EU",
+    name: "Euro Zone",
     currency: "EUR",
     flag: "🇪🇺"
   },
   {
-    name: "United Kingdom",
     code: "GB",
+    name: "United Kingdom",
     currency: "GBP",
     flag: "🇬🇧"
   },
   {
-    name: "Japan",
     code: "JP",
+    name: "Japan",
     currency: "JPY",
     flag: "🇯🇵"
   },
   {
-    name: "India",
     code: "IN",
+    name: "India",
     currency: "INR",
     flag: "🇮🇳"
   },
   {
-    name: "Australia",
     code: "AU",
+    name: "Australia",
     currency: "AUD",
     flag: "🇦🇺"
   },
   {
-    name: "Canada",
     code: "CA",
+    name: "Canada",
     currency: "CAD",
     flag: "🇨🇦"
   },
   {
-    name: "Switzerland",
     code: "CH",
+    name: "Switzerland",
     currency: "CHF",
     flag: "🇨🇭"
   },
   {
-    name: "China",
     code: "CN",
+    name: "China",
     currency: "CNY",
     flag: "🇨🇳"
   },
   {
-    name: "UAE",
     code: "AE",
+    name: "UAE",
     currency: "AED",
     flag: "🇦🇪"
   },
   {
-    name: "Saudi Arabia",
     code: "SA",
+    name: "Saudi Arabia",
     currency: "SAR",
     flag: "🇸🇦"
   },
   {
-    name: "Egypt",
     code: "EG",
+    name: "Egypt",
     currency: "EGP",
     flag: "🇪🇬"
   },
   {
-    name: "Turkey",
     code: "TR",
+    name: "Turkey",
     currency: "TRY",
     flag: "🇹🇷"
   },
   {
-    name: "Russia",
     code: "RU",
+    name: "Russia",
     currency: "RUB",
     flag: "🇷🇺"
   },
   {
-    name: "Brazil",
     code: "BR",
+    name: "Brazil",
     currency: "BRL",
     flag: "🇧🇷"
   },
   {
-    name: "Mexico",
     code: "MX",
+    name: "Mexico",
     currency: "MXN",
     flag: "🇲🇽"
   },
   {
-    name: "South Africa",
     code: "ZA",
+    name: "South Africa",
     currency: "ZAR",
     flag: "🇿🇦"
   },
   {
-    name: "Singapore",
     code: "SG",
+    name: "Singapore",
     currency: "SGD",
     flag: "🇸🇬"
   },
   {
-    name: "Hong Kong",
     code: "HK",
+    name: "Hong Kong",
     currency: "HKD",
     flag: "🇭🇰"
   },
+  // Additional countries
   {
-    name: "Digital",
-    code: "BTC",
-    currency: "BTC",
-    flag: "₿"
+    code: "KR",
+    name: "South Korea",
+    currency: "KRW",
+    flag: "🇰🇷"
   },
   {
-    name: "Ethereum",
-    code: "ETH",
-    currency: "ETH",
-    flag: "Ξ"
+    code: "ID",
+    name: "Indonesia",
+    currency: "IDR",
+    flag: "🇮🇩"
+  },
+  {
+    code: "MY",
+    name: "Malaysia",
+    currency: "MYR",
+    flag: "🇲🇾"
+  },
+  {
+    code: "TH",
+    name: "Thailand",
+    currency: "THB",
+    flag: "🇹🇭"
+  },
+  {
+    code: "PH",
+    name: "Philippines",
+    currency: "PHP",
+    flag: "🇵🇭"
+  },
+  {
+    code: "VN",
+    name: "Vietnam",
+    currency: "VND",
+    flag: "🇻🇳"
+  },
+  {
+    code: "NG",
+    name: "Nigeria",
+    currency: "NGN",
+    flag: "🇳🇬"
+  },
+  {
+    code: "DZ",
+    name: "Algeria",
+    currency: "DZD",
+    flag: "🇩🇿"
+  },
+  {
+    code: "TN",
+    name: "Tunisia",
+    currency: "TND",
+    flag: "🇹🇳"
+  },
+  {
+    code: "QA",
+    name: "Qatar",
+    currency: "QAR",
+    flag: "🇶🇦"
+  },
+  {
+    code: "KW",
+    name: "Kuwait",
+    currency: "KWD",
+    flag: "🇰🇼"
+  },
+  {
+    code: "OM",
+    name: "Oman",
+    currency: "OMR",
+    flag: "🇴🇲"
+  },
+  {
+    code: "BH",
+    name: "Bahrain",
+    currency: "BHD",
+    flag: "🇧🇭"
+  },
+  {
+    code: "LB",
+    name: "Lebanon",
+    currency: "LBP",
+    flag: "🇱🇧"
+  },
+  {
+    code: "IQ",
+    name: "Iraq",
+    currency: "IQD",
+    flag: "🇮🇶"
+  },
+  {
+    code: "JO",
+    name: "Jordan",
+    currency: "JOD",
+    flag: "🇯🇴"
+  },
+  {
+    code: "IL",
+    name: "Israel",
+    currency: "ILS",
+    flag: "🇮🇱"
+  },
+  {
+    code: "FR",
+    name: "France",
+    currency: "EUR",
+    flag: "🇫🇷"
+  },
+  {
+    code: "DE",
+    name: "Germany",
+    currency: "EUR",
+    flag: "🇩🇪"
+  },
+  {
+    code: "IT",
+    name: "Italy",
+    currency: "EUR",
+    flag: "🇮🇹"
+  },
+  {
+    code: "ES",
+    name: "Spain",
+    currency: "EUR",
+    flag: "🇪🇸"
+  },
+  {
+    code: "LY",
+    name: "Libya",
+    currency: "LYD",
+    flag: "🇱🇾"
   }
 ].sort((a, b) => {
   if (a.priority && !b.priority) return -1;
@@ -266,6 +386,9 @@ export const translations = {
     lastUpdated: "Last updated",
     priceOf: "Price of",
     goldPurity: "Gold Purity",
+    inCountry: "in {{country}}",
+    morocco: "Morocco",
+    highlightedCountry: "Highlighted Country",
     
     // Units
     gram: "gram",
@@ -348,6 +471,9 @@ export const translations = {
     lastUpdated: "آخر تحديث",
     priceOf: "سعر",
     goldPurity: "نقاء الذهب",
+    inCountry: "في {{country}}",
+    morocco: "المغرب",
+    highlightedCountry: "البلد المميز",
     
     // Units
     gram: "جرام",
@@ -430,6 +556,9 @@ export const translations = {
     lastUpdated: "Última actualización",
     priceOf: "Precio de",
     goldPurity: "Pureza del oro",
+    inCountry: "en {{country}}",
+    morocco: "Marruecos",
+    highlightedCountry: "País destacado",
     
     // Units
     gram: "gramo",
@@ -512,6 +641,9 @@ export const translations = {
     lastUpdated: "Dernière mise à jour",
     priceOf: "Prix de",
     goldPurity: "Pureté de l'or",
+    inCountry: "en {{country}}",
+    morocco: "Maroc",
+    highlightedCountry: "Pays mis en évidence",
     
     // Units
     gram: "gramme",
@@ -594,6 +726,9 @@ export const translations = {
     lastUpdated: "Letzte Aktualisierung",
     priceOf: "Preis von",
     goldPurity: "Goldgehalt",
+    inCountry: "in {{country}}",
+    morocco: "Marokko",
+    highlightedCountry: "Hervorgehobenes Land",
     
     // Units
     gram: "Gramm",
@@ -676,6 +811,9 @@ export const translations = {
     lastUpdated: "最近更新",
     priceOf: "价格",
     goldPurity: "黄金纯度",
+    inCountry: "在{{country}}",
+    morocco: "摩洛哥",
+    highlightedCountry: "突出显示的国家",
     
     // Units
     gram: "克",
@@ -758,6 +896,9 @@ export const translations = {
     lastUpdated: "अंतिम अद्यतन",
     priceOf: "की कीमत",
     goldPurity: "सोने की शुद्धता",
+    inCountry: "में {{country}}",
+    morocco: "मोरक्को",
+    highlightedCountry: "हाइलाइट किया गया देश",
     
     // Units
     gram: "ग्राम",
@@ -840,6 +981,9 @@ export const translations = {
     lastUpdated: "最終更新日",
     priceOf: "の価格",
     goldPurity: "金の純度",
+    inCountry: "{{country}}の",
+    morocco: "モロッコ",
+    highlightedCountry: "強調表示された国",
     
     // Units
     gram: "グラム",
@@ -871,125 +1015,4 @@ export const translations = {
     // Chart labels
     average: "平均",
     minimum: "最小",
-    maximum: "最大",
-    change: "変化",
-    priceStatistics: "価格統計",
-    keyMetrics: "の主要指標",
-    
-    // Time periods
-    day: "日",
-    week: "週",
-    month: "月",
-    months: "ヶ月",
-    year: "年",
-    
-    // Daily change
-    dailyChange: "毎日の変化",
-    todayVsYesterday: "今日 vs 昨日",
-    
-    // Currency Converter
-    currencyConverter: "ゴールド通貨コンバーター",
-    convertRealTime: "異なる通貨間でのゴールド価格をリアルタイムで変換",
-    goldImageGallery: "ゴールド画像ギャラリー",
-    
-    // Favorites
-    favoriteCurrencies: "お気に入り通貨",
-    quickAccess: "よく使う通貨へのクイックアクセス",
-    noFavorites: "まだお気に入りはありません。以下で追加してください！",
-    addFavorite: "お気に入り通貨を追加",
-    
-    // Conversion Form
-    convertCurrency: "ゴールド通貨換算",
-    enterAmountDesc: "通貨間で換算する金額を入力してください",
-    amount: "金額",
-    enterAmount: "金額を入力",
-    from: "から",
-    to: "へ",
-    selectCurrency: "通貨を選択",
-    swapCurrencies: "通貨を入れ替え",
-    converting: "変換中...",
-    convert: "変換する"
-  },
-  ru: {
-    // General
-    goldPriceTracker: "Текущая цена на золото",
-    trackRealTime: "Отслеживайте цены на золото в реальном времени в разных валютах",
-    currentGoldPrice: "Текущая цена на золото",
-    goldPriceByUnit: "Цена золота за единицу",
-    compareGoldPrices: "Сравните цены на золото в разных единицах и валютах",
-    priceTrend: "Тенденция цены",
-    historicalGoldPrice: "Историческая цена на золото в",
-    lastUpdated: "Последнее обновление",
-    priceOf: "Цена",
-    goldPurity: "Чистота золота",
-    
-    // Units
-    gram: "грамм",
-    ounce: "унция",
-    kilogram: "килограмм",
-    days: "дни",
-    
-    // Countries and Currencies
-    country: "Страна",
-    currency: "Валюта",
-    pricePerGram: "Цена за грамм",
-    pricePerOunce: "Цена за унцию",
-    pricePerKilo: "Цена за килограмм",
-    
-    // UI Actions
-    refresh: "Обновить",
-    search: "Поиск",
-    selectCountry: "Выберите страну",
-    selectUnit: "Выберите единицу",
-    sortAscending: "Сортировать по возрастанию",
-    sortDescending: "Сортировать по убыванию",
-    
-    // Navigation
-    home: "Главная",
-    charts: "Графики",
-    calculator: "Калькулятор",
-    currency: "Валюта",
-    
-    // Chart labels
-    average: "Среднее",
-    minimum: "Минимум",
-    maximum: "Максимум",
-    change: "Изменение",
-    priceStatistics: "Статистика цен",
-    keyMetrics: "Ключевые показатели в",
-    
-    // Time periods
-    day: "День",
-    week: "Неделя",
-    month: "Месяц",
-    months: "Месяцы",
-    year: "Год",
-    
-    // Daily change
-    dailyChange: "Ежедневное изменение",
-    todayVsYesterday: "Сегодня vs. Вчера",
-    
-    // Currency Converter
-    currencyConverter: "Конвертер Золотых Валют",
-    convertRealTime: "Конвертировать цены на золото между различными валютами в реальном времени",
-    goldImageGallery: "Галерея Изображений Золота",
-    
-    // Favorites
-    favoriteCurrencies: "Избранные Валюты",
-    quickAccess: "Быстрый доступ к часто используемым валютам",
-    noFavorites: "Пока нет избранных валют. Добавьте их ниже!",
-    addFavorite: "Добавить валюту в избранное",
-    
-    // Conversion Form
-    convertCurrency: "Конвертировать Золотую Валюту",
-    enterAmountDesc: "Введите сумму для конвертации между валютами",
-    amount: "Сумма",
-    enterAmount: "Введите сумму",
-    from: "Из",
-    to: "В",
-    selectCurrency: "Выберите валюту",
-    swapCurrencies: "Поменять валюты местами",
-    converting: "Конвертация...",
-    convert: "Конвертировать"
-  }
-};
+    maximum:

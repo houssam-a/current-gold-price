@@ -32,11 +32,11 @@ export default function HomePage() {
       <div className="mb-8 text-center">
         <div className="flex justify-center items-center gap-2 mb-2">
           <h1 className="text-3xl font-bold tracking-tight">
-            {t("goldPriceTracker")} - {t("morocco")}
+            {t("goldPriceTracker")}
           </h1>
         </div>
         <p className="text-muted-foreground mt-2">
-          {t("trackRealTime")} {t("inCountry", { country: "Morocco" })}
+          {t("trackRealTime")}
         </p>
       </div>
       

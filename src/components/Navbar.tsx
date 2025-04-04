@@ -4,7 +4,7 @@ import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
-import { Diamond, Menu, X } from "lucide-react";
+import { Diamond, Menu } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { getGoldPrice } from "@/lib/api";
 import { Button } from "./ui/button";
