@@ -1,4 +1,3 @@
-
 // Currency data for the application
 // Contains currency codes, symbols, names, and flags
 
@@ -458,7 +457,10 @@ export const translations = {
     selectCurrency: "Select currency",
     swapCurrencies: "Swap currencies",
     converting: "Converting...",
-    convert: "Convert"
+    convert: "Convert",
+
+    // Language
+    languageChanged: "Language changed to"
   },
   ar: {
     // General
@@ -543,7 +545,10 @@ export const translations = {
     selectCurrency: "اختر العملة",
     swapCurrencies: "تبديل العملات",
     converting: "جاري التحويل...",
-    convert: "تحويل"
+    convert: "تحويل",
+
+    // Language
+    languageChanged: "تم تغيير اللغة إلى"
   },
   es: {
     // General
@@ -628,7 +633,10 @@ export const translations = {
     selectCurrency: "Seleccionar moneda",
     swapCurrencies: "Intercambiar monedas",
     converting: "Convirtiendo...",
-    convert: "Convertir"
+    convert: "Convertir",
+
+    // Language
+    languageChanged: "Idioma cambiado a"
   },
   fr: {
     // General
@@ -713,7 +721,10 @@ export const translations = {
     selectCurrency: "Sélectionner devise",
     swapCurrencies: "Échanger les devises",
     converting: "Conversion en cours...",
-    convert: "Convertir"
+    convert: "Convertir",
+
+    // Language
+    languageChanged: "Langue changée en"
   },
   de: {
     // General
@@ -798,7 +809,10 @@ export const translations = {
     selectCurrency: "Währung auswählen",
     swapCurrencies: "Währungen tauschen",
     converting: "Konvertiere...",
-    convert: "Konvertieren"
+    convert: "Konvertieren",
+
+    // Language
+    languageChanged: "Sprache geändert zu"
   },
   zh: {
     // General
@@ -864,7 +878,7 @@ export const translations = {
     
     // Currency Converter
     currencyConverter: "黄金货币转换器",
-    convertRealTime: "实时转换不同货币之间的黄金价格",
+    convertRealTime: "实时转换不同���币之间的黄金价格",
     goldImageGallery: "黄金图片库",
     
     // Favorites
@@ -883,7 +897,10 @@ export const translations = {
     selectCurrency: "选择货币",
     swapCurrencies: "互换货币",
     converting: "转换中...",
-    convert: "转换"
+    convert: "转换",
+
+    // Language
+    languageChanged: "语言已更改为"
   },
   hi: {
     // General
@@ -968,7 +985,10 @@ export const translations = {
     selectCurrency: "मुद्रा चुनें",
     swapCurrencies: "मुद्राएँ स्वैप करें",
     converting: "परिवर्तित हो रहा है...",
-    convert: "परिवर्तित करें"
+    convert: "परिवर्तित करें",
+
+    // Language
+    languageChanged: "भाषा बदली गई है"
   },
   ja: {
     // General
@@ -1053,7 +1073,10 @@ export const translations = {
     selectCurrency: "通貨を選択",
     swapCurrencies: "通貨を交換",
     converting: "変換中...",
-    convert: "変換"
+    convert: "変換",
+
+    // Language
+    languageChanged: "言語が��に変更されました："
   },
   ru: {
     // General
@@ -1138,7 +1161,9 @@ export const translations = {
     selectCurrency: "Выберите валюту",
     swapCurrencies: "Поменять валюты местами",
     converting: "Конвертация...",
-    convert: "Конвертировать"
+    convert: "Конвертировать",
+
+    // Language
+    languageChanged: "Язык изменен на"
   }
 };
-
