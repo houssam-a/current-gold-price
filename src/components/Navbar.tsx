@@ -4,17 +4,18 @@ import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/context/LanguageContext";
-import { Diamond, Menu } from "lucide-react";
+import { Diamond, Menu, X, Home, BarChart2, Calculator, Euro } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { getGoldPrice } from "@/lib/api";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function Navbar() {
   const { t } = useLanguage();
   const [goldPriceChange, setGoldPriceChange] = useState({ change: 0, changePercentage: 0 });
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
   
   const fetchGoldPriceChange = useCallback(async () => {
     try {
@@ -28,44 +29,37 @@ export function Navbar() {
     }
   }, []);
   
-  // Check API status and fetch gold price change on component mount
+  // Check API status and fetch gold price change on component mount - with reduced frequency
   useEffect(() => {
     fetchGoldPriceChange();
     
-    // Update gold price every 15 seconds for more frequent updates
-    const interval = setInterval(fetchGoldPriceChange, 15 * 1000);
+    // Update gold price every 30 seconds instead of 15 to reduce load
+    const interval = setInterval(fetchGoldPriceChange, 30 * 1000);
     
     return () => clearInterval(interval);
   }, [fetchGoldPriceChange]);
 
-  const NavLinks = ({ vertical = false }) => (
-    <nav className={`flex ${vertical ? 'flex-col' : 'items-center justify-center'} gap-2 text-sm`}>
-      <Link
-        to="/"
-        className={navigationMenuTriggerStyle() + " py-1.5 px-2.5"}
-      >
-        {t("home")}
-      </Link>
-      <Link
-        to="/charts"
-        className={navigationMenuTriggerStyle() + " py-1.5 px-2.5"}
-      >
-        {t("charts")}
-      </Link>
-      <Link
-        to="/calculator"
-        className={navigationMenuTriggerStyle() + " py-1.5 px-2.5"}
-      >
-        {t("calculator")}
-      </Link>
-      <Link
-        to="/currency-converter"
-        className={navigationMenuTriggerStyle() + " py-1.5 px-2.5"}
-      >
-        {t("currency")}
-      </Link>
-    </nav>
-  );
+  // Close mobile menu when navigating
+  const handleNavigation = () => {
+    setIsOpen(false);
+  };
+
+  // Extracted NavLink component for better organization
+  const NavLink = ({ to, icon, label }) => {
+    const Icon = icon;
+    return (
+      <SheetClose asChild>
+        <Link
+          to={to}
+          className="flex items-center gap-3 py-3 px-4 text-lg font-medium rounded-lg hover:bg-gold-50 dark:hover:bg-gray-800 transition-colors rtl:flex-row-reverse"
+          onClick={handleNavigation}
+        >
+          <Icon className="h-5 w-5 text-gold-600 dark:text-gold-400" />
+          <span>{label}</span>
+        </Link>
+      </SheetClose>
+    );
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
@@ -73,7 +67,7 @@ export function Navbar() {
         <div className="flex w-full items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <Link to="/" className="flex items-center space-x-2">
-              <Diamond className="h-5 w-5 text-primary/80" />
+              <Diamond className="h-5 w-5 text-gold-500" />
               <span className="font-bold text-xl bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
                 Current Gold Price
               </span>
@@ -87,24 +81,78 @@ export function Navbar() {
           </div>
           
           {isMobile ? (
-            <Sheet>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" aria-label="Menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[240px] sm:w-[300px]">
-                <div className="flex flex-col gap-4 py-4">
-                  <NavLinks vertical={true} />
-                  <div className="flex gap-2 justify-center">
-                    <LanguageSelector />
-                    <ThemeToggle />
+              <SheetContent side="right" className="p-0 w-[240px] sm:w-[300px] bg-white dark:bg-gray-900 border-l border-gold-100 dark:border-gold-800">
+                <div className="flex flex-col h-full">
+                  {/* Header */}
+                  <div className="p-4 border-b border-gold-100 dark:border-gold-800 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <Diamond className="h-5 w-5 text-gold-500" />
+                      <span className="font-semibold text-gold-700 dark:text-gold-300">Menu</span>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  {/* Navigation Links */}
+                  <div className="py-4 px-2 space-y-1 flex-1">
+                    <NavLink to="/" icon={Home} label={t("home")} />
+                    <NavLink to="/charts" icon={BarChart2} label={t("charts")} />
+                    <NavLink to="/calculator" icon={Calculator} label={t("calculator")} />
+                    <NavLink to="/currency-converter" icon={Euro} label={t("currency")} />
+                  </div>
+                  
+                  {/* Footer with theme and language */}
+                  <div className="mt-auto border-t border-gold-100 dark:border-gold-800 p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">{t("appearance")}</span>
+                      <ThemeToggle />
+                    </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-sm text-muted-foreground">{t("language")}</span>
+                      <LanguageSelector />
+                    </div>
                   </div>
                 </div>
               </SheetContent>
             </Sheet>
           ) : (
-            <NavLinks vertical={false} />
+            <nav className="hidden md:flex items-center justify-center gap-1 text-sm">
+              <Link
+                to="/"
+                className={navigationMenuTriggerStyle() + " py-1.5 px-3 flex items-center gap-1.5"}
+              >
+                <Home className="h-4 w-4" />
+                {t("home")}
+              </Link>
+              <Link
+                to="/charts"
+                className={navigationMenuTriggerStyle() + " py-1.5 px-3 flex items-center gap-1.5"}
+              >
+                <BarChart2 className="h-4 w-4" />
+                {t("charts")}
+              </Link>
+              <Link
+                to="/calculator"
+                className={navigationMenuTriggerStyle() + " py-1.5 px-3 flex items-center gap-1.5"}
+              >
+                <Calculator className="h-4 w-4" />
+                {t("calculator")}
+              </Link>
+              <Link
+                to="/currency-converter"
+                className={navigationMenuTriggerStyle() + " py-1.5 px-3 flex items-center gap-1.5"}
+              >
+                <Euro className="h-4 w-4" />
+                {t("currency")}
+              </Link>
+            </nav>
           )}
           
           {/* Show on mobile */}
