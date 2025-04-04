@@ -24,7 +24,7 @@ const countrySpecificGoldPrices = {
   CAD: 111.39, // Canada price per gram
   CHF: 74.25, // Switzerland price per gram
   CNY: 596.51, // China price per gram
-  MAD: 823.26, // Morocco gold price updated
+  MAD: 949.50, // Morocco gold price updated from image (24K)
   AED: 302.32, // UAE price per gram
   SAR: 308.86, // Saudi Arabia price per gram
   EGP: 4114.69, // Egypt price per gram
@@ -53,6 +53,18 @@ const countrySpecificGoldPrices = {
   JOD: 58.38, // Jordan price per gram
   ILS: 302.79, // Israel price per gram
   LYD: 401.25, // Libya price per gram
+};
+
+// Gold purity price multipliers based on the provided image
+const goldPurityPrices = {
+  // Based on Morocco gold prices from image
+  "24k": 1, // 949.50 MAD - 100% (reference)
+  "22k": 0.9168, // 870.50 MAD - 91.68%
+  "21k": 0.875, // 831.00 MAD - 87.5%
+  "18k": 0.75, // 712.00 MAD - 75%
+  "14k": 0.583, // 554.00 MAD - 58.3%
+  "12k": 0.5, // 475.00 MAD - 50%
+  "10k": 0.417, // Not in image but standard
 };
 
 // Simulate daily price changes based on the current date
@@ -87,6 +99,20 @@ export const fetchGoldPrice = async (currency = "MAD") => {
     // Fall back to local data if API call fails
     return getFallbackGoldPrice(currency);
   }
+};
+
+// Get price for different gold purities
+export const getGoldPriceByPurity = async (currency = "MAD", purity = "24k") => {
+  const basePriceData = await fetchGoldPrice(currency);
+  const purityMultiplier = goldPurityPrices[purity.toLowerCase()] || 1;
+  
+  const purityPrice = basePriceData.price * purityMultiplier;
+  
+  return {
+    ...basePriceData,
+    price: Number(purityPrice.toFixed(2)),
+    purity
+  };
 };
 
 // Get historical gold price data with updated baseline prices

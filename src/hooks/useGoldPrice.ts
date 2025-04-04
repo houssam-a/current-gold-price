@@ -17,13 +17,15 @@ export function useGoldPrice(initialCountry: string = "MA") {
   
   const country = countries.find((c) => c.code === selectedCountry);
   
-  // Get purity multiplier - 24k is 1, 22k is 0.917, etc.
+  // Get purity multiplier based on the selected purity
   const getPurityMultiplier = () => {
     switch (selectedPurity) {
       case "24k": return 1;
       case "22k": return 0.917;
+      case "21k": return 0.875; // Added 21k from the image
       case "18k": return 0.75;
       case "14k": return 0.583;
+      case "12k": return 0.5;  // Added 12k from the image
       case "10k": return 0.417;
       default: return 1;
     }
@@ -34,7 +36,8 @@ export function useGoldPrice(initialCountry: string = "MA") {
     
     setIsLoading(true);
     try {
-      const data = await getGoldPrice(country.currency);
+      // Pass both currency and purity to get accurate price
+      const data = await getGoldPrice(country.currency, selectedPurity);
       setGoldPrice(data);
       setLastUpdated(new Date());
       
@@ -47,7 +50,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
     } finally {
       setIsLoading(false);
     }
-  }, [country]);
+  }, [country, selectedPurity]);
   
   // Function to determine if we need to refresh prices based on day change
   const shouldRefreshPrices = useCallback(() => {
@@ -65,7 +68,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
     const countriesWithPrices = await Promise.all(
       countries.map(async (c) => {
         try {
-          const price = await getGoldPrice(c.currency);
+          const price = await getGoldPrice(c.currency, selectedPurity);
           return { ...c, price: price.price };
         } catch (error) {
           return { ...c, price: 0 };
@@ -78,14 +81,14 @@ export function useGoldPrice(initialCountry: string = "MA") {
     });
     
     setSortedCountries(sorted);
-  }, [sortDirection]);
+  }, [sortDirection, selectedPurity]);
   
   const toggleSortDirection = () => {
     const newDirection = sortDirection === "asc" ? "desc" : "asc";
     setSortDirection(newDirection);
   };
   
-  // Effect to fetch prices when country changes or on day change
+  // Effect to fetch prices when country changes or on day change or when purity changes
   useEffect(() => {
     fetchGoldPrice();
     
@@ -97,7 +100,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
     }, 60 * 60 * 1000); // Check every hour
     
     return () => clearInterval(interval);
-  }, [fetchGoldPrice, shouldRefreshPrices, selectedCountry]);
+  }, [fetchGoldPrice, shouldRefreshPrices, selectedCountry, selectedPurity]);
   
   // Effect to update gold image
   useEffect(() => {

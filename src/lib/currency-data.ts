@@ -749,8 +749,8 @@ export const translations = {
     search: "Suchen",
     selectCountry: "Land auswählen",
     selectUnit: "Einheit auswählen",
-    sortAscending: "Tri ascendant",
-    sortDescending: "Tri descendant",
+    sortAscending: "Aufsteigend sortieren",
+    sortDescending: "Absteigend sortieren",
     
     // Navigation
     home: "Startseite",
@@ -764,7 +764,7 @@ export const translations = {
     maximum: "Maximum",
     change: "Änderung",
     priceStatistics: "Preisstatistiken",
-    keyMetrics: "Indicateurs clés en",
+    keyMetrics: "Schlüsselkennzahlen in",
     
     // Time periods
     day: "Tag",
@@ -1016,10 +1016,10 @@ export const translations = {
     // Chart labels
     average: "平均",
     minimum: "最小",
-    maximum: "最大",  // Fixed: Added the missing value
+    maximum: "最大",
     change: "変化",
     priceStatistics: "価格統計",
-    keyMetrics: "の主要指標",
+    keyMetrics: "主要指標",
     
     // Time periods
     day: "日",
@@ -1030,38 +1030,39 @@ export const translations = {
     
     // Daily change
     dailyChange: "日次変化",
-    todayVsYesterday: "今日 vs 昨日",
+    todayVsYesterday: "今日 vs. 昨日",
     
     // Currency Converter
     currencyConverter: "金通貨コンバーター",
-    convertRealTime: "リアルタイムで異なる通貨間の金価格を換算",
+    convertRealTime: "リアルタイムで異なる通貨間の金価格を変換する",
     goldImageGallery: "金のイメージギャラリー",
     
     // Favorites
     favoriteCurrencies: "お気に入りの通貨",
-    quickAccess: "よく使う通貨へのクイックアクセス",
+    quickAccess: "よく使用する通貨へのクイックアクセス",
     noFavorites: "まだお気に入りはありません。下に追加してください！",
     addFavorite: "お気に入りの通貨を追加",
     
     // Conversion Form
-    convertCurrency: "金通貨を換算",
-    enterAmountDesc: "通貨間で換算する金額を入力",
+    convertCurrency: "金通貨を変換",
+    enterAmountDesc: "通貨間で変換する金額を入力してください",
     amount: "金額",
     enterAmount: "金額を入力",
-    from: "換算元",
-    to: "換算先",
+    from: "から",
+    to: "へ",
     selectCurrency: "通貨を選択",
-    swapCurrencies: "通貨を入れ替え",
-    converting: "換算中...",
-    convert: "換算"
+    swapCurrencies: "通貨を交換",
+    converting: "変換中...",
+    convert: "変換"
   },
   ru: {
-    goldPriceTracker: "Текущая цена на золото",
-    trackRealTime: "Отслеживайте цены на золото в реальном времени в разных валютах",
-    currentGoldPrice: "Текущая цена на золото",
+    // General
+    goldPriceTracker: "Текущая цена золота",
+    trackRealTime: "Отслеживайте цены на золото в режиме реального времени в разных валютах",
+    currentGoldPrice: "Текущая цена золота",
     goldPriceByUnit: "Цена золота по единицам",
-    compareGoldPrices: "Сравните цены на золото в разных единицах и валютах",
-    priceTrend: "Тренд цен",
+    compareGoldPrices: "Сравните цены на золото в различных единицах и валютах",
+    priceTrend: "Тенденция цен",
     historicalGoldPrice: "Историческая цена золота в",
     lastUpdated: "Последнее обновление",
     priceOf: "Цена",
@@ -1074,7 +1075,7 @@ export const translations = {
     gram: "грамм",
     ounce: "унция",
     kilogram: "килограмм",
-    days: "дней",
+    days: "дни",
     
     // Countries and Currencies
     country: "Страна",
@@ -1113,22 +1114,22 @@ export const translations = {
     year: "Год",
     
     // Daily change
-    dailyChange: "Дневное изменение",
-    todayVsYesterday: "Сегодня против Вчера",
+    dailyChange: "Ежедневное изменение",
+    todayVsYesterday: "Сегодня vs. Вчера",
     
     // Currency Converter
-    currencyConverter: "Конвертер валют золота",
-    convertRealTime: "Конвертируйте цены на золото между разными валютами в реальном времени",
+    currencyConverter: "Конвертер золотой валюты",
+    convertRealTime: "Конвертируйте цены на золото между различными валютами в реальном времени",
     goldImageGallery: "Галерея изображений золота",
     
     // Favorites
     favoriteCurrencies: "Избранные валюты",
     quickAccess: "Быстрый доступ к часто используемым валютам",
-    noFavorites: "Пока нет избранных. Добавьте их ниже!",
-    addFavorite: "Добавить валюту в избранное",
+    noFavorites: "Пока нет избранных. Добавьте несколько ниже!",
+    addFavorite: "Добавить избранную валюту",
     
     // Conversion Form
-    convertCurrency: "Конвертировать валюту золота",
+    convertCurrency: "Конвертировать золотую валюту",
     enterAmountDesc: "Введите сумму для конвертации между валютами",
     amount: "Сумма",
     enterAmount: "Введите сумму",

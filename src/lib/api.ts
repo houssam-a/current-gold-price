@@ -1,6 +1,6 @@
 
 // Gold Currency API integration
-import { fetchGoldPrice, fetchGoldPriceHistory } from './goldApi';
+import { fetchGoldPrice, fetchGoldPriceHistory, getGoldPriceByPurity } from './goldApi';
 import { currencySymbols } from "./currency-data";
 
 export type GoldPrice = {
@@ -10,6 +10,7 @@ export type GoldPrice = {
   timestamp: number;
   change: number;
   changePercentage: number;
+  purity?: string;
 };
 
 export type GoldPriceHistory = {
@@ -33,9 +34,10 @@ export type ExchangeRate = {
 
 // Get current gold price for a specific currency
 export const getGoldPrice = async (
-  currency: string = "USD"
+  currency: string = "USD",
+  purity: string = "24k"
 ): Promise<GoldPrice> => {
-  return await fetchGoldPrice(currency);
+  return await getGoldPriceByPurity(currency, purity);
 };
 
 // Get gold price history for a specific currency

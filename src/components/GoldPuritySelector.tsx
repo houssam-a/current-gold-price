@@ -1,46 +1,97 @@
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLanguage } from "@/context/LanguageContext";
-
-const goldPurities = [
-  { value: "24k", label: "24K (99.9%)", description: "Pure Gold", color: "bg-amber-400" },
-  { value: "22k", label: "22K (91.7%)", description: "Jewelry Standard", color: "bg-amber-300" },
-  { value: "18k", label: "18K (75.0%)", description: "Common Jewelry", color: "bg-yellow-300" },
-  { value: "14k", label: "14K (58.3%)", description: "Affordable Jewelry", color: "bg-yellow-200" },
-  { value: "10k", label: "10K (41.7%)", description: "Budget Jewelry", color: "bg-yellow-100" },
-];
+import React from "react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 
 interface GoldPuritySelectorProps {
   value: string;
   onValueChange: (value: string) => void;
 }
 
-export function GoldPuritySelector({ value, onValueChange }: GoldPuritySelectorProps) {
-  const { t } = useLanguage();
-  
+export function GoldPuritySelector({
+  value,
+  onValueChange,
+}: GoldPuritySelectorProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("goldPurity")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <RadioGroup value={value} onValueChange={onValueChange} className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {goldPurities.map((purity) => (
-            <div key={purity.value} className="flex items-center space-x-2">
-              <RadioGroupItem value={purity.value} id={`purity-${purity.value}`} />
-              <div className="flex items-center space-x-2">
-                <div className={`w-4 h-4 rounded-full ${purity.color} border border-amber-600`}></div>
-                <Label htmlFor={`purity-${purity.value}`} className="cursor-pointer">
-                  <div>{purity.label}</div>
-                  <div className="text-xs text-muted-foreground">{purity.description}</div>
-                </Label>
-              </div>
-            </div>
-          ))}
-        </RadioGroup>
-      </CardContent>
-    </Card>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium">Gold Purity</div>
+        <div className="text-xs text-muted-foreground">
+          Selected: {value}
+        </div>
+      </div>
+      <ToggleGroup
+        type="single"
+        className="grid grid-cols-4 md:grid-cols-7 gap-2"
+        value={value}
+        onValueChange={(value) => {
+          if (value) onValueChange(value);
+        }}
+      >
+        <ToggleGroupItem
+          value="24k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "24k" && "bg-gold-500 text-white"
+          )}
+        >
+          24K (99.9%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="22k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "22k" && "bg-gold-500 text-white"
+          )}
+        >
+          22K (91.7%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="21k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "21k" && "bg-gold-500 text-white"
+          )}
+        >
+          21K (87.5%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="18k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "18k" && "bg-gold-500 text-white"
+          )}
+        >
+          18K (75%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="14k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "14k" && "bg-gold-500 text-white"
+          )}
+        >
+          14K (58.3%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="12k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "12k" && "bg-gold-500 text-white"
+          )}
+        >
+          12K (50%)
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="10k"
+          className={cn(
+            "flex-1 text-xs",
+            value === "10k" && "bg-gold-500 text-white"
+          )}
+        >
+          10K (41.7%)
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </div>
   );
 }
