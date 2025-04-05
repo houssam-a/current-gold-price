@@ -15,21 +15,23 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
   
-  // توليد بيانات المخطط الثابتة بشكل متوافق
+  // توليد بيانات المخطط الثابتة بشكل متوافق - تحسين الأداء
   const chartData = useMemo(() => {
     if (!goldPrice) return [];
     
-    // استخدام بذرة ثابتة للبيانات المحددة
+    // تحسين: استخدام قيمة ثابتة للبذرة لضمان الاستقرار بين عمليات التصيير
     const basePrice = goldPrice.price;
-    const seed = selectedCountry.charCodeAt(0);
+    const seed = selectedCountry.charCodeAt(0) + 42; // إضافة قيمة ثابتة لتجنب التغيرات العشوائية
     
     // استخدام مصفوفة معدة مسبقًا لتحسين الأداء
     const data = new Array(30);
     
+    // تحسين: استخدام خوارزمية أكثر استقرارًا لتوليد البيانات
     for (let i = 0; i < 30; i++) {
-      // حساب مبسط لتوليد البيانات بأداء أفضل
       const day = i + 1;
-      const offset = Math.sin(seed + i / 4) * (basePrice * 0.03);
+      // استخدام دالة تناسبية أكثر استقرارًا لتوليد القيم
+      const factor = Math.cos((seed + i) / 5) * 0.5 + Math.sin(i / 7) * 0.5;
+      const offset = factor * (basePrice * 0.025); // تقليل نطاق التباين
       
       data[i] = {
         day,
@@ -44,10 +46,10 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   const yDomain = useMemo(() => {
     if (!chartData.length || !goldPrice) return [0, 100];
     
-    // استخدام نطاق مستند إلى النسبة المئوية حول السعر الأساسي للاستقرار
+    // تحسين: استخدام نطاق أضيق لتحسين العرض
     const basePrice = goldPrice.price;
-    const min = Math.floor(basePrice * 0.96);
-    const max = Math.ceil(basePrice * 1.04);
+    const min = Math.floor(basePrice * 0.97);
+    const max = Math.ceil(basePrice * 1.03);
     
     return [min, max];
   }, [chartData, goldPrice]);

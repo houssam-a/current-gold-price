@@ -9,6 +9,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
   const priceDataRef = useRef<{[key: string]: GoldPrice}>({});
   const lastFetchTimeRef = useRef<{[key: string]: Date}>({});
   const autoRefreshIntervalRef = useRef<number | null>(null);
+  const isFetchingRef = useRef<boolean>(false);
   
   const [selectedCountry, setSelectedCountry] = useState(initialCountry);
   const [selectedUnit, setSelectedUnit] = useState("gram");
@@ -20,6 +21,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
   const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState(3 * 60 * 1000); // 3 دقائق كقيمة افتراضية
   
   const country = countries.find((c) => c.code === selectedCountry);
   
@@ -47,9 +49,11 @@ export function useGoldPrice(initialCountry: string = "MA") {
   }, []);
   
   const fetchGoldPrice = useCallback(async (showToast = false) => {
-    if (!country) return;
+    if (!country || isFetchingRef.current) return;
     
     try {
+      // تعيين حالة الجلب لمنع الطلبات المتزامنة
+      isFetchingRef.current = true;
       setIsLoading(true);
       
       // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة
@@ -59,13 +63,14 @@ export function useGoldPrice(initialCountry: string = "MA") {
       
       const now = new Date();
       
-      // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة (أقل من 5 دقائق)
+      // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة (أقل من دقيقة واحدة)
       const cacheValid = cachedData && lastFetchTime && 
-                         (now.getTime() - lastFetchTime.getTime() < 5 * 60 * 1000);
+                         (now.getTime() - lastFetchTime.getTime() < 60 * 1000);
       
       if (cacheValid) {
         setGoldPrice(cachedData);
         setIsLoading(false);
+        isFetchingRef.current = false;
         return;
       }
       
@@ -84,7 +89,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
       }
       
       if (data.price === 0 || !data.price) {
-        toast.warning("تم استخدام بيانات احتياطية - تم الوصول إلى حد API أو غير متاح");
+        toast.warning("تم استخدام بيانات احتياطية - قد يكون هناك مشكلة في جلب البيانات");
       }
     } catch (error) {
       console.error("Error fetching gold price:", error);
@@ -93,8 +98,17 @@ export function useGoldPrice(initialCountry: string = "MA") {
       }
     } finally {
       setIsLoading(false);
+      // تأخير إعادة تعيين حالة الجلب لتجنب طلبات متعددة
+      setTimeout(() => {
+        isFetchingRef.current = false;
+      }, 500);
     }
   }, [country, selectedPurity]);
+  
+  // تعيين فترة التحديث التلقائي
+  const updateRefreshInterval = useCallback((minutes: number) => {
+    setRefreshInterval(minutes * 60 * 1000);
+  }, []);
   
   // وظيفة لتمكين/تعطيل التحديث التلقائي
   const toggleAutoRefresh = useCallback(() => {
@@ -114,10 +128,10 @@ export function useGoldPrice(initialCountry: string = "MA") {
       // أولاً، جلب الأسعار مباشرة
       fetchGoldPrice();
       
-      // ثم إعداد مؤقت للتحديث كل 5 دقائق
+      // ثم إعداد مؤقت للتحديث بالفترة المحددة
       const intervalId = window.setInterval(() => {
         fetchGoldPrice();
-      }, 5 * 60 * 1000); // 5 دقائق
+      }, refreshInterval);
       
       autoRefreshIntervalRef.current = intervalId;
     }
@@ -127,7 +141,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
         clearInterval(autoRefreshIntervalRef.current);
       }
     };
-  }, [autoRefreshEnabled, fetchGoldPrice, selectedCountry, selectedPurity]);
+  }, [autoRefreshEnabled, fetchGoldPrice, refreshInterval, selectedCountry, selectedPurity]);
   
   // تأثير لتحديث صورة الذهب
   useEffect(() => {
@@ -145,19 +159,22 @@ export function useGoldPrice(initialCountry: string = "MA") {
   
   // استخدم وظيفة مخزنة مؤقتًا لترتيب البلدان حسب سعر الذهب
   const sortCountriesByGoldPrice = useCallback(() => {
-    // لا نحتاج إلى أن نكون مزامنين هنا، يمكننا استخدام البيانات المتوفرة فقط
-    const sortable = countries.map(c => {
-      // استخدم الأسعار المخزنة مؤقتًا إذا كانت موجودة
-      const cacheKey = `${c.currency}-${selectedPurity}`;
-      const price = priceDataRef.current[cacheKey]?.price || 0;
-      return { ...c, price };
-    });
-    
-    const sorted = sortable.sort((a, b) => {
-      return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
-    });
-    
-    setSortedCountries(sorted);
+    // تأخير الترتيب لتحسين الأداء
+    setTimeout(() => {
+      // لا نحتاج إلى أن نكون مزامنين هنا، يمكننا استخدام البيانات المتوفرة فقط
+      const sortable = countries.map(c => {
+        // استخدم الأسعار المخزنة مؤقتًا إذا كانت موجودة
+        const cacheKey = `${c.currency}-${selectedPurity}`;
+        const price = priceDataRef.current[cacheKey]?.price || 0;
+        return { ...c, price };
+      });
+      
+      const sorted = sortable.sort((a, b) => {
+        return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
+      });
+      
+      setSortedCountries(sorted);
+    }, 0);
   }, [sortDirection, selectedPurity]);
   
   const toggleSortDirection = useCallback(() => {
@@ -195,6 +212,8 @@ export function useGoldPrice(initialCountry: string = "MA") {
     getPurityMultiplier,
     lastUpdated,
     autoRefreshEnabled,
-    toggleAutoRefresh
+    toggleAutoRefresh,
+    refreshInterval,
+    updateRefreshInterval
   };
 }
