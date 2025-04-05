@@ -29,7 +29,7 @@ export default function HomePage() {
     convertPrice
   } = useGoldPrice("MA"); // Default to Morocco
   
-  // Memoize expensive functions and components
+  // Optimize handlers with useCallback to prevent recreation on each render
   const handleCountryChange = useCallback((country: string) => {
     setSelectedCountry(country);
   }, [setSelectedCountry]);
@@ -42,11 +42,11 @@ export default function HomePage() {
     setSelectedPurity(purity);
   }, [setSelectedPurity]);
   
-  // Add delayed loading to improve perceived performance
+  // Simpler loading logic to improve performance
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 800);
+    }, 600);
     
     return () => clearTimeout(timer);
   }, []);
@@ -85,6 +85,7 @@ export default function HomePage() {
     />
   ), [selectedCountry, goldPrice, sortedCountries, sortDirection, selectedPurity, handleCountryChange, toggleSortDirection, convertPrice]);
   
+  // Display a simple loading indicator while content is initializing
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -97,7 +98,7 @@ export default function HomePage() {
   }
   
   return (
-    <div className="container py-6 max-w-screen-lg fade-in">
+    <div className="container py-6 max-w-screen-lg">
       <div className="mb-6 text-center">
         <div className="flex justify-center items-center gap-2 mb-2">
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-gold-600 to-gold-400 bg-clip-text text-transparent">
@@ -109,7 +110,6 @@ export default function HomePage() {
         </p>
       </div>
       
-      {/* Gold Purity Selector */}
       <div className="mb-6">
         <GoldPuritySelector 
           value={selectedPurity}

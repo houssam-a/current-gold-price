@@ -23,7 +23,8 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
     const basePrice = goldPrice.price;
     const seed = selectedCountry.charCodeAt(0) + basePrice;
     
-    return Array(30)
+    // Create a stable data set that doesn't change between renders
+    const data = Array(30)
       .fill(0)
       .map((_, i) => {
         // Use predictable "random" variations based on index and seed
@@ -37,7 +38,21 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
           price: Number((basePrice + offset).toFixed(2)),
         };
       });
+      
+    return data;
   }, [goldPrice, selectedCountry]);
+
+  // Use a fixed domain for the Y axis to prevent jumping
+  const yDomain = useMemo(() => {
+    if (!chartData.length) return [0, 100];
+    
+    const prices = chartData.map(item => item.price);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    
+    // Add some padding to prevent values from touching the edges
+    return [Math.floor(min * 0.98), Math.ceil(max * 1.02)];
+  }, [chartData]);
 
   return (
     <Card className="h-full">
@@ -50,10 +65,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
       <CardContent className="h-[250px]">
         {goldPrice ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
-              data={chartData}
-              // Remove the isAnimationActive property from LineChart
-            >
+            <LineChart data={chartData}>
               <XAxis
                 dataKey="day"
                 tick={{ fontSize: 12 }}
@@ -61,11 +73,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               />
               <YAxis
                 tick={{ fontSize: 12 }}
-                domain={[
-                  // Set fixed domain to prevent chart from jumping
-                  dataMin => Math.floor(dataMin * 0.98),
-                  dataMax => Math.ceil(dataMax * 1.02)
-                ]}
+                domain={yDomain}
                 tickFormatter={(value) =>
                   `${goldPrice.symbol}${value.toFixed(0)}`
                 }
@@ -73,7 +81,6 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               <Tooltip
                 formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
                 labelFormatter={(label) => `Day ${label}`}
-                // Use isAnimationActive in the Tooltip component where it's supported
                 isAnimationActive={false}
               />
               <ReferenceLine
@@ -87,14 +94,13 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
                 stroke="#FFCD00"
                 strokeWidth={2}
                 dot={false}
-                // Use isAnimationActive in the Line component where it's supported
                 isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-[200px] w-full rounded-lg"></div>
+            <div className="bg-gray-200 dark:bg-gray-700 h-[200px] w-full rounded-lg"></div>
           </div>
         )}
       </CardContent>
