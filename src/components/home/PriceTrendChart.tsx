@@ -15,44 +15,60 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
   
-  // Generate chart data using useMemo to prevent regeneration on every render
+  // Generate fixed chart data that doesn't change on re-renders
   const chartData = useMemo(() => {
     if (!goldPrice) return [];
     
-    // Use a fixed seed for random generation to ensure stability
+    // Use a consistent seed for deterministic "random" data
     const basePrice = goldPrice.price;
     const seed = selectedCountry.charCodeAt(0) + basePrice;
     
-    // Create a stable data set that doesn't change between renders
-    const data = Array(30)
+    // Pre-calculate all data at once to avoid repeated calculations
+    return Array(30)
       .fill(0)
       .map((_, i) => {
-        // Use predictable "random" variations based on index and seed
-        // to prevent chart from changing on every render
-        const sinOffset = Math.sin(i / 5) * (basePrice * 0.05);
-        const randomOffset = Math.sin(seed + i) * (basePrice * 0.01);
-        const offset = sinOffset + randomOffset;
+        // Simplified calculation with less operations
+        const day = i + 1;
+        const sinValue = Math.sin(i / 5);
+        const offset = (sinValue * basePrice * 0.05);
         
         return {
-          day: i + 1,
+          day,
           price: Number((basePrice + offset).toFixed(2)),
         };
       });
-      
-    return data;
-  }, [goldPrice, selectedCountry]);
-
-  // Use a fixed domain for the Y axis to prevent jumping
+  }, [goldPrice?.price, selectedCountry]); // More specific dependencies
+  
+  // Fixed Y axis domain to prevent layout shifts
   const yDomain = useMemo(() => {
-    if (!chartData.length) return [0, 100];
+    if (!chartData.length || !goldPrice) return [0, 100];
     
-    const prices = chartData.map(item => item.price);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    
-    // Add some padding to prevent values from touching the edges
-    return [Math.floor(min * 0.98), Math.ceil(max * 1.02)];
-  }, [chartData]);
+    // Use a percentage-based domain around the base price for stability
+    const basePrice = goldPrice.price;
+    return [
+      Math.floor(basePrice * 0.95), 
+      Math.ceil(basePrice * 1.05)
+    ];
+  }, [chartData, goldPrice]);
+
+  // Skip rendering if no data is available to avoid unnecessary work
+  if (!goldPrice) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>{t("priceTrend")} (30 {t("days")})</CardTitle>
+          <CardDescription>
+            {t("historicalGoldPrice")} {country?.currency}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="h-[250px]">
+          <div className="h-full flex items-center justify-center">
+            <div className="bg-gray-200 dark:bg-gray-700 h-[200px] w-full rounded-lg"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
@@ -63,46 +79,40 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
         </CardDescription>
       </CardHeader>
       <CardContent className="h-[250px]">
-        {goldPrice ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <XAxis
-                dataKey="day"
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => `${value}d`}
-              />
-              <YAxis
-                tick={{ fontSize: 12 }}
-                domain={yDomain}
-                tickFormatter={(value) =>
-                  `${goldPrice.symbol}${value.toFixed(0)}`
-                }
-              />
-              <Tooltip
-                formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
-                labelFormatter={(label) => `Day ${label}`}
-                isAnimationActive={false}
-              />
-              <ReferenceLine
-                y={goldPrice.price}
-                stroke="#FFCD00"
-                strokeDasharray="3 3"
-              />
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke="#FFCD00"
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="h-full flex items-center justify-center">
-            <div className="bg-gray-200 dark:bg-gray-700 h-[200px] w-full rounded-lg"></div>
-          </div>
-        )}
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData}>
+            <XAxis
+              dataKey="day"
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => `${value}d`}
+            />
+            <YAxis
+              tick={{ fontSize: 12 }}
+              domain={yDomain}
+              tickFormatter={(value) =>
+                `${goldPrice.symbol}${value.toFixed(0)}`
+              }
+            />
+            <Tooltip
+              formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
+              labelFormatter={(label) => `Day ${label}`}
+              isAnimationActive={false}
+            />
+            <ReferenceLine
+              y={goldPrice.price}
+              stroke="#FFCD00"
+              strokeDasharray="3 3"
+            />
+            <Line
+              type="monotone"
+              dataKey="price"
+              stroke="#FFCD00"
+              strokeWidth={2}
+              dot={false}
+              isAnimationActive={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

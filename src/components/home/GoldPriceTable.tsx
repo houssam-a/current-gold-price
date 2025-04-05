@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,8 @@ export interface GoldPriceTableProps {
   convertPrice: (price: number, unit: string) => string;
 }
 
-export function GoldPriceTable({ 
+// تحويل الجدول إلى مكون مخزن مؤقتًا للحد من عمليات إعادة التصيير
+export const GoldPriceTable = memo(function GoldPriceTable({ 
   selectedCountry, 
   setSelectedCountry, 
   goldPrice, 
@@ -39,13 +40,48 @@ export function GoldPriceTable({
 }: GoldPriceTableProps) {
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
+  const [activeTab, setActiveTab] = useState("gram");
 
-  // Highlight the selected country in the table
-  const getRowClassName = (countryCode: string) => {
-    return countryCode === selectedCountry 
-      ? "bg-gold-50 dark:bg-gold-900 font-semibold" 
-      : "";
-  };
+  // استخدام useCallback لمعالجات الأحداث المختلفة
+  const handleCountryClick = useCallback((countryCode: string) => {
+    // استخدم setTimeout لتأجيل التحديث وتحسين الأداء
+    setTimeout(() => {
+      setSelectedCountry(countryCode);
+    }, 0);
+  }, [setSelectedCountry]);
+
+  const handleTabChange = useCallback((value: string) => {
+    setActiveTab(value);
+  }, []);
+
+  // تحسين أداء الصفوف عن طريق نقلها إلى مكون منفصل
+  const CountryRow = memo(({ 
+    countryItem, 
+    isSelected, 
+    onSelect 
+  }: { 
+    countryItem: typeof countries[0], 
+    isSelected: boolean,
+    onSelect: () => void
+  }) => (
+    <TableRow 
+      className={`cursor-pointer hover:bg-muted ${isSelected ? "bg-gold-50 dark:bg-gold-900 font-semibold" : ""}`} 
+      onClick={onSelect}
+    >
+      <TableCell>
+        <div className="flex items-center">
+          <span className="text-2xl mr-2">{countryItem.flag}</span>
+          <span>{countryItem.name}</span>
+        </div>
+      </TableCell>
+      <TableCell>{countryItem.currency}</TableCell>
+      <TableCell className="text-right font-medium">
+        {countryItem.currency === country?.currency && goldPrice
+          ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, activeTab)}`
+          : "-"}
+      </TableCell>
+    </TableRow>
+  ));
 
   return (
     <Card>
@@ -76,7 +112,7 @@ export function GoldPriceTable({
         </Button>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="gram">
+        <Tabs defaultValue="gram" value={activeTab} onValueChange={handleTabChange}>
           <TabsList className="grid grid-cols-3 mb-6">
             <TabsTrigger value="gram">{t("gram")}</TabsTrigger>
             <TabsTrigger value="ounce">{t("ounce")}</TabsTrigger>
@@ -84,50 +120,37 @@ export function GoldPriceTable({
           </TabsList>
           
           {goldPrice ? (
-            <>
-              {["gram", "ounce", "kilo"].map((unit) => (
-                <TabsContent key={unit} value={unit} className="space-y-4">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t("country")}</TableHead>
-                        <TableHead>{t("currency")}</TableHead>
-                        <TableHead className="text-right">
-                          {t("priceOf")} 1 {t(unit)} ({selectedPurity})
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {sortedCountries.map((c) => (
-                        <TableRow 
-                          key={c.code} 
-                          className={`cursor-pointer hover:bg-muted ${getRowClassName(c.code)}`} 
-                          onClick={() => setSelectedCountry(c.code)}
-                        >
-                          <TableCell>
-                            <div className="flex items-center">
-                              <span className="text-2xl mr-2">{c.flag}</span>
-                              <span>{c.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>{c.currency}</TableCell>
-                          <TableCell className="text-right font-medium">
-                            {c.currency === country?.currency
-                              ? `${goldPrice.symbol} ${convertPrice(goldPrice.price, unit)}`
-                              : "-"}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TabsContent>
-              ))}
-            </>
+            <TabsContent value={activeTab} className="space-y-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("country")}</TableHead>
+                    <TableHead>{t("currency")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("priceOf")} 1 {t(activeTab)} ({selectedPurity})
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedCountries.map((c) => (
+                    <CountryRow
+                      key={c.code}
+                      countryItem={c}
+                      isSelected={c.code === selectedCountry}
+                      onSelect={() => handleCountryClick(c.code)}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
           ) : (
-            <div className="h-40 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
           )}
         </Tabs>
       </CardContent>
     </Card>
   );
-}
+});
+
+// التصدير الافتراضي للمكون
+export default GoldPriceTable;

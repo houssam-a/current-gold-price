@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { SearchSelector } from "@/components/ui/search-selector";
 import { countries, goldUnits } from "@/lib/currency-data";
-import { getGoldPrice, GoldPrice } from "@/lib/api";
+import { GoldPrice } from "@/lib/api";
 
 interface GoldPriceDisplayProps {
   selectedCountry: string;
@@ -21,7 +21,8 @@ interface GoldPriceDisplayProps {
   fetchGoldPrice: () => void;
 }
 
-export function GoldPriceDisplay({
+// استخدام memo لمنع إعادة التصيير غير الضرورية
+export const GoldPriceDisplay = memo(function GoldPriceDisplay({
   selectedCountry,
   setSelectedCountry,
   selectedUnit,
@@ -33,6 +34,7 @@ export function GoldPriceDisplay({
 }: GoldPriceDisplayProps) {
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
+  const [refreshing, setRefreshing] = useState(false);
 
   const renderPriceChangeIndicator = () => {
     if (!goldPrice) return null;
@@ -57,8 +59,10 @@ export function GoldPriceDisplay({
     switch (selectedPurity) {
       case "24k": return 1;
       case "22k": return 0.917;
+      case "21k": return 0.875;
       case "18k": return 0.75;
       case "14k": return 0.583;
+      case "12k": return 0.5;
       case "10k": return 0.417;
       default: return 1;
     }
@@ -74,8 +78,10 @@ export function GoldPriceDisplay({
     return (price * factor * purityFactor).toFixed(2);
   };
 
-  const handleRefresh = () => {
-    fetchGoldPrice();
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchGoldPrice();
+    setRefreshing(false);
     toast.success("Gold prices refreshed");
   };
 
@@ -90,6 +96,21 @@ export function GoldPriceDisplay({
     label: t(unit.value)
   }));
 
+  // إعداد معالجات الأحداث لتحديد البلد والوحدة لتأخير التحديثات
+  const handleCountryChange = (value: string) => {
+    // استخدم setTimeout لتأجيل معالجة التغيير
+    setTimeout(() => {
+      setSelectedCountry(value);
+    }, 0);
+  };
+
+  const handleUnitChange = (value: string) => {
+    // استخدم setTimeout لتأجيل معالجة التغيير
+    setTimeout(() => {
+      setSelectedUnit(value);
+    }, 0);
+  };
+
   return (
     <Card className="gold-card h-full">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -103,9 +124,9 @@ export function GoldPriceDisplay({
           variant="ghost"
           size="icon"
           onClick={handleRefresh}
-          disabled={isLoading}
+          disabled={isLoading || refreshing}
         >
-          <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
+          <RefreshCw className={cn("h-4 w-4", (isLoading || refreshing) && "animate-spin")} />
           <span className="sr-only">Refresh</span>
         </Button>
       </CardHeader>
@@ -119,7 +140,7 @@ export function GoldPriceDisplay({
               <SearchSelector
                 options={countryOptions}
                 value={selectedCountry}
-                onValueChange={setSelectedCountry}
+                onValueChange={handleCountryChange}
                 placeholder={t("selectCountry")}
                 searchPlaceholder={`${t("search")}...`}
               />
@@ -131,7 +152,7 @@ export function GoldPriceDisplay({
               <SearchSelector
                 options={unitOptions}
                 value={selectedUnit}
-                onValueChange={setSelectedUnit}
+                onValueChange={handleUnitChange}
                 placeholder={t("selectUnit")}
                 searchPlaceholder={`${t("search")}...`}
               />
@@ -164,7 +185,7 @@ export function GoldPriceDisplay({
             </div>
           ) : (
             <div className="h-20 flex items-center justify-center">
-              <div className="animate-pulse bg-gold-100 dark:bg-gray-700 h-12 w-full rounded-lg"></div>
+              <div className="bg-gold-100 dark:bg-gray-700 h-12 w-full rounded-lg"></div>
             </div>
           )}
           
@@ -176,4 +197,4 @@ export function GoldPriceDisplay({
       </CardContent>
     </Card>
   );
-}
+});

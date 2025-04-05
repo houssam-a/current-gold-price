@@ -9,10 +9,14 @@ import { GoldPriceTable } from "@/components/home/GoldPriceTable";
 import { PriceChangeIndicator } from "@/components/PriceChangeIndicator";
 import { Loader2 } from "lucide-react";
 
+// استخدام التحميل المكسل لتحسين الأداء المبدئي
+const LazyGoldPriceTable = React.lazy(() => import('@/components/home/GoldPriceTable').then(module => ({ default: module.GoldPriceTable })));
+
 export default function HomePage() {
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   
+  // تأكد من أن Hook useGoldPrice لن يقوم بعمليات معالجة ثقيلة عند التحميل المبدئي
   const { 
     selectedCountry,
     setSelectedCountry,
@@ -27,9 +31,9 @@ export default function HomePage() {
     fetchGoldPrice,
     toggleSortDirection,
     convertPrice
-  } = useGoldPrice("MA"); // Default to Morocco
+  } = useGoldPrice("MA");
   
-  // Optimize handlers with useCallback to prevent recreation on each render
+  // استخدام useCallback لمنع إنشاء دوال جديدة عند كل تصيير
   const handleCountryChange = useCallback((country: string) => {
     setSelectedCountry(country);
   }, [setSelectedCountry]);
@@ -42,16 +46,16 @@ export default function HomePage() {
     setSelectedPurity(purity);
   }, [setSelectedPurity]);
   
-  // Simpler loading logic to improve performance
+  // تحسين منطق التحميل مع وقت انتظار أقصر
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 600);
+    }, 300);
     
     return () => clearTimeout(timer);
   }, []);
   
-  // Memoize components to prevent unnecessary re-renders
+  // تخزين مؤقت للمكونات لمنع إعادة التصيير غير الضرورية
   const memoizedGoldPriceDisplay = useMemo(() => (
     <GoldPriceDisplay
       selectedCountry={selectedCountry}
@@ -70,22 +74,24 @@ export default function HomePage() {
       selectedCountry={selectedCountry}
       goldPrice={goldPrice}
     />
-  ), [selectedCountry, goldPrice]);
+  ), [selectedCountry, goldPrice?.price]); // تعديل الاعتمادات لتكون أكثر تحديدًا
   
   const memoizedGoldPriceTable = useMemo(() => (
-    <GoldPriceTable 
-      selectedCountry={selectedCountry}
-      setSelectedCountry={handleCountryChange}
-      goldPrice={goldPrice}
-      sortedCountries={sortedCountries}
-      sortDirection={sortDirection}
-      toggleSortDirection={toggleSortDirection}
-      selectedPurity={selectedPurity}
-      convertPrice={convertPrice}
-    />
-  ), [selectedCountry, goldPrice, sortedCountries, sortDirection, selectedPurity, handleCountryChange, toggleSortDirection, convertPrice]);
+    <React.Suspense fallback={<div className="h-40 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>}>
+      <LazyGoldPriceTable
+        selectedCountry={selectedCountry}
+        setSelectedCountry={handleCountryChange}
+        goldPrice={goldPrice}
+        sortedCountries={sortedCountries}
+        sortDirection={sortDirection}
+        toggleSortDirection={toggleSortDirection}
+        selectedPurity={selectedPurity}
+        convertPrice={convertPrice}
+      />
+    </React.Suspense>
+  ), [selectedCountry, goldPrice?.price, sortDirection, selectedPurity, handleCountryChange, toggleSortDirection, sortedCountries, convertPrice]);
   
-  // Display a simple loading indicator while content is initializing
+  // عرض مؤشر تحميل بسيط أثناء تهيئة المحتوى
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
