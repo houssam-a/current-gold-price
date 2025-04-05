@@ -1,8 +1,8 @@
 
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
@@ -21,7 +21,7 @@ interface GoldPriceDisplayProps {
   fetchGoldPrice: () => void;
 }
 
-// استخدام memo لمنع إعادة التصيير غير الضرورية
+// Using memo to prevent unnecessary re-rendering
 export const GoldPriceDisplay = memo(function GoldPriceDisplay({
   selectedCountry,
   setSelectedCountry,
@@ -32,9 +32,16 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
   isLoading,
   fetchGoldPrice
 }: GoldPriceDisplayProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdatedTime, setLastUpdatedTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (goldPrice && goldPrice.timestamp) {
+      setLastUpdatedTime(new Date(goldPrice.timestamp));
+    }
+  }, [goldPrice]);
 
   const renderPriceChangeIndicator = () => {
     if (!goldPrice) return null;
@@ -44,7 +51,7 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
 
     return (
       <div className={cn(
-        "flex items-center space-x-2 text-sm font-medium",
+        "flex items-center space-x-2 text-sm font-medium rtl:space-x-reverse",
         isPositive ? "text-green-600" : "text-red-600"
       )}>
         {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
@@ -82,7 +89,7 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
     setRefreshing(true);
     await fetchGoldPrice();
     setRefreshing(false);
-    toast.success("Gold prices refreshed");
+    toast.success(t("goldPricesRefreshed"));
   };
 
   const countryOptions = countries.map(country => ({
@@ -96,16 +103,16 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
     label: t(unit.value)
   }));
 
-  // إعداد معالجات الأحداث لتحديد البلد والوحدة لتأخير التحديثات
+  // Set up event handlers to delay updates
   const handleCountryChange = (value: string) => {
-    // استخدم setTimeout لتأجيل معالجة التغيير
+    // Use setTimeout to delay processing the change
     setTimeout(() => {
       setSelectedCountry(value);
     }, 0);
   };
 
   const handleUnitChange = (value: string) => {
-    // استخدم setTimeout لتأجيل معالجة التغيير
+    // Use setTimeout to delay processing the change
     setTimeout(() => {
       setSelectedUnit(value);
     }, 0);
@@ -121,13 +128,14 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
           </CardDescription>
         </div>
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           onClick={handleRefresh}
           disabled={isLoading || refreshing}
+          title={t("refreshPrices")}
         >
           <RefreshCw className={cn("h-4 w-4", (isLoading || refreshing) && "animate-spin")} />
-          <span className="sr-only">Refresh</span>
+          <span className="sr-only">{t("refresh")}</span>
         </Button>
       </CardHeader>
       <CardContent>
@@ -185,13 +193,13 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
             </div>
           ) : (
             <div className="h-20 flex items-center justify-center">
-              <div className="bg-gold-100 dark:bg-gray-700 h-12 w-full rounded-lg"></div>
+              <div className="bg-gold-100 dark:bg-gray-700 h-12 w-full rounded-lg animate-pulse"></div>
             </div>
           )}
           
           <div className="text-xs text-muted-foreground flex items-center">
-            <span className="h-3 w-3 mr-1" />
-            {t("lastUpdated")}: {goldPrice ? new Date(goldPrice.timestamp).toLocaleString() : "Loading..."}
+            <Clock className="h-3 w-3 mr-1 rtl:ml-1 rtl:mr-0" />
+            {t("lastUpdated")}: {lastUpdatedTime ? lastUpdatedTime.toLocaleString(language === 'ar' ? 'ar-SA' : undefined) : t("loading")}
           </div>
         </div>
       </CardContent>

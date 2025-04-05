@@ -1,8 +1,9 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Diamond } from "lucide-react";
+import { Diamond, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { Badge } from "@/components/ui/badge";
 
 interface GoldPuritySelectorProps {
   value: string;
@@ -15,7 +16,7 @@ export function GoldPuritySelector({
 }: GoldPuritySelectorProps) {
   const { t } = useLanguage();
   
-  // بيانات النقاء مع معلومات إضافية لكل عيار
+  // Gold purity data with additional information for each karat
   const purities = [
     { value: "24k", label: "24K", purity: "99.9%", color: "bg-amber-500" },
     { value: "22k", label: "22K", purity: "91.7%", color: "bg-amber-400" },
@@ -33,9 +34,9 @@ export function GoldPuritySelector({
           <Diamond className="h-5 w-5 text-gold-500" />
           <h3 className="text-base font-medium text-gold-700 dark:text-gold-300">{t("goldPurity")}</h3>
         </div>
-        <div className="text-sm px-2 py-1 bg-gold-100 text-gold-700 dark:bg-gold-900 dark:text-gold-300 rounded-full font-semibold border border-gold-200 dark:border-gold-700">
+        <Badge variant="outline" className="bg-gold-100 text-gold-700 dark:bg-gold-900 dark:text-gold-300 font-semibold border border-gold-200 dark:border-gold-700">
           {value.toUpperCase()}
-        </div>
+        </Badge>
       </div>
       
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
@@ -44,13 +45,18 @@ export function GoldPuritySelector({
             key={purity.value}
             onClick={() => onValueChange(purity.value)}
             className={cn(
-              "flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all",
+              "flex flex-col items-center justify-center p-2 rounded-lg transition-all relative",
               "hover:bg-gold-50 dark:hover:bg-gray-700 hover:shadow-md",
               value === purity.value
                 ? "bg-gradient-to-r from-gold-500 to-gold-400 text-white shadow-lg ring-2 ring-gold-300 dark:ring-gold-700 transform scale-105"
                 : "bg-white dark:bg-gray-800 border border-gold-100 dark:border-gray-700"
             )}
           >
+            {value === purity.value && (
+              <div className="absolute top-1 right-1">
+                <Check className="h-3 w-3" />
+              </div>
+            )}
             <span className="font-bold text-xs sm:text-sm">{purity.label}</span>
             <span className="text-[10px] sm:text-xs mt-1 opacity-80">{purity.purity}</span>
             <div className={cn("w-5 h-1.5 mt-1 rounded-full", purity.color)} />
