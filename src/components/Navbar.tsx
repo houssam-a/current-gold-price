@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -10,9 +9,16 @@ import { getGoldPrice } from "@/lib/api";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LucideIcon } from "lucide-react";
 
-// Memoized NavLink component to prevent unnecessary re-renders
-const NavLink = memo(({ to, icon, label, onClick }) => {
+interface NavLinkProps {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
+}
+
+const NavLink = memo(({ to, icon, label, onClick }: NavLinkProps) => {
   const Icon = icon;
   return (
     <SheetClose asChild>
@@ -47,17 +53,14 @@ export function Navbar() {
     }
   }, []);
   
-  // Check API status and fetch gold price change on component mount
   useEffect(() => {
     fetchGoldPriceChange();
     
-    // Update gold price every 30 seconds
     const interval = setInterval(fetchGoldPriceChange, 30 * 1000);
     
     return () => clearInterval(interval);
   }, [fetchGoldPriceChange]);
 
-  // Close mobile menu when navigating
   const handleNavigation = useCallback(() => {
     setIsOpen(false);
   }, []);
@@ -74,7 +77,6 @@ export function Navbar() {
               </span>
             </Link>
             
-            {/* Added theme toggle and language selector next to the title */}
             <div className="hidden md:flex items-center ml-4 space-x-1">
               <ThemeToggle />
               <LanguageSelector />
@@ -90,7 +92,6 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="p-0 w-[240px] sm:w-[300px] bg-white dark:bg-gray-900 border-l border-gold-100 dark:border-gold-800">
                 <div className="flex flex-col h-full">
-                  {/* Header */}
                   <div className="p-4 border-b border-gold-100 dark:border-gold-800 flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <Diamond className="h-5 w-5 text-gold-500" />
@@ -101,7 +102,6 @@ export function Navbar() {
                     </Button>
                   </div>
                   
-                  {/* Navigation Links */}
                   <div className="py-4 px-2 space-y-1 flex-1">
                     <NavLink to="/" icon={Home} label={t("home")} onClick={handleNavigation} />
                     <NavLink to="/charts" icon={BarChart2} label={t("charts")} onClick={handleNavigation} />
@@ -109,7 +109,6 @@ export function Navbar() {
                     <NavLink to="/currency-converter" icon={Euro} label={t("currency")} onClick={handleNavigation} />
                   </div>
                   
-                  {/* Footer with theme and language */}
                   <div className="mt-auto border-t border-gold-100 dark:border-gold-800 p-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">{t("appearance")}</span>
@@ -156,7 +155,6 @@ export function Navbar() {
             </nav>
           )}
           
-          {/* Show on mobile */}
           <div className="md:hidden flex items-center space-x-1">
             <ThemeToggle />
             <LanguageSelector />

@@ -52,8 +52,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
           <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={chartData}
-              // Disable animations to prevent movement
-              isAnimationActive={false}
+              // Remove the isAnimationActive property from LineChart
             >
               <XAxis
                 dataKey="day"
@@ -74,7 +73,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               <Tooltip
                 formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
                 labelFormatter={(label) => `Day ${label}`}
-                // Disable animation for tooltip
+                // Use isAnimationActive in the Tooltip component where it's supported
                 isAnimationActive={false}
               />
               <ReferenceLine
@@ -88,7 +87,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
                 stroke="#FFCD00"
                 strokeWidth={2}
                 dot={false}
-                // Disable animations to prevent movement
+                // Use isAnimationActive in the Line component where it's supported
                 isAnimationActive={false}
               />
             </LineChart>
