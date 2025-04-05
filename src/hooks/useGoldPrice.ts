@@ -7,6 +7,8 @@ import { toast } from "sonner";
 export function useGoldPrice(initialCountry: string = "MA") {
   // استخدم useRef لتخزين البيانات التي لا تسبب إعادة التصيير
   const priceDataRef = useRef<{[key: string]: GoldPrice}>({});
+  const lastFetchTimeRef = useRef<{[key: string]: Date}>({});
+  const autoRefreshIntervalRef = useRef<number | null>(null);
   
   const [selectedCountry, setSelectedCountry] = useState(initialCountry);
   const [selectedUnit, setSelectedUnit] = useState("gram");
@@ -17,6 +19,7 @@ export function useGoldPrice(initialCountry: string = "MA") {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [sortedCountries, setSortedCountries] = useState<typeof countries>(countries);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   
   const country = countries.find((c) => c.code === selectedCountry);
   
@@ -34,19 +37,31 @@ export function useGoldPrice(initialCountry: string = "MA") {
     }
   }, [selectedPurity]);
   
-  const fetchGoldPrice = useCallback(async () => {
+  // تنظيف المؤقتات عند إلغاء تحميل المكون
+  useEffect(() => {
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+      }
+    };
+  }, []);
+  
+  const fetchGoldPrice = useCallback(async (showToast = false) => {
     if (!country) return;
     
-    setIsLoading(true);
     try {
+      setIsLoading(true);
+      
       // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة
       const cacheKey = `${country.currency}-${selectedPurity}`;
       const cachedData = priceDataRef.current[cacheKey];
+      const lastFetchTime = lastFetchTimeRef.current[cacheKey];
       
-      // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة (أقل من ساعة)
       const now = new Date();
-      const cacheValid = cachedData && lastUpdated && 
-                         (now.getTime() - lastUpdated.getTime() < 60 * 60 * 1000);
+      
+      // استخدم البيانات المخزنة مؤقتًا إذا كانت موجودة وحديثة (أقل من 5 دقائق)
+      const cacheValid = cachedData && lastFetchTime && 
+                         (now.getTime() - lastFetchTime.getTime() < 5 * 60 * 1000);
       
       if (cacheValid) {
         setGoldPrice(cachedData);
@@ -57,34 +72,76 @@ export function useGoldPrice(initialCountry: string = "MA") {
       // جلب بيانات جديدة من API
       const data = await getGoldPrice(country.currency, selectedPurity);
       
-      // تخزين البيانات مؤقتًا
+      // تخزين البيانات ووقت الجلب
       priceDataRef.current[cacheKey] = data;
+      lastFetchTimeRef.current[cacheKey] = now;
       
       setGoldPrice(data);
-      setLastUpdated(new Date());
+      setLastUpdated(now);
+      
+      if (showToast) {
+        toast.success("تم تحديث أسعار الذهب");
+      }
       
       if (data.price === 0 || !data.price) {
-        toast.warning("Using fallback data - API limit reached or unavailable");
+        toast.warning("تم استخدام بيانات احتياطية - تم الوصول إلى حد API أو غير متاح");
       }
     } catch (error) {
       console.error("Error fetching gold price:", error);
-      toast.error("Failed to fetch gold price");
+      if (showToast) {
+        toast.error("فشل في جلب سعر الذهب");
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [country, selectedPurity, lastUpdated]);
+  }, [country, selectedPurity]);
   
-  // وظيفة لتحديد ما إذا كنا بحاجة إلى تحديث الأسعار استنادًا إلى تغيير اليوم
-  const shouldRefreshPrices = useCallback(() => {
-    if (!lastUpdated) return true;
+  // وظيفة لتمكين/تعطيل التحديث التلقائي
+  const toggleAutoRefresh = useCallback(() => {
+    setAutoRefreshEnabled(prev => !prev);
+  }, []);
+  
+  // تأثير لإعداد التحديث التلقائي الدوري
+  useEffect(() => {
+    // إلغاء المؤقت الحالي إذا كان موجودًا
+    if (autoRefreshIntervalRef.current) {
+      clearInterval(autoRefreshIntervalRef.current);
+      autoRefreshIntervalRef.current = null;
+    }
     
-    const now = new Date();
-    const lastDate = lastUpdated.getDate();
-    const currentDate = now.getDate();
+    // إذا كان التحديث التلقائي ممكّنًا، قم بإعداد مؤقت جديد
+    if (autoRefreshEnabled) {
+      // أولاً، جلب الأسعار مباشرة
+      fetchGoldPrice();
+      
+      // ثم إعداد مؤقت للتحديث كل 5 دقائق
+      const intervalId = window.setInterval(() => {
+        fetchGoldPrice();
+      }, 5 * 60 * 1000); // 5 دقائق
+      
+      autoRefreshIntervalRef.current = intervalId;
+    }
     
-    // تحديث إذا تغير اليوم
-    return lastDate !== currentDate;
-  }, [lastUpdated]);
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+      }
+    };
+  }, [autoRefreshEnabled, fetchGoldPrice, selectedCountry, selectedPurity]);
+  
+  // تأثير لتحديث صورة الذهب
+  useEffect(() => {
+    // استخدام الصور الجديدة التي تم تحميلها
+    const goldImages = [
+      "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png",
+      "/lovable-uploads/6fb8c3ed-1670-4df9-8394-4f7ac33d7206.png",
+      "/lovable-uploads/7a7e2918-3118-4784-988d-4094552314c2.png"
+    ];
+    
+    // استخدم نفس الصورة للبلد نفسه دائمًا (أكثر استقرارًا)
+    const index = selectedCountry.charCodeAt(0) % goldImages.length;
+    setSelectedGoldImage(goldImages[index]);
+  }, [selectedCountry]);
   
   // استخدم وظيفة مخزنة مؤقتًا لترتيب البلدان حسب سعر الذهب
   const sortCountriesByGoldPrice = useCallback(() => {
@@ -106,34 +163,6 @@ export function useGoldPrice(initialCountry: string = "MA") {
   const toggleSortDirection = useCallback(() => {
     setSortDirection(prev => prev === "asc" ? "desc" : "asc");
   }, []);
-  
-  // تأثير لجلب الأسعار عندما تتغير البلد أو عند تغيير اليوم أو عند تغيير النقاء
-  useEffect(() => {
-    fetchGoldPrice();
-    
-    // إعداد مؤقت للتحقق مما إذا كنا بحاجة إلى تحديث الأسعار (كل ساعة)
-    const interval = setInterval(() => {
-      if (shouldRefreshPrices()) {
-        fetchGoldPrice();
-      }
-    }, 60 * 60 * 1000); // فحص كل ساعة
-    
-    return () => clearInterval(interval);
-  }, [fetchGoldPrice, shouldRefreshPrices, selectedCountry, selectedPurity]);
-  
-  // تأثير لتحديث صورة الذهب
-  useEffect(() => {
-    // استخدام الصور الجديدة التي تم تحميلها
-    const goldImages = [
-      "/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png",
-      "/lovable-uploads/6fb8c3ed-1670-4df9-8394-4f7ac33d7206.png",
-      "/lovable-uploads/7a7e2918-3118-4784-988d-4094552314c2.png"
-    ];
-    
-    // استخدم نفس الصورة للبلد نفسه دائمًا (أكثر استقرارًا)
-    const index = selectedCountry.charCodeAt(0) % goldImages.length;
-    setSelectedGoldImage(goldImages[index]);
-  }, [selectedCountry]);
   
   // تأثير لترتيب البلدان حسب السعر
   useEffect(() => {
@@ -164,6 +193,8 @@ export function useGoldPrice(initialCountry: string = "MA") {
     toggleSortDirection,
     convertPrice,
     getPurityMultiplier,
-    lastUpdated
+    lastUpdated,
+    autoRefreshEnabled,
+    toggleAutoRefresh
   };
 }

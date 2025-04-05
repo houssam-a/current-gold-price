@@ -7,7 +7,10 @@ import { GoldPriceDisplay } from "@/components/home/GoldPriceDisplay";
 import { PriceTrendChart } from "@/components/home/PriceTrendChart";
 import { GoldPriceTable } from "@/components/home/GoldPriceTable";
 import { PriceChangeIndicator } from "@/components/PriceChangeIndicator";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Loader2, RefreshCw, Clock } from "lucide-react";
 
 // استخدام التحميل المكسل لتحسين الأداء المبدئي
 const LazyGoldPriceTable = React.lazy(() => import('@/components/home/GoldPriceTable').then(module => ({ default: module.GoldPriceTable })));
@@ -16,7 +19,7 @@ export default function HomePage() {
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   
-  // تأكد من أن Hook useGoldPrice لن يقوم بعمليات معالجة ثقيلة عند التحميل المبدئي
+  // استخدام Hook useGoldPrice
   const { 
     selectedCountry,
     setSelectedCountry,
@@ -30,7 +33,10 @@ export default function HomePage() {
     sortedCountries,
     fetchGoldPrice,
     toggleSortDirection,
-    convertPrice
+    convertPrice,
+    lastUpdated,
+    autoRefreshEnabled,
+    toggleAutoRefresh
   } = useGoldPrice("MA");
   
   // استخدام useCallback لمنع إنشاء دوال جديدة عند كل تصيير
@@ -45,6 +51,10 @@ export default function HomePage() {
   const handlePurityChange = useCallback((purity: string) => {
     setSelectedPurity(purity);
   }, [setSelectedPurity]);
+  
+  const handleManualRefresh = useCallback(() => {
+    fetchGoldPrice(true);
+  }, [fetchGoldPrice]);
   
   // تحسين منطق التحميل مع وقت انتظار أقصر
   useEffect(() => {
@@ -116,6 +126,36 @@ export default function HomePage() {
         </p>
       </div>
       
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-2">
+          <Clock className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            آخر تحديث: {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : "جاري التحميل..."}
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Badge 
+            variant={autoRefreshEnabled ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={toggleAutoRefresh}
+          >
+            {autoRefreshEnabled ? "تحديث تلقائي" : "تحديث يدوي"}
+          </Badge>
+          
+          <Button
+            variant="outline" 
+            size="sm" 
+            onClick={handleManualRefresh}
+            disabled={priceLoading}
+            className="flex items-center gap-1"
+          >
+            <RefreshCw className={`h-3 w-3 ${priceLoading ? "animate-spin" : ""}`} />
+            <span>تحديث</span>
+          </Button>
+        </div>
+      </div>
+      
       <div className="mb-6">
         <GoldPuritySelector 
           value={selectedPurity}
@@ -135,13 +175,15 @@ export default function HomePage() {
       
       {goldPrice && (
         <div className="mb-6 text-center">
-          <PriceChangeIndicator
-            change={goldPrice.change}
-            changePercentage={goldPrice.changePercentage}
-            size="md"
-            showDaily={true}
-            className="justify-center"
-          />
+          <Card className="bg-white dark:bg-gray-800 p-4 inline-flex items-center justify-center">
+            <PriceChangeIndicator
+              change={goldPrice.change}
+              changePercentage={goldPrice.changePercentage}
+              size="lg"
+              showDaily={true}
+              className="justify-center"
+            />
+          </Card>
         </div>
       )}
       

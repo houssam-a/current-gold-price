@@ -15,43 +15,44 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   const { t } = useLanguage();
   const country = countries.find((c) => c.code === selectedCountry);
   
-  // Generate fixed chart data that doesn't change on re-renders
+  // توليد بيانات المخطط الثابتة بشكل متوافق
   const chartData = useMemo(() => {
     if (!goldPrice) return [];
     
-    // Use a consistent seed for deterministic "random" data
+    // استخدام بذرة ثابتة للبيانات المحددة
     const basePrice = goldPrice.price;
-    const seed = selectedCountry.charCodeAt(0) + basePrice;
+    const seed = selectedCountry.charCodeAt(0);
     
-    // Pre-calculate all data at once to avoid repeated calculations
-    return Array(30)
-      .fill(0)
-      .map((_, i) => {
-        // Simplified calculation with less operations
-        const day = i + 1;
-        const sinValue = Math.sin(i / 5);
-        const offset = (sinValue * basePrice * 0.05);
-        
-        return {
-          day,
-          price: Number((basePrice + offset).toFixed(2)),
-        };
-      });
-  }, [goldPrice?.price, selectedCountry]); // More specific dependencies
+    // استخدام مصفوفة معدة مسبقًا لتحسين الأداء
+    const data = new Array(30);
+    
+    for (let i = 0; i < 30; i++) {
+      // حساب مبسط لتوليد البيانات بأداء أفضل
+      const day = i + 1;
+      const offset = Math.sin(seed + i / 4) * (basePrice * 0.03);
+      
+      data[i] = {
+        day,
+        price: Number((basePrice + offset).toFixed(2)),
+      };
+    }
+    
+    return data;
+  }, [goldPrice?.price, selectedCountry]);
   
-  // Fixed Y axis domain to prevent layout shifts
+  // تحديد نطاق محور Y الثابت لمنع تغيرات التخطيط
   const yDomain = useMemo(() => {
     if (!chartData.length || !goldPrice) return [0, 100];
     
-    // Use a percentage-based domain around the base price for stability
+    // استخدام نطاق مستند إلى النسبة المئوية حول السعر الأساسي للاستقرار
     const basePrice = goldPrice.price;
-    return [
-      Math.floor(basePrice * 0.95), 
-      Math.ceil(basePrice * 1.05)
-    ];
+    const min = Math.floor(basePrice * 0.96);
+    const max = Math.ceil(basePrice * 1.04);
+    
+    return [min, max];
   }, [chartData, goldPrice]);
 
-  // Skip rendering if no data is available to avoid unnecessary work
+  // تخطي التصيير إذا لم تكن البيانات متاحة لتجنب العمل غير الضروري
   if (!goldPrice) {
     return (
       <Card className="h-full">
