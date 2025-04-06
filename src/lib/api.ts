@@ -1,3 +1,4 @@
+
 // Gold Currency API integration
 import { fetchGoldPrice, fetchGoldPriceHistory, getGoldPriceByPurity } from './goldApi';
 import { currencySymbols } from "./currency-data";
@@ -10,7 +11,6 @@ export type GoldPrice = {
   change: number;
   changePercentage: number;
   purity?: string;
-  yesterdayPrice?: number;
 };
 
 export type GoldPriceHistory = {

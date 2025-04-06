@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { 
@@ -35,60 +35,23 @@ export function SearchSelector({
 }: SearchSelectorProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus the search input when dropdown is opened
-  const handleOpenChange = (open: boolean) => {
-    if (open && searchInputRef.current) {
-      // Use a short timeout to ensure the dropdown has rendered
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 50);
-    }
-  };
-
-  // Reset search when closed
-  const handleSelectChange = (newValue: string) => {
-    onValueChange(newValue);
-    setSearchTerm('');
-  };
-
-  // Improved search filtering with debounce
   useEffect(() => {
-    // Use debounce to avoid unnecessary filtering
-    const debounceTimer = setTimeout(() => {
-      if (searchTerm.trim() === '') {
-        setFilteredOptions(options);
-        return;
-      }
-      
-      const searchTermLower = searchTerm.toLowerCase();
-      
-      // Improved search algorithm - prioritize startsWith matches
-      const startMatches: Option[] = [];
-      const containsMatches: Option[] = [];
-      
-      options.forEach(option => {
-        const labelLower = option.label.toLowerCase();
-        const valueLower = option.value.toLowerCase();
-        
-        if (labelLower.startsWith(searchTermLower) || valueLower.startsWith(searchTermLower)) {
-          startMatches.push(option);
-        } else if (labelLower.includes(searchTermLower) || valueLower.includes(searchTermLower)) {
-          containsMatches.push(option);
-        }
-      });
-      
-      // Combine results with startsWith matches first
-      setFilteredOptions([...startMatches, ...containsMatches]);
-    }, 150); // 150ms debounce
-    
-    return () => clearTimeout(debounceTimer);
+    if (searchTerm) {
+      const filtered = options.filter(
+        option => 
+          option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          option.value.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+    } else {
+      setFilteredOptions(options);
+    }
   }, [searchTerm, options]);
 
   return (
     <div className={className}>
-      <Select value={value} onValueChange={handleSelectChange} onOpenChange={handleOpenChange}>
+      <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -97,24 +60,20 @@ export function SearchSelector({
             <div className="flex items-center border rounded-md px-3 py-1 mb-2">
               <Search className="h-4 w-4 mr-2 text-muted-foreground" />
               <Input 
-                ref={searchInputRef}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={searchPlaceholder}
                 className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 h-7 pl-0 text-sm"
-                autoComplete="off"
               />
             </div>
           </div>
           {filteredOptions.length > 0 ? (
-            <div className="max-h-[200px] overflow-y-auto">
-              {filteredOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.flag && <span className="mr-2">{option.flag}</span>}
-                  {option.label}
-                </SelectItem>
-              ))}
-            </div>
+            filteredOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.flag && <span className="mr-2">{option.flag}</span>}
+                {option.label}
+              </SelectItem>
+            ))
           ) : (
             <div className="px-2 py-4 text-center text-sm text-muted-foreground">
               No results found
