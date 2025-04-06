@@ -43,6 +43,11 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
     }
   }, [goldPrice]);
 
+  // Force immediate refresh when country or purity changes
+  useEffect(() => {
+    fetchGoldPrice();
+  }, [selectedCountry, selectedPurity, fetchGoldPrice]);
+
   const renderPriceChangeIndicator = () => {
     if (!goldPrice) return null;
 
@@ -103,19 +108,14 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
     label: t(unit.value)
   }));
 
-  // Set up event handlers to delay updates
+  // Set up event handlers with immediate feedback
   const handleCountryChange = (value: string) => {
-    // Use setTimeout to delay processing the change
-    setTimeout(() => {
-      setSelectedCountry(value);
-    }, 0);
+    setSelectedCountry(value);
+    // The useEffect above will trigger a data refresh
   };
 
   const handleUnitChange = (value: string) => {
-    // Use setTimeout to delay processing the change
-    setTimeout(() => {
-      setSelectedUnit(value);
-    }, 0);
+    setSelectedUnit(value);
   };
 
   return (
@@ -171,7 +171,7 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
             <div className="flex flex-col space-y-4">
               <div className="flex items-start justify-between bg-white dark:bg-gray-800 p-4 rounded-lg">
                 <div>
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-bold" dir="ltr">
                     {goldPrice.symbol}{" "}
                     {goldPrice && convertPrice(goldPrice.price, selectedUnit)}
                   </div>
@@ -183,9 +183,9 @@ export const GoldPriceDisplay = memo(function GoldPriceDisplay({
                 <div className="flex flex-col items-end">
                   <div className="mt-2">
                     <img 
-                      src="/lovable-uploads/ed8a2eb4-1bc0-45e6-b78c-5e2e303c06ef.png"
+                      src="/lovable-uploads/e797d011-901c-48ef-a1f6-96312c96b850.png"
                       alt="Gold Bar"
-                      className="h-12 rounded"
+                      className="h-16 rounded"
                     />
                   </div>
                 </div>

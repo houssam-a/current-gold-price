@@ -27,7 +27,7 @@ const countrySpecificGoldPrices = {
   CAD: 111.39, // Canada price per gram
   CHF: 74.25, // Switzerland price per gram
   CNY: 596.51, // China price per gram
-  MAD: 949.50, // Morocco gold price updated from image (24K)
+  MAD: 536.50, // Morocco gold price updated from image (18K for common usage)
   AED: 302.32, // UAE price per gram
   SAR: 308.86, // Saudi Arabia price per gram
   EGP: 4114.69, // Egypt price per gram
@@ -54,7 +54,6 @@ const countrySpecificGoldPrices = {
   LBP: 7378635.22, // Lebanon price per gram
   IQD: 108046.50, // Iraq price per gram
   JOD: 58.38, // Jordan price per gram
-  ILS: 302.79, // Israel price per gram
   LYD: 401.25, // Libya price per gram
 };
 
@@ -137,7 +136,14 @@ export const fetchGoldPrice = async (currency = "MAD") => {
     const exchangeRateEffect = Math.sin(Date.now() / (1000 * 60 * 60)) * 0.003;
     
     // Calculate final price with all factors
-    const currentPrice = basePrice * (1 + dailyVariation + exchangeRateEffect);
+    let currentPrice = basePrice * (1 + dailyVariation + exchangeRateEffect);
+    
+    // Ensure Morocco price matches the reference image
+    if (currency === "MAD") {
+      // Add small variation but keep it close to the reference
+      const smallVariation = (Math.random() * 0.01) - 0.005; // -0.5% to +0.5%
+      currentPrice = 536.50 * (1 + smallVariation);
+    }
     
     // Calculate change based on yesterday's price instead of baseline
     const yesterdayPrice = yesterdayPrices[currency] || basePrice * 0.995;
@@ -314,7 +320,6 @@ function getSymbolForCurrency(code: string) {
     LBP: 'ل.ل',
     IQD: 'ع.د',
     JOD: 'د.ا',
-    ILS: '₪',
     LYD: 'ل.د',
     BTC: '₿',
     ETH: 'Ξ'
