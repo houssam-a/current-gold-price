@@ -13,6 +13,9 @@ export const conversionFactors = {
   kilo: 1000,
 };
 
+// Historical data for day-to-day comparisons
+let yesterdayPrices: {[key: string]: number} = {};
+
 // Get current gold price for specific countries as of April 2025
 // These prices are updated from reliable sources like XE.com, Kitco, and World Gold Council
 const countrySpecificGoldPrices = {
@@ -75,8 +78,22 @@ const economicFactors = {
   geopoliticalRisk: 0.4, // Geopolitical risk factor
 };
 
+// Initialize yesterday's prices
+function initializeYesterdayPrices() {
+  if (Object.keys(yesterdayPrices).length === 0) {
+    // Generate yesterday's prices based on current prices with realistic variations
+    Object.entries(countrySpecificGoldPrices).forEach(([currency, price]) => {
+      // Yesterday's price should be slightly different, using a deterministic approach
+      const currencySeed = currency.charCodeAt(0) + currency.charCodeAt(currency.length - 1);
+      const variation = (Math.sin(currencySeed) * 0.015) - 0.005; // Range between -0.5% to +1%
+      yesterdayPrices[currency] = price * (1 + variation);
+    });
+  }
+  return yesterdayPrices;
+}
+
 // Calculate more realistic daily price variations based on multiple factors
-function getRealisticPriceVariation(currency) {
+function getRealisticPriceVariation(currency: string) {
   const today = new Date();
   
   // Base seed for deterministic but seemingly random variations
@@ -110,6 +127,9 @@ export const fetchGoldPrice = async (currency = "MAD") => {
     // Simulate API call latency (100-300ms)
     await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
     
+    // Initialize yesterday's prices if not already done
+    initializeYesterdayPrices();
+    
     // For demo: use our realistic baseline prices with economic influences
     const basePrice = countrySpecificGoldPrices[currency] || countrySpecificGoldPrices.USD;
     const dailyVariation = getRealisticPriceVariation(currency);
@@ -119,7 +139,10 @@ export const fetchGoldPrice = async (currency = "MAD") => {
     
     // Calculate final price with all factors
     const currentPrice = basePrice * (1 + dailyVariation + exchangeRateEffect);
-    const change = basePrice * (dailyVariation + exchangeRateEffect);
+    
+    // Calculate change based on yesterday's price instead of baseline
+    const yesterdayPrice = yesterdayPrices[currency] || basePrice * 0.995;
+    const change = currentPrice - yesterdayPrice;
     
     // Return comprehensive price data
     return {
@@ -128,8 +151,9 @@ export const fetchGoldPrice = async (currency = "MAD") => {
       symbol: getSymbolForCurrency(currency),
       timestamp: Date.now(),
       change: Number(change.toFixed(2)),
-      changePercentage: Number(((change / basePrice) * 100).toFixed(2)),
-      source: "World Gold Council & Market Data"
+      changePercentage: Number(((change / yesterdayPrice) * 100).toFixed(2)),
+      source: "World Gold Council & Market Data",
+      yesterdayPrice: Number(yesterdayPrice.toFixed(2))
     };
   } catch (error) {
     console.error("Error fetching gold price:", error);
@@ -144,11 +168,19 @@ export const getGoldPriceByPurity = async (currency = "MAD", purity = "24k") => 
   const purityMultiplier = goldPurityPrices[purity.toLowerCase()] || 1;
   
   const purityPrice = basePriceData.price * purityMultiplier;
+  const yesterdayPurityPrice = (basePriceData.yesterdayPrice || 0) * purityMultiplier;
+  
+  // Also adjust the change and change percentage for the purity
+  const purityChange = purityPrice - yesterdayPurityPrice;
+  const purityChangePercentage = (purityChange / yesterdayPurityPrice) * 100;
   
   return {
     ...basePriceData,
     price: Number(purityPrice.toFixed(2)),
-    purity
+    purity,
+    change: Number(purityChange.toFixed(2)),
+    changePercentage: Number(purityChangePercentage.toFixed(2)),
+    yesterdayPrice: Number(yesterdayPurityPrice.toFixed(2))
   };
 };
 
@@ -170,12 +202,18 @@ export const fetchGoldPriceHistory = async (
 };
 
 // Fallback function with updated market-based prices
-function getFallbackGoldPrice(currency) {
+function getFallbackGoldPrice(currency: string) {
+  // Initialize yesterday's prices if not already done
+  initializeYesterdayPrices();
+  
   // Use our baseline prices with realistic variations
   const basePrice = countrySpecificGoldPrices[currency] || countrySpecificGoldPrices.USD;
   const dailyVariation = getRealisticPriceVariation(currency);
   const currentPrice = basePrice * (1 + dailyVariation);
-  const change = basePrice * dailyVariation;
+  
+  // Calculate change based on yesterday's price instead of baseline
+  const yesterdayPrice = yesterdayPrices[currency] || basePrice * 0.995;
+  const change = currentPrice - yesterdayPrice;
   
   return {
     price: Number(currentPrice.toFixed(2)),
@@ -183,8 +221,9 @@ function getFallbackGoldPrice(currency) {
     symbol: getSymbolForCurrency(currency),
     timestamp: Date.now(),
     change: Number(change.toFixed(2)),
-    changePercentage: Number(((change / basePrice) * 100).toFixed(2)),
-    source: "Local Market Data (Fallback)"
+    changePercentage: Number(((change / yesterdayPrice) * 100).toFixed(2)),
+    source: "Local Market Data (Fallback)",
+    yesterdayPrice: Number(yesterdayPrice.toFixed(2))
   };
 }
 
@@ -238,8 +277,8 @@ function generateHistoricalPriceData(
 }
 
 // Helper function to get currency symbol
-function getSymbolForCurrency(code) {
-  const symbols = {
+function getSymbolForCurrency(code: string) {
+  const symbols: {[key: string]: string} = {
     USD: '$',
     EUR: '€',
     GBP: '£',
@@ -283,4 +322,22 @@ function getSymbolForCurrency(code) {
   };
   
   return symbols[code] || code;
+}
+
+// Update yesterday's prices daily
+// In a real implementation, this would be done through a more robust mechanism
+// but for demo purposes, we're using this approach
+export function updateYesterdayPrices() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  
+  // Update yesterday's prices at midnight (or close to it)
+  if (hours === 0 && minutes < 5) {
+    Object.keys(countrySpecificGoldPrices).forEach(async (currency) => {
+      const current = await fetchGoldPrice(currency);
+      yesterdayPrices[currency] = current.price;
+    });
+    console.log("Updated yesterday's gold prices");
+  }
 }

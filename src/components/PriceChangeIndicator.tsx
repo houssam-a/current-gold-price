@@ -1,5 +1,5 @@
 
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,9 @@ interface PriceChangeIndicatorProps {
   showIcon?: boolean;
   showDaily?: boolean;
   className?: string;
-  hidden?: boolean; // Added hidden prop
+  hidden?: boolean;
+  yesterdayPrice?: number;
+  currentPrice?: number;
 }
 
 export function PriceChangeIndicator({ 
@@ -20,7 +22,9 @@ export function PriceChangeIndicator({
   showIcon = true,
   showDaily = false,
   className,
-  hidden = false // Default to showing
+  hidden = false,
+  yesterdayPrice,
+  currentPrice
 }: PriceChangeIndicatorProps) {
   // If hidden, don't render anything
   if (hidden) return null;
@@ -48,6 +52,7 @@ export function PriceChangeIndicator({
     >
       {showIcon && (
         isPositive ? <TrendingUp className={cn(iconSizeClass, "mr-1")} /> : 
+        isNeutral ? <Minus className={cn(iconSizeClass, "mr-1")} /> :
         <TrendingDown className={cn(iconSizeClass, "mr-1")} />
       )}
       <span>
@@ -56,6 +61,11 @@ export function PriceChangeIndicator({
       {showDaily && (
         <span className="ml-1 text-muted-foreground text-xs">
           {t("dailyChange")}
+        </span>
+      )}
+      {yesterdayPrice && currentPrice && (
+        <span className="ml-2 text-xs text-muted-foreground">
+          {t("yesterday")}: {yesterdayPrice.toFixed(2)} → {currentPrice.toFixed(2)}
         </span>
       )}
     </div>

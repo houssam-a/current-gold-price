@@ -21,26 +21,34 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
     
     // تحسين: استخدام قيمة ثابتة للبذرة لضمان الاستقرار بين عمليات التصيير
     const basePrice = goldPrice.price;
+    const yesterdayPrice = goldPrice.yesterdayPrice || (basePrice * 0.995);
     const seed = selectedCountry.charCodeAt(0) + 42; // إضافة قيمة ثابتة لتجنب التغيرات العشوائية
     
     // استخدام مصفوفة معدة مسبقًا لتحسين الأداء
     const data = new Array(30);
     
     // تحسين: استخدام خوارزمية أكثر استقرارًا لتوليد البيانات
+    // Start with yesterday's price and gradually transition to today's price
     for (let i = 0; i < 30; i++) {
       const day = i + 1;
-      // استخدام دالة تناسبية أكثر استقرارًا لتوليد القيم
+      
+      // Calculate price based on position, with more recent days closer to current price
+      // and earlier days closer to yesterday's price
+      const progressToPresent = i / 29; // 0 = 29 days ago, 1 = today
+      const baseForDay = yesterdayPrice + (basePrice - yesterdayPrice) * progressToPresent;
+      
+      // Add smaller fluctuations based on the day
       const factor = Math.cos((seed + i) / 5) * 0.5 + Math.sin(i / 7) * 0.5;
-      const offset = factor * (basePrice * 0.025); // تقليل نطاق التباين
+      const offset = factor * (basePrice * 0.015); // Reduced variance
       
       data[i] = {
         day,
-        price: Number((basePrice + offset).toFixed(2)),
+        price: Number((baseForDay + offset).toFixed(2)),
       };
     }
     
     return data;
-  }, [goldPrice?.price, selectedCountry]);
+  }, [goldPrice?.price, goldPrice?.yesterdayPrice, selectedCountry]);
   
   // تحديد نطاق محور Y الثابت لمنع تغيرات التخطيط
   const yDomain = useMemo(() => {
@@ -48,8 +56,12 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
     
     // تحسين: استخدام نطاق أضيق لتحسين العرض
     const basePrice = goldPrice.price;
-    const min = Math.floor(basePrice * 0.97);
-    const max = Math.ceil(basePrice * 1.03);
+    const yesterdayPrice = goldPrice.yesterdayPrice || (basePrice * 0.995);
+    const minPrice = Math.min(basePrice, yesterdayPrice);
+    const maxPrice = Math.max(basePrice, yesterdayPrice);
+    
+    const min = Math.floor(minPrice * 0.98);
+    const max = Math.ceil(maxPrice * 1.02);
     
     return [min, max];
   }, [chartData, goldPrice]);
@@ -72,6 +84,9 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
       </Card>
     );
   }
+
+  // Reference line for yesterday's price
+  const yesterdayPrice = goldPrice.yesterdayPrice || (goldPrice.price * 0.995);
 
   return (
     <Card className="h-full">
@@ -101,10 +116,29 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
               labelFormatter={(label) => `Day ${label}`}
               isAnimationActive={false}
             />
+            {/* Current price reference line */}
             <ReferenceLine
               y={goldPrice.price}
               stroke="#FFCD00"
               strokeDasharray="3 3"
+              label={{
+                position: "right",
+                value: `${t("today")}: ${goldPrice.symbol}${goldPrice.price}`,
+                fill: "#FFCD00",
+                fontSize: 10
+              }}
+            />
+            {/* Yesterday's price reference line */}
+            <ReferenceLine
+              y={yesterdayPrice}
+              stroke="#888888"
+              strokeDasharray="3 3"
+              label={{
+                position: "left",
+                value: `${t("yesterday")}: ${goldPrice.symbol}${yesterdayPrice.toFixed(2)}`,
+                fill: "#888888",
+                fontSize: 10
+              }}
             />
             <Line
               type="monotone"
