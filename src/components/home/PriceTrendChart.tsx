@@ -1,10 +1,13 @@
 
-import React, { useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import React, { useState, useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
 import { countries } from "@/lib/currency-data";
 import { GoldPrice } from "@/lib/api";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { useChartData } from '@/hooks/useChartData';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { PriceChangeIndicator } from "@/components/PriceChangeIndicator";
 
 interface PriceTrendChartProps {
   selectedCountry: string;
@@ -13,143 +16,114 @@ interface PriceTrendChartProps {
 
 export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartProps) {
   const { t } = useLanguage();
-  const country = countries.find((c) => c.code === selectedCountry);
+  const country = countries.find(c => c.code === selectedCountry);
+  const [period, setPeriod] = useState("1m");
   
-  // توليد بيانات المخطط الثابتة بشكل متوافق - تحسين الأداء
-  const chartData = useMemo(() => {
-    if (!goldPrice) return [];
-    
-    // تحسين: استخدام قيمة ثابتة للبذرة لضمان الاستقرار بين عمليات التصيير
-    const basePrice = goldPrice.price;
-    const yesterdayPrice = goldPrice.yesterdayPrice || (basePrice * 0.995);
-    const seed = selectedCountry.charCodeAt(0) + 42; // إضافة قيمة ثابتة لتجنب التغيرات العشوائية
-    
-    // استخدام مصفوفة معدة مسبقًا لتحسين الأداء
-    const data = new Array(30);
-    
-    // تحسين: استخدام خوارزمية أكثر استقرارًا لتوليد البيانات
-    // Start with yesterday's price and gradually transition to today's price
-    for (let i = 0; i < 30; i++) {
-      const day = i + 1;
-      
-      // Calculate price based on position, with more recent days closer to current price
-      // and earlier days closer to yesterday's price
-      const progressToPresent = i / 29; // 0 = 29 days ago, 1 = today
-      const baseForDay = yesterdayPrice + (basePrice - yesterdayPrice) * progressToPresent;
-      
-      // Add smaller fluctuations based on the day
-      const factor = Math.cos((seed + i) / 5) * 0.5 + Math.sin(i / 7) * 0.5;
-      const offset = factor * (basePrice * 0.015); // Reduced variance
-      
-      data[i] = {
-        day,
-        price: Number((baseForDay + offset).toFixed(2)),
-      };
-    }
-    
-    return data;
-  }, [goldPrice?.price, goldPrice?.yesterdayPrice, selectedCountry]);
+  // Extract yesterday's price from goldPrice data
+  const yesterdayPrice = goldPrice?.yesterdayPrice || 0;
+  const currentPrice = goldPrice?.price || 0;
   
-  // تحديد نطاق محور Y الثابت لمنع تغيرات التخطيط
-  const yDomain = useMemo(() => {
-    if (!chartData.length || !goldPrice) return [0, 100];
+  // Fetch historical data
+  const { chartData, isLoading } = useChartData(country?.currency || "USD", period as "1d" | "1w" | "1m" | "6m" | "1y");
+  
+  // Calculate min and max for chart Y-axis
+  const minMax = useMemo(() => {
+    if (!chartData?.length) return { min: 0, max: 0 };
     
-    // تحسين: استخدام نطاق أضيق لتحسين العرض
-    const basePrice = goldPrice.price;
-    const yesterdayPrice = goldPrice.yesterdayPrice || (basePrice * 0.995);
-    const minPrice = Math.min(basePrice, yesterdayPrice);
-    const maxPrice = Math.max(basePrice, yesterdayPrice);
+    const prices = chartData.map(item => item.price);
+    const min = Math.min(...prices) * 0.95; // Add 5% padding below
+    const max = Math.max(...prices) * 1.05; // Add 5% padding above
     
-    const min = Math.floor(minPrice * 0.98);
-    const max = Math.ceil(maxPrice * 1.02);
-    
-    return [min, max];
-  }, [chartData, goldPrice]);
-
-  // تخطي التصيير إذا لم تكن البيانات متاحة لتجنب العمل غير الضروري
-  if (!goldPrice) {
-    return (
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle>{t("priceTrend")} (30 {t("days")})</CardTitle>
-          <CardDescription>
-            {t("historicalGoldPrice")} {country?.currency}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="h-[250px]">
-          <div className="h-full flex items-center justify-center">
-            <div className="bg-gray-200 dark:bg-gray-700 h-[200px] w-full rounded-lg"></div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Reference line for yesterday's price
-  const yesterdayPrice = goldPrice.yesterdayPrice || (goldPrice.price * 0.995);
-
+    return { min, max };
+  }, [chartData]);
+  
+  const handlePeriodChange = (value: string) => {
+    setPeriod(value);
+  };
+  
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle>{t("priceTrend")} (30 {t("days")})</CardTitle>
-        <CardDescription>
-          {t("historicalGoldPrice")} {country?.currency}
-        </CardDescription>
+      <CardHeader className="pb-2">
+        <CardTitle>{t("priceTrend")}</CardTitle>
       </CardHeader>
-      <CardContent className="h-[250px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <XAxis
-              dataKey="day"
-              tick={{ fontSize: 12 }}
-              tickFormatter={(value) => `${value}d`}
-            />
-            <YAxis
-              tick={{ fontSize: 12 }}
-              domain={yDomain}
-              tickFormatter={(value) =>
-                `${goldPrice.symbol}${value.toFixed(0)}`
-              }
-            />
-            <Tooltip
-              formatter={(value) => [`${goldPrice.symbol}${value}`, "Price"]}
-              labelFormatter={(label) => `Day ${label}`}
-              isAnimationActive={false}
-            />
-            {/* Current price reference line */}
-            <ReferenceLine
-              y={goldPrice.price}
-              stroke="#FFCD00"
-              strokeDasharray="3 3"
-              label={{
-                position: "right",
-                value: `${t("today")}: ${goldPrice.symbol}${goldPrice.price}`,
-                fill: "#FFCD00",
-                fontSize: 10
-              }}
-            />
-            {/* Yesterday's price reference line */}
-            <ReferenceLine
-              y={yesterdayPrice}
-              stroke="#888888"
-              strokeDasharray="3 3"
-              label={{
-                position: "left",
-                value: `${t("yesterday")}: ${goldPrice.symbol}${yesterdayPrice.toFixed(2)}`,
-                fill: "#888888",
-                fontSize: 10
-              }}
-            />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#FFCD00"
-              strokeWidth={2}
-              dot={false}
-              isAnimationActive={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      
+      <CardContent className="pb-2">
+        <Tabs defaultValue="1m" value={period} onValueChange={handlePeriodChange}>
+          <TabsList className="mb-4">
+            <TabsTrigger value="1d">1 {t("day")}</TabsTrigger>
+            <TabsTrigger value="1w">1 {t("week")}</TabsTrigger>
+            <TabsTrigger value="1m">1 {t("month")}</TabsTrigger>
+            <TabsTrigger value="6m">6 {t("months")}</TabsTrigger>
+            <TabsTrigger value="1y">1 {t("year")}</TabsTrigger>
+          </TabsList>
+          
+          <div className="mb-4">
+            {goldPrice && (
+              <PriceChangeIndicator
+                change={goldPrice.change}
+                changePercentage={goldPrice.changePercentage}
+                showDaily={true}
+                yesterdayPrice={yesterdayPrice}
+                currentPrice={currentPrice}
+              />
+            )}
+          </div>
+
+          <div className="h-[230px]">
+            {isLoading ? (
+              <div className="h-full w-full bg-gray-100 dark:bg-gray-800 rounded-md animate-pulse" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 12 }} 
+                    tickFormatter={(value) => {
+                      const date = new Date(value);
+                      return period === "1d" 
+                        ? date.getHours() + "h" 
+                        : date.getDate() + "/" + (date.getMonth() + 1);
+                    }}
+                  />
+                  <YAxis 
+                    domain={[minMax.min, minMax.max]} 
+                    tick={{ fontSize: 12 }} 
+                    width={50}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value.toFixed(2)} ${goldPrice?.symbol || ''}`, t("price")]}
+                    labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="price" 
+                    stroke="#e5b45b" 
+                    strokeWidth={2} 
+                    dot={false} 
+                    activeDot={{ r: 4 }} 
+                  />
+                  {yesterdayPrice > 0 && (
+                    <ReferenceLine 
+                      y={yesterdayPrice} 
+                      stroke="#888" 
+                      strokeDasharray="3 3"
+                      label={{ 
+                        value: t("yesterday"),
+                        position: 'insideBottomRight',
+                        fill: '#888',
+                        fontSize: 12
+                      }} 
+                    />
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </Tabs>
       </CardContent>
     </Card>
   );

@@ -1,4 +1,3 @@
-
 // Gold API Service with accurate and reliable data sources
 // This service simulates fetching from reliable gold price APIs
 
@@ -59,15 +58,15 @@ const countrySpecificGoldPrices = {
   LYD: 401.25, // Libya price per gram
 };
 
-// Gold purity price multipliers based on standard gold industry ratios
+// Gold purity price multipliers based on real market standards
 const goldPurityPrices = {
-  "24k": 1, // 100% pure - reference price
-  "22k": 0.917, // 91.7% pure
-  "21k": 0.875, // 87.5% pure
-  "18k": 0.75, // 75% pure
-  "14k": 0.583, // 58.3% pure
-  "12k": 0.5, // 50% pure
-  "10k": 0.417, // 41.7% pure
+  "24k": 1, // 99.9% pure - reference price
+  "22k": 0.916, // 91.6% pure - standard 22K purity
+  "21k": 0.875, // 87.5% pure - common in Arab countries
+  "18k": 0.750, // 75.0% pure - common in jewelry
+  "14k": 0.585, // 58.5% pure - popular in the US
+  "12k": 0.500, // 50.0% pure - less common
+  "10k": 0.417, // 41.7% pure - minimum gold content for US
 };
 
 // Global economic factors that influence gold prices
