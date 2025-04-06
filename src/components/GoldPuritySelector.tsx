@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { Diamond, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
 
 interface GoldPuritySelectorProps {
   value: string;
@@ -42,33 +41,26 @@ export function GoldPuritySelector({
       
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {purities.map((purity) => (
-          <motion.button
+          <button
             key={purity.value}
             onClick={() => onValueChange(purity.value)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             className={cn(
               "flex flex-col items-center justify-center p-2 rounded-lg transition-all relative",
               "hover:bg-gold-50 dark:hover:bg-gray-700 hover:shadow-md",
               value === purity.value
-                ? "bg-gradient-to-r from-gold-500 to-gold-400 text-white shadow-lg ring-2 ring-gold-300 dark:ring-gold-700"
+                ? "bg-gradient-to-r from-gold-500 to-gold-400 text-white shadow-lg ring-2 ring-gold-300 dark:ring-gold-700 transform scale-105"
                 : "bg-white dark:bg-gray-800 border border-gold-100 dark:border-gray-700"
             )}
           >
             {value === purity.value && (
-              <motion.div 
-                className="absolute top-1 right-1"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              >
+              <div className="absolute top-1 right-1">
                 <Check className="h-3 w-3" />
-              </motion.div>
+              </div>
             )}
             <span className="font-bold text-xs sm:text-sm">{purity.label}</span>
             <span className="text-[10px] sm:text-xs mt-1 opacity-80">{purity.purity}</span>
-            <div className={cn("w-6 h-1.5 mt-1 rounded-full", purity.color)} />
-          </motion.button>
+            <div className={cn("w-5 h-1.5 mt-1 rounded-full", purity.color)} />
+          </button>
         ))}
       </div>
       
