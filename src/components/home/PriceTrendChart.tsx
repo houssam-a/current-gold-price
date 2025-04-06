@@ -41,6 +41,18 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
     setPeriod(value);
   };
   
+  // Format date for X-axis based on period
+  const formatDate = (date: string) => {
+    const dateObj = new Date(date);
+    if (period === "1d") {
+      return dateObj.getHours() + "h";
+    } else if (period === "1w" || period === "1m") {
+      return `${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
+    } else {
+      return `${dateObj.getMonth() + 1}/${dateObj.getFullYear().toString().substr(2, 2)}`;
+    }
+  };
+  
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -49,7 +61,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
       
       <CardContent className="pb-2">
         <Tabs defaultValue="1m" value={period} onValueChange={handlePeriodChange}>
-          <TabsList className="mb-4">
+          <TabsList className="mb-4 w-full grid grid-cols-5">
             <TabsTrigger value="1d">1 {t("day")}</TabsTrigger>
             <TabsTrigger value="1w">1 {t("week")}</TabsTrigger>
             <TabsTrigger value="1m">1 {t("month")}</TabsTrigger>
@@ -72,7 +84,7 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
           <div className="h-[230px]">
             {isLoading ? (
               <div className="h-full w-full bg-gray-100 dark:bg-gray-800 rounded-md animate-pulse" />
-            ) : (
+            ) : chartData && chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={chartData}
@@ -82,15 +94,10 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
                   <XAxis 
                     dataKey="date" 
                     tick={{ fontSize: 12 }} 
-                    tickFormatter={(value) => {
-                      const date = new Date(value);
-                      return period === "1d" 
-                        ? date.getHours() + "h" 
-                        : date.getDate() + "/" + (date.getMonth() + 1);
-                    }}
+                    tickFormatter={formatDate}
                   />
                   <YAxis 
-                    domain={[minMax.min, minMax.max]} 
+                    domain={[minMax.min || 0, minMax.max || 100]} 
                     tick={{ fontSize: 12 }} 
                     width={50}
                   />
@@ -121,6 +128,10 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
                   )}
                 </LineChart>
               </ResponsiveContainer>
+            ) : (
+              <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+                {t("noData")}
+              </div>
             )}
           </div>
         </Tabs>
