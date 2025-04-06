@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
 import { countries } from "@/lib/currency-data";
@@ -28,14 +28,32 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
   
   // Calculate min and max for chart Y-axis
   const minMax = useMemo(() => {
-    if (!chartData?.length) return { min: 0, max: 0 };
+    if (!chartData?.length) {
+      // If no chart data but we have current price, use that as reference
+      if (goldPrice?.price) {
+        const price = goldPrice.price;
+        return { 
+          min: price * 0.95, // 5% below current price
+          max: price * 1.05  // 5% above current price
+        };
+      }
+      return { min: 0, max: 100 };
+    }
     
     const prices = chartData.map(item => item.price);
+    // Include current price in min/max calculation if available
+    if (goldPrice?.price) {
+      prices.push(goldPrice.price);
+    }
+    if (yesterdayPrice > 0) {
+      prices.push(yesterdayPrice);
+    }
+    
     const min = Math.min(...prices) * 0.95; // Add 5% padding below
     const max = Math.max(...prices) * 1.05; // Add 5% padding above
     
     return { min, max };
-  }, [chartData]);
+  }, [chartData, goldPrice, yesterdayPrice]);
   
   const handlePeriodChange = (value: string) => {
     setPeriod(value);
@@ -52,6 +70,33 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
       return `${dateObj.getMonth() + 1}/${dateObj.getFullYear().toString().substr(2, 2)}`;
     }
   };
+  
+  // Create fallback data if no chart data is available
+  const getFallbackData = () => {
+    if (!goldPrice) return [];
+    
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Simple two-point data to show a trend
+    return [
+      {
+        date: yesterday.toISOString().split('T')[0],
+        price: yesterdayPrice || goldPrice.price * 0.995
+      },
+      {
+        date: now.toISOString().split('T')[0],
+        price: goldPrice.price
+      }
+    ];
+  };
+  
+  // Determine what data to show
+  const displayData = useMemo(() => {
+    if (chartData && chartData.length > 0) return chartData;
+    return getFallbackData();
+  }, [chartData, goldPrice]);
   
   return (
     <Card className="h-full">
@@ -84,10 +129,10 @@ export function PriceTrendChart({ selectedCountry, goldPrice }: PriceTrendChartP
           <div className="h-[230px]">
             {isLoading ? (
               <div className="h-full w-full bg-gray-100 dark:bg-gray-800 rounded-md animate-pulse" />
-            ) : chartData && chartData.length > 0 ? (
+            ) : displayData && displayData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                  data={chartData}
+                  data={displayData}
                   margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
