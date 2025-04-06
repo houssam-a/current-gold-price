@@ -63,7 +63,7 @@ export function PriceChangeIndicator({
           {t("dailyChange")}
         </span>
       )}
-      {yesterdayPrice && currentPrice && (
+      {yesterdayPrice !== undefined && currentPrice !== undefined && (
         <span className="ml-2 text-xs text-muted-foreground">
           {t("yesterday")}: {yesterdayPrice.toFixed(2)} → {currentPrice.toFixed(2)}
         </span>
